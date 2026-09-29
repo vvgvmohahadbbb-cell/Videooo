@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مساعد ذكي</title>
+<style>
+:root{--bg:#0f1420;--card:#1a2236;--tx:#eef2ff;--mut:#8a94b0;--ac:#4f8cff;--r:#ff5a6a}
+*{box-sizing:border-box}html,body{height:100%;overflow-x:hidden}
+body{margin:auto;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;max-width:680px;width:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+button{font:inherit;cursor:pointer;border:0;color:var(--tx);background:none}
+input,textarea,select{width:100%;min-width:0;background:var(--card);border:1px solid #2a3452;border-radius:12px;padding:10px 12px;color:var(--tx);font:inherit}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+h1{font-size:18px;margin:0}.ic{font-size:20px;padding:4px 8px}
+#tabs{display:flex;gap:8px;padding:0 14px 8px}
+.tb{flex:1;padding:9px;border-radius:12px;background:var(--card);color:var(--mut)}.tb.on{background:var(--ac);color:#fff}
+.view{flex:1;display:none;flex-direction:column;min-height:0}.view.on{display:flex}
+#msgs{flex:1;overflow-y:auto;padding:8px 14px;display:flex;flex-direction:column;gap:10px}
+.m{padding:10px 13px;border-radius:16px;max-width:92%;line-height:1.65;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.u{background:var(--ac);align-self:flex-start}.a{background:var(--card);align-self:flex-end}
+.m img{max-width:100%;max-height:160px;border-radius:10px;display:block;margin:0 0 6px}
+pre{background:#0b0f19;border-radius:10px;padding:10px;overflow-x:auto;direction:ltr;text-align:left;font-size:13px;margin:6px 0}
+code{background:#0b0f19;border-radius:5px;padding:1px 5px;direction:ltr}
+#comp{padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+#modes{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+.md{flex:1;padding:8px 4px;border-radius:10px;background:var(--card);color:var(--mut);font-size:13px}.md.on{background:#2b3f70;color:#fff;outline:1px solid var(--ac)}
+#web{font-size:13px;color:var(--mut);padding:8px;border-radius:10px;background:var(--card)}#web.on{color:#fff;background:#1d6b52}
+#th{display:flex;gap:6px;overflow-x:auto}#th div{position:relative;flex:none}#th img{height:56px;border-radius:8px}#th b{position:absolute;top:-4px;left:-4px;background:var(--r);border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center}
+.row{display:flex;gap:8px;align-items:flex-end;margin-top:6px}
+#inp{max-height:110px;resize:none}
+.rb{width:44px;height:44px;border-radius:50%;background:var(--ac);font-size:18px;flex:none}.rb.g{background:var(--card)}
+.pad{padding:8px 14px 24px;overflow-y:auto}
+.card{background:var(--card);border-radius:14px;padding:12px;margin-bottom:10px}
+.btn{background:var(--ac);border-radius:12px;padding:12px;width:100%;font-weight:600;margin-top:8px}.btn.s{background:#2a3452}
+iframe{width:100%;height:380px;border:1px solid #2a3452;border-radius:12px;background:#fff;margin-top:8px}
+.xi{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid #2a3452}.xi span{flex:1}
+#ov{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:8;padding-top:env(safe-area-inset-top,0px)}#ov.on{display:flex}
+#ov iframe{flex:1;height:auto;margin:0;border-radius:0;border:0}
+#set{position:fixed;inset:0;background:rgba(10,14,25,.97);display:none;flex-direction:column;justify-content:center;gap:8px;padding:24px;z-index:9}#set.on{display:flex}
+small{color:var(--mut)}label{color:var(--mut);font-size:13px}
+#cl{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:8;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 14px;overflow-y:auto}#cl.on{display:flex}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:6px 0}.ci{display:flex;align-items:center;gap:6px;padding:10px 0;border-bottom:1px solid #2a3452}.ci span{flex:1;cursor:pointer;line-height:1.5}.ci.cur span{color:var(--ac);font-weight:700}
+.cp{font-size:12px;color:var(--mut);margin-top:6px;cursor:pointer}.md{font-size:12px!important;padding:8px 2px!important}
+</style>
+</head>
+<body>
+<header><h1 id="ct" onclick="openList()" style="cursor:pointer;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:58%">🤖 مساعد ذكي</h1><div><button class="ic" onclick="newChat()">➕</button><button class="ic" onclick="openList()">📂</button><button class="ic" onclick="$('set').classList.add('on')">⚙️</button></div></header>
+<div id="tabs"><button class="tb on" onclick="tab(0)">💬 المحادثات</button><button class="tb" onclick="tab(1)">🪞 تحليل شخصيتي</button></div>
+
+<div class="view on" id="v0">
+  <div id="msgs"></div>
+  <div id="comp">
+    <div id="modes"><button class="md" data-m="fast">⚡ سريع</button><button class="md on" data-m="think">🧠 تفكير</button><button class="md" data-m="deep">🔬 أعمق</button><button class="md" data-m="ultra">🧬 جداً</button><button id="web" onclick="this.classList.toggle('on');web=this.classList.contains('on')">🌐 بحث</button></div>
+    <div id="th"></div>
+    <div class="row"><input type="file" id="pic" accept="image/*" multiple hidden>
+      <button class="rb g" onclick="pic.click()">📎</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
+  </div>
+</div>
+
+<div class="view" id="v1"><div class="pad">
+  <div class="card"><b>🪞 تحليل شخصيتي</b><br><small>يقرأ رسائلك من <b>كل المحادثات</b> مع بعض، ويحلل أسلوبك واهتماماتك وطريقة تفكيرك. هو تقدير تقريبي للتأمل وليس تشخيصاً نفسياً، ورسائلك بتنرسل لـ Groq مثل أي محادثة.</small>
+    <div id="pai" style="margin:10px 0;font-size:14px"></div>
+    <label>نوع التحليل</label><select id="pak"><option value="عام">تحليل شامل للشخصية</option><option value="سمات">سمات الشخصية (العوامل الخمسة تقريباً)</option><option value="تواصل">أسلوب التواصل والتعبير</option><option value="قوة">نقاط القوة والضعف مع نصائح</option><option value="اهتمامات">الاهتمامات والقيم والأهداف</option></select>
+    <label>سؤال خاص (اختياري)</label><input id="paq" placeholder="مثلاً: شو نقاط ضعفي بالتواصل؟">
+    <label>نص إضافي من مصدر ثاني (اختياري)</label><textarea id="pax" rows="3" placeholder="الصق رسائل أو كتابات تخصك…"></textarea>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--tx)"><input type="checkbox" id="pau" style="width:auto"> 🧬 تحليل عميق جداً (أبطأ، 3 مراحل)</label><button class="btn" id="pago" onclick="analyze()">🔍 حلّل</button></div>
+  <div class="card" id="par" style="display:none"><div id="pat" style="line-height:1.75;font-size:15px;white-space:pre-wrap"></div><button class="btn s" onclick="copyPA()">📋 نسخ</button><br><small id="pad"></small></div>
+</div></div>
+<div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
+
+<div id="set"><label>مفتاح Groq</label><input id="key" placeholder="gsk_..." style="direction:ltr">
+  <label>موديل الصور</label><input id="vm" style="direction:ltr"><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><button class="btn" onclick="saveSet()">حفظ</button></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ls={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const URL_='https://api.groq.com/openai/v1/chat/completions';
+let cfg={key:'',vm:'qwen/qwen3.6-27b',...ls.get('acfg',{})},mode='think',web=false,imgs=[],hist=[],busy=false;
+$('key').value=cfg.key;$('vm').value=cfg.vm;$('ci').value=cfg.ci||'';
+function saveSet(){cfg={key:$('key').value.trim(),vm:$('vm').value.trim()||'qwen/qwen3.6-27b',ci:$('ci').value.trim()};ls.set('acfg',cfg);$('set').classList.remove('on')}
+function tab(i){if(i===1)paInfo();[0,1].forEach(k=>{$('v'+k).classList.toggle('on',k===i);document.querySelectorAll('.tb')[k].classList.toggle('on',k===i)})}
+document.querySelectorAll('.md').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.md').forEach(x=>x.classList.toggle('on',x===b))});
+const hdr=()=>({'Content-Type':'application/json',Authorization:'Bearer '+cfg.key});
+
+// ---------- عرض ----------
+function md(s){s=esc(s.replace(/<think>[\s\S]*?(<\/think>|$)/g,''));
+  return s.replace(/```\w*\n?([\s\S]*?)```/g,(m,c)=>`<pre>${c}</pre>`).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>').replace(/^[-*] /gm,'• ')}
+function bub(c,html){const d=document.createElement('div');d.className='m '+c;d.innerHTML=html;$('msgs').appendChild(d);$('msgs').scrollTop=1e9;return d}
+function renderHist(){$('msgs').innerHTML='';if(!hist.length)bub('a','أهلين! اسألني أي شي، أو ارفق صورة 📎. اختر السرعة من فوق: ⚡ سريع، 🧠 تفكير، 🔬 أعمق. 🌐 يخليني أبحث بالإنترنت.');hist.forEach(h=>{const b=bub(h.role==='user'?'u':'a',md(h.content));if(h.role!=='user')addCp(b)})}
+function addCp(b){b.insertAdjacentHTML('beforeend','<div class="cp" onclick="cpy(this)">📋 نسخ</div>')}
+function cpy(el){const t=el.parentElement.innerText.replace(/\s*📋 نسخ$/,'');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>el.textContent='✓ تم').catch(()=>prompt('انسخ:',t))}
+function copyChat(){const t=hist.map(h=>(h.role==='user'?'أنا: ':'المساعد: ')+h.content).join('\n\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>alert('تم نسخ المحادثة')).catch(()=>prompt('انسخ:',t))}
+let chats=ls.get('chats',null),cid=ls.get('cid',null);
+if(!chats){chats=[];const old=ls.get('chat',[]);if(old.length)chats.push({id:Date.now(),title:'محادثة سابقة',ts:Date.now(),msgs:old})}
+const cur=()=>chats.find(c=>c.id===cid);
+function saveChats(){ls.set('chats',chats);ls.set('cid',cid)}
+function renderHead(){$('ct').textContent='🤖 '+(cur()?cur().title:'مساعد ذكي')}
+function openChat(id){cid=id;hist=cur().msgs;saveChats();renderHist();renderHead()}
+function newChat(){const c={id:Date.now(),title:'محادثة جديدة',ts:Date.now(),msgs:[]};chats.unshift(c);openChat(c.id);tab(0)}
+function openList(){renderList();$('cl').classList.add('on')}
+function renderList(){const q=($('cs').value||'').trim();chats.sort((a,b)=>b.ts-a.ts);$('cll').innerHTML=chats.filter(c=>!q||c.title.includes(q)||c.msgs.some(m=>m.content.includes(q))).map(c=>`<div class="ci ${c.id===cid?'cur':''}"><span onclick="pick(${c.id})">${esc(c.title)}<br><small>${new Date(c.ts).toLocaleDateString('ar')} • ${c.msgs.length} رسالة</small></span><button class="ic" onclick="renameChat(${c.id})">✏️</button><button class="ic" onclick="delChat(${c.id})">🗑</button></div>`).join('')}
+function pick(id){openChat(id);$('cl').classList.remove('on');tab(0)}
+function renameChat(id){const c=chats.find(x=>x.id===id),n=prompt('اسم المحادثة:',c.title);if(n){c.title=n.slice(0,40);saveChats();renderList();renderHead()}}
+function delChat(id){if(!confirm('حذف المحادثة؟'))return;chats=chats.filter(c=>c.id!==id);
+  if(!chats.length){newChat();renderList();return}if(id===cid)openChat(chats[0].id);else saveChats();renderList()}
+if(!chats.length)newChat();else openChat(cid&&cur()?cid:chats[0].id);
+
+// ---------- الصور ----------
+$('pic').onchange=async e=>{for(const f of [...e.target.files].slice(0,4-imgs.length)){try{const b=await createImageBitmap(f),s=Math.min(1,1024/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);imgs.push(c.toDataURL('image/jpeg',.8))}catch(x){}}e.target.value='';thumbs()};
+function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onclick="imgs.splice(${i},1);thumbs()">✕</b></div>`).join('')}
+
+// ---------- المحادثة ----------
+const SYS={ultra:'',fast:'جاوب باختصار ومباشرة.',think:'فكّر قبل ما تجاوب وقدّم إجابة مرتبة وواضحة.',deep:'حلّل السؤال بعمق من عدة زوايا، وتحقق من إجابتك قبل كتابتها، وقدّم إجابة شاملة ومنظمة.'};
+function plan(hasImg){
+  if(hasImg)return [cfg.vm];
+  if(web)return mode==='deep'?['groq/compound','groq/compound-mini','openai/gpt-oss-120b']:['groq/compound-mini','groq/compound','openai/gpt-oss-120b'];
+  return mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
+function params(m){const p={temperature:.5,stream:true};
+  if(/gpt-oss/.test(m)){p.reasoning_effort={fast:'low',think:'medium',deep:'high'}[mode];p.include_reasoning=false;p.max_completion_tokens={fast:2000,think:5000,deep:9000}[mode]}
+  else p.max_completion_tokens=6000;return p}
+let ac=null;
+const isOss=m=>/gpt-oss/.test(m);
+const PP=(m,eff,max)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{})});
+const EFF={fast:'low',think:'medium',deep:'high',ultra:'high'},MAXT={fast:2000,think:5000,deep:9000,ultra:9000};
+async function callOnce(models,messages,eff,max){let err='';
+  for(const m of models){try{const r=await fetch(URL_,{method:'POST',headers:hdr(),signal:ac.signal,body:JSON.stringify({model:m,messages,...PP(m,eff,max)})});
+    if(!r.ok){err=r.status;if(r.status===401)break;continue}
+    const t=((await r.json()).choices[0].message.content||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim();if(t)return t}
+    catch(e){if(e.name==='AbortError')throw e;err=e.message}}
+  throw new Error(err||'رد فاضي')}
+async function streamTo(models,messages,eff,max,onText){let err='',acc='';
+  for(const m of models){try{const r=await fetch(URL_,{method:'POST',headers:hdr(),signal:ac.signal,body:JSON.stringify({model:m,messages,stream:true,...PP(m,eff,max)})});
+    if(!r.ok){err=r.status;if(r.status===401)break;continue}
+    const rd=r.body.getReader(),dec=new TextDecoder();let buf='';acc='';
+    try{for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});const ln=buf.split('\n');buf=ln.pop();
+      for(const l of ln){if(!l.startsWith('data: ')||l.includes('[DONE]'))continue;try{const d=JSON.parse(l.slice(6)).choices[0].delta;if(d.content){acc+=d.content;onText(acc)}}catch(e){}}}}
+    catch(e){if(e.name!=='AbortError')throw e}
+    if(acc.trim()||ac.signal.aborted)return acc}catch(e){if(e.name==='AbortError')return acc;err=e.message}}
+  throw new Error(err||'رد فاضي')}
+// تفكير عميق جداً: 3 مراحل (تحليل ← نقد ← جواب نهائي)
+async function ultra(o){
+  const st=s=>{o.out.innerHTML='🧬 '+s;try{$('msgs').scrollTop=1e9}catch(e){}},ql=o.ql||6000,M=['openai/gpt-oss-120b','openai/gpt-oss-20b'];
+  st('المرحلة 1/3: تحليل المسألة من عدة زوايا…');
+  const s1=await callOnce(o.m1,[{role:'system',content:o.base+' هذه المرحلة الأولى: اكتب تحليلاً عميقاً جداً ومفصلاً: فكّك المسألة، اطرح عدة زوايا وفرضيات، اشرح خطوات الاستدلال، وسجّل نقاط الشك. هذه مسودة تحليلية وليست الجواب النهائي.'},...o.hist,o.first],'high',9000);
+  st('المرحلة 2/3: مراجعة نقدية صارمة…');
+  let s2='';try{s2=await callOnce(M,[{role:'system',content:'أنت ناقد صارم ودقيق. مهمتك كشف الأخطاء والثغرات والافتراضات الضعيفة والحالات المفقودة في مسودة تحليل، وقول ما يجب تصحيحه أو إضافته. قائمة مركزة بالعربية.'},{role:'user',content:`السؤال:\n${o.q.slice(0,ql)}\n\nالمسودة:\n${s1.slice(0,14000)}`}],'high',4000)}catch(e){if(e.name==='AbortError')throw e}
+  st('المرحلة 3/3: كتابة الجواب النهائي…');
+  try{return await streamTo(M,[{role:'system',content:o.base+' الآن اكتب الجواب النهائي المتكامل: صحّح ما أشار إليه النقد، رتّبه بعناوين واضحة، وكن دقيقاً وصريحاً بمستوى ثقتك. لا تذكر المراحل الداخلية.'},...o.hist,{role:'user',content:`${o.q.slice(0,ql)}\n\n[مسودة التحليل]\n${s1.slice(0,14000)}\n\n[ملاحظات النقد]\n${s2||'(لا يوجد)'}`}],'high',9000,v=>{o.out.innerHTML=md(v).trim()||'🧬 …'})}
+  catch(e){if(e.name==='AbortError')throw e;return s1}}
+async function send(){
+  if(busy){ac&&ac.abort();return}
+  const t=$('inp').value.trim();if(!t&&!imgs.length)return;
+  if(!cfg.key){$('set').classList.add('on');return}
+  busy=true;$('snd').textContent='⏹';ac=new AbortController();
+  const im=[...imgs];$('inp').value='';imgs=[];thumbs();
+  bub('u',im.map(s=>`<img src="${s}">`).join('')+md(t));
+  const out=bub('a','🤔 يفكر…');
+  const base='أنت مساعد ذكي ودود. تتكلم بالعربية بلهجة بسيطة وواضحة إلا إذا طلب المستخدم لغة ثانية. التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'');
+  const first=im.length?{role:'user',content:[{type:'text',text:t||'حلل هالصورة'},...im.map(s=>({type:'image_url',image_url:{url:s}}))]}:{role:'user',content:t};
+  const h=hist.slice(-12);let txt='',err='';
+  try{
+    if(mode==='ultra'){
+      const m1=im.length?[cfg.vm]:web?['groq/compound','groq/compound-mini','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
+      txt=await ultra({base,hist:h,first,q:t||'حلل الصورة',m1,out})}
+    else txt=await streamTo(plan(im.length>0),[{role:'system',content:base},...h,first],EFF[mode],MAXT[mode],v=>{out.innerHTML=md(v).trim()||'🤔 يفكر…';$('msgs').scrollTop=1e9})
+  }catch(e){if(e.name!=='AbortError')err=e.message}
+  const stopped=ac.signal.aborted;
+  if(!txt.trim()){out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب ('+esc(err||'رد فاضي')+')'+(err==401?' — المفتاح غلط':'')}
+  else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');out.innerHTML=md(clean)+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out);
+    hist.push({role:'user',content:(im.length?'[صورة] ':'')+t},{role:'assistant',content:clean});
+    if(hist.length>200)hist.splice(0,hist.length-200);const cc=cur();if(cc){if(cc.title==='محادثة جديدة')cc.title=(t||'صورة').slice(0,30);cc.ts=Date.now()}saveChats();renderHead()}
+  busy=false;$('snd').textContent='➤'}
+$('inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Android|iPhone/i.test(navigator.userAgent)){e.preventDefault();send()}});
+
+// ---------- تحليل الشخصية من كل المحادثات ----------
+function corpus(){const parts=[];let n=0;
+  for(const c of [...chats].sort((a,b)=>a.ts-b.ts)){const u=c.msgs.filter(m=>m.role==='user'&&m.content.replace('[صورة] ','').trim().length>2);if(!u.length)continue;n+=u.length;
+    parts.push({t:c.title,d:new Date(c.ts).toLocaleDateString('en-GB'),m:u.map(m=>m.content.replace(/\s+/g,' ').slice(0,600))})}
+  return {parts,n,chats:parts.length}}
+function paInfo(){const c=corpus();$('pai').innerHTML=`📊 عندي <b>${c.n}</b> رسالة من <b>${c.chats}</b> محادثة`+(c.n<15?'<br><span style="color:#f5b942">⚠️ الرسائل قليلة فالتحليل بيكون ضعيف. احكي معي أكثر أو الصق نص إضافي.</span>':'')}
+const PSYS='أنت محلل شخصية محترف ولطيف. ستقرأ رسائل كتبها المستخدم بنفسه لمساعد ذكي عبر عدة محادثات، وتحلل شخصيته من كل الرسائل مجتمعة (مش من محادثة وحدة). القواعد: كن صادقاً ومحدداً، واذكر أدلة من الرسائل بصياغتك (بدون نسخ حرفي طويل)، ميّز بين النمط المتكرر والانطباع الضعيف، لا تشخّص أمراضاً أو اضطرابات نفسية ولا تدّعي معرفة ما لا يظهر، وأشر بجملة إلى محدودية العينة (رسائل لمساعد ذكي مش كل حياته). ابدأ بأهم نتيجة، وقسّم الرد بعناوين قصيرة واضحة، وختم بنصائح عملية. اللغة: عربية بلهجة بسيطة.';
+function buildTxt(cap){const bl=[];let len=0;
+  for(const p of corpus().parts.reverse()){const b='### '+p.t+' ('+p.d+')\n'+p.m.map(x=>'- '+x).join('\n')+'\n';
+    if(len+b.length>cap){const room=cap-len;if(room>400)bl.unshift(b.slice(0,room));break}len+=b.length;bl.unshift(b)}
+  return bl.join('\n')}
+function mkUser(cap,ex){const q=$('paq').value.trim(),c=corpus();
+  return `نوع التحليل: ${$('pak').selectedOptions[0].text}\n`+(q?`سؤال خاص من المستخدم: ${q}\n`:'')+`عدد الرسائل: ${c.n} من ${c.chats} محادثة.\n\nالرسائل (مرتبة من الأقدم للأحدث، مقسمة حسب المحادثة):\n${buildTxt(cap)}`+(ex?`\n\nنص إضافي من المستخدم:\n${ex}`:'')}
+async function analyze(){
+  if(!cfg.key){$('set').classList.add('on');return}
+  const ex=$('pax').value.trim().slice(0,6000),c=corpus();
+  if(!c.n&&!ex){$('pai').textContent='ما في رسائل للتحليل، احكي معي أول أو الصق نص إضافي';return}
+  $('pago').disabled=true;$('par').style.display='';$('pat').textContent='🤔 يقرأ رسائلك ويحلل…';ac=new AbortController();
+  const deep=$('pau').checked,caps=deep?[9000,5000]:[16000,6000],M=['openai/gpt-oss-120b','openai/gpt-oss-20b'];let txt='',err='',short=false;
+  for(const cap of caps){
+    try{const user=mkUser(cap,ex);
+      txt=deep?await ultra({base:PSYS,hist:[],first:{role:'user',content:user},q:user,ql:12000,m1:M,out:$('pat')})
+        :await streamTo(M,[{role:'system',content:PSYS},{role:'user',content:user}],'high',8000,v=>{$('pat').innerHTML=md(v).trim()||'🤔 يفكر…'});
+      if(txt.trim()){short=cap!==caps[0];err='';break}}catch(e){err=e.message;if(err==='401')break}}
+  if(!txt.trim())$('pat').textContent='ما قدرت أحلل ('+(err||'رد فاضي')+')'+(err==401?' — المفتاح غلط':'');
+  else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');$('pat').innerHTML=md(clean);ls.set('pa',{t:clean,d:Date.now()});$('pad').textContent=(short?'حللت آخر رسائلك فقط بسبب حدود الاستخدام • ':'')+'آخر تحليل: '+new Date().toLocaleString('ar')}
+  $('pago').disabled=false}
+function copyPA(){const t=$('pat').innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>prompt('انسخ التحليل:',t))}
+{const pa=ls.get('pa',null);if(pa){$('par').style.display='';$('pat').innerHTML=md(pa.t);$('pad').textContent='آخر تحليل: '+new Date(pa.d).toLocaleString('ar')}}
+</script>
+</body>
+</html>
