@@ -53,6 +53,7 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
 #lst{color:#9fb4ff;font-size:13px}#ltx{white-space:pre-wrap}
 #lmic{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom,0px));left:50%;margin-left:-38px;width:76px;height:76px;border-radius:50%;background:var(--ac);font-size:32px}
 #set{overflow-y:auto}#set>:first-child{margin-top:auto}#set>:last-child{margin-bottom:auto}
+.cpr{display:flex;gap:16px;margin-top:6px}.cp{margin-top:0!important}#vo{flex:none;white-space:nowrap;font-size:13px;color:var(--mut);padding:8px;border-radius:10px;background:var(--card)}#vo.on{color:#fff;background:#1d6b52}
 </style>
 </head>
 <body>
@@ -62,7 +63,7 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
 <div class="view on" id="v0">
   <div id="msgs"></div>
   <div id="comp">
-    <div id="modes"><button class="md" data-m="fast">⚡ سريع</button><button class="md on" data-m="think">🧠 تفكير</button><button class="md" data-m="deep">🔬 أعمق</button><button class="md" data-m="ultra">🧬 جداً</button><button class="md" data-m="promax">👑 Pro Max</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button></div>
+    <div id="modes"><button class="md" data-m="fast">⚡ سريع</button><button class="md on" data-m="think">🧠 تفكير</button><button class="md" data-m="deep">🔬 أعمق</button><button class="md" data-m="ultra">🧬 جداً</button><button class="md" data-m="promax">👑 Pro Max</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="vo" onclick="toggleVo()">🔊 صوت</button></div>
     <div id="th"></div>
     <div class="row"><input type="file" id="pic" accept="image/*" multiple hidden>
       <button class="rb g" onclick="pic.click()">📎</button><input type="file" id="cam" accept="image/*" capture="environment" hidden><button class="rb g" onclick="cam.click()">📷</button><button class="rb g" id="dmic" onclick="dictate()">🎤</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
@@ -85,7 +86,9 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
  <div id="lvt"><button class="ic" onclick="closeLive()">✕</button><div><button class="ic" id="lsp" onclick="toggleSpeak()">🔊</button><button class="ic" onclick="flipCam()">🔄</button></div></div>
  <div id="lpn"><div id="lst"></div><div id="ltx"></div></div><button id="lmic" onclick="liveTalk()">🎤</button></div>
 <div id="set"><label>مفتاح Groq الخاص فيك (اختياري — في مفتاح جاهز داخل التطبيق، وإذا حطيت مفتاحك يُستخدم بدله)</label><input id="key" placeholder="gsk_..." style="direction:ltr">
-  <label>موديل الصور</label><input id="vm" style="direction:ltr"><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><label>🔒 قفل التطبيق برمز (يشفّر بياناتك بالرمز؛ إذا نسيته ما في استرجاع)</label>
+  <label>موديل الصور</label><input id="vm" style="direction:ltr"><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><label>🎙 صوت قاسم</label><select id="vc"><option value="fahad">فهد</option><option value="sultan">سلطان</option><option value="lulwa">لولوة</option><option value="noura">نورة</option></select>
+  <button class="btn s" onclick="testVoice()">▶️ جرّب الصوت</button>
+  <label>🔒 قفل التطبيق برمز (يشفّر بياناتك بالرمز؛ إذا نسيته ما في استرجاع)</label>
   <input id="pin" type="password" inputmode="numeric" placeholder="رمز جديد (4 خانات أو أكثر)">
   <div class="row"><button class="btn s" onclick="setPin()">تفعيل القفل</button><button class="btn s" onclick="rmPin()">إلغاء القفل</button></div>
   <label style="display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" id="pon" style="width:auto"> 🧩 قاسم يتكيّف مع أسلوبي تلقائياً</label>
@@ -101,8 +104,8 @@ const GROQ='https://api.groq.com/openai/v1',PU=String((window.APP&&APP.proxy)||'
 const DKEY=(()=>{try{return window.DK?String.fromCharCode(...DK.a.map((x,i)=>x^DK.b[i])):''}catch(e){return ''}})(),keyNow=()=>cfg.key||DKEY;
 const usingProxy=()=>!!PU&&!keyNow(),B=()=>usingProxy()?PU:GROQ,ready=()=>!!(keyNow()||PU);
 let cfg={key:'',vm:'qwen/qwen3.6-27b',...ls.get('acfg',{})},mode='think',web=false,imgs=[],hist=[],busy=false;
-$('key').value=cfg.key;$('vm').value=cfg.vm;$('ci').value=cfg.ci||'';
-function saveSet(){cfg={key:$('key').value.trim(),vm:$('vm').value.trim()||'qwen/qwen3.6-27b',ci:$('ci').value.trim()};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
+$('key').value=cfg.key;$('vm').value=cfg.vm;$('ci').value=cfg.ci||'';$('vc').value=cfg.voice||'fahad';
+function saveSet(){cfg={key:$('key').value.trim(),vm:$('vm').value.trim()||'qwen/qwen3.6-27b',ci:$('ci').value.trim(),voice:$('vc').value};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
 function tab(i){if(i===1){openLive();return}const k=i===2;if(k)paInfo();$('v0').classList.toggle('on',!k);$('v1').classList.toggle('on',k);document.querySelectorAll('.tb').forEach((b,j)=>b.classList.toggle('on',j===(k?2:0)))}
 document.querySelectorAll('.md').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.md').forEach(x=>x.classList.toggle('on',x===b))});
 const hdr=()=>usingProxy()?{'Content-Type':'application/json'}:{'Content-Type':'application/json',Authorization:'Bearer '+keyNow()};
@@ -112,8 +115,10 @@ function md(s){s=esc(s.replace(/<think>[\s\S]*?(<\/think>|$)/g,''));
   return s.replace(/```\w*\n?([\s\S]*?)```/g,(m,c)=>`<pre>${c}</pre>`).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>').replace(/^[-*] /gm,'• ')}
 function bub(c,html){const d=document.createElement('div');d.className='m '+c;d.innerHTML=html;$('msgs').appendChild(d);$('msgs').scrollTop=1e9;return d}
 function renderHist(){$('msgs').innerHTML='';if(!hist.length)bub('a','أهلين! أنا <b>قاسم</b> من شركة MOD0 🤝 اسألني أي شي، أو ارفق صورة 📎، أو تكلم 🎤، أو افتح 🎥 مباشر وأوريني اللي قدامك.');hist.forEach(h=>{const b=bub(h.role==='user'?'u':'a',md(h.content));if(h.role!=='user')addCp(b)})}
-function addCp(b){b.insertAdjacentHTML('beforeend','<div class="cp" onclick="cpy(this)">📋 نسخ</div>')}
-function cpy(el){const t=el.parentElement.innerText.replace(/\s*📋 نسخ$/,'');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>el.textContent='✓ تم').catch(()=>prompt('انسخ:',t))}
+function addCp(b){b.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" onclick="cpy(this)">📋 نسخ</span><span class="cp" onclick="readMsg(this)">🔊 اقرأ</span></div>')}
+function msgText(el){const m=el.closest('.m').cloneNode(true);const r=m.querySelector('.cpr');if(r)r.remove();return m.innerText}
+function readMsg(el){unlockAudio();if(speaking){stopSpeak();return}speak(msgText(el))}
+function cpy(el){const t=msgText(el);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>el.textContent='✓ تم').catch(()=>prompt('انسخ:',t))}
 function copyChat(){const t=hist.map(h=>(h.role==='user'?'أنا: ':'المساعد: ')+h.content).join('\n\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>alert('تم نسخ المحادثة')).catch(()=>prompt('انسخ:',t))}
 let chats=ls.get('chats',null),cid=ls.get('cid',null);
 if(!chats){chats=[];const old=ls.get('chat',[]);if(old.length)chats.push({id:Date.now(),title:'محادثة سابقة',ts:Date.now(),msgs:old})}
@@ -207,7 +212,7 @@ async function send(){
   if(busy){ac&&ac.abort();return}
   const t=$('inp').value.trim();if(!t&&!imgs.length)return;
   if(!ready()){$('set').classList.add('on');return}
-  busy=true;$('snd').textContent='⏹';ac=new AbortController();
+  unlockAudio();stopSpeak();busy=true;$('snd').textContent='⏹';ac=new AbortController();
   const im=[...imgs];$('inp').value='';imgs=[];thumbs();
   bub('u',im.map(s=>`<img src="${s}">`).join('')+md(t));
   const out=bub('a','🤔 يفكر…');let txt='',err='',notes='',sn='';
@@ -225,7 +230,7 @@ async function send(){
   const stopped=ac.signal.aborted;
   if(!txt.trim()){out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب<br><small>'+esc(err||'رد فاضي')+'</small>'+(is401(err)?'<br>المفتاح غلط':'')}
   else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');
-    out.innerHTML=md(clean)+(sn?'<br><small>'+sn+'</small>':'')+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out);
+    out.innerHTML=md(clean)+(sn?'<br><small>'+sn+'</small>':'')+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out);if(voOn&&!stopped)speak(clean);
     hist.push({role:'user',content:(im.length?'[صورة] ':'')+t},{role:'assistant',content:clean});
     if(hist.length>200)hist.splice(0,hist.length-200);const cc=cur();if(cc){if(cc.title==='محادثة جديدة')cc.title=(t||'صورة').slice(0,30);cc.ts=Date.now()}saveChats();renderHead()}
   busy=false;$('snd').textContent='➤';if(txt.trim())learn().catch(()=>{})}
@@ -266,13 +271,12 @@ let lvS=null,lvFacing='environment',lvBusy=false,lvHist=[],lvSpeak=true,lvRec=nu
 function snap(v){const k=Math.min(1,768/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas');c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.7)}
 const snapNow=()=>{const v=$('lvv');return v.videoWidth?snap(v):null};
 function stopRec(){if(lvRec&&lvRec.state!=='inactive'){if($('lv').classList.contains('on'))lvFrame=snapNow();lvRec.stop()}}
-function toggleSpeak(){lvSpeak=!lvSpeak;$('lsp').textContent=lvSpeak?'🔊':'🔇';if(!lvSpeak)try{speechSynthesis.cancel()}catch(e){}}
-function speak(t){if(!lvSpeak)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#`_>]/g,' ').replace(/\s+/g,' ').slice(0,900));u.lang='ar-SA';speechSynthesis.speak(u)}catch(e){}}
+function toggleSpeak(){lvSpeak=!lvSpeak;$('lsp').textContent=lvSpeak?'🔊':'🔇';if(!lvSpeak)stopSpeak();}
 async function startStream(){try{if(lvS)lvS.getTracks().forEach(t=>t.stop());
   lvS=await navigator.mediaDevices.getUserMedia({video:{facingMode:lvFacing},audio:{echoCancellation:true,noiseSuppression:true}});$('lvv').srcObject=lvS;$('lst').textContent='اضغط 🎤 وتكلم، واعرض عليه اللي تبي'}
   catch(e){lvS=null;$('lst').textContent='ما قدرت أشغل الكاميرا/المايك ('+e.name+'). فعّل الأذونات من إعدادات الجوال، أو استخدم 📷 في المحادثة'}}
 function openLive(){$('lv').classList.add('on');startStream()}
-function closeLive(){stopRec();if(ac)ac.abort();lvS&&lvS.getTracks().forEach(t=>t.stop());lvS=null;$('lvv').srcObject=null;try{speechSynthesis.cancel()}catch(e){}$('lv').classList.remove('on')}
+function closeLive(){stopRec();if(ac)ac.abort();lvS&&lvS.getTracks().forEach(t=>t.stop());lvS=null;$('lvv').srcObject=null;stopSpeak();$('lv').classList.remove('on')}
 async function flipCam(){lvFacing=lvFacing==='environment'?'user':'environment';await startStream()}
 async function listenOnce(stream){
   const mime=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
@@ -290,7 +294,7 @@ async function liveTalk(){
   if(lvBusy){if(lvRec)stopRec();else if(ac)ac.abort();return}
   if(!ready()){$('set').classList.add('on');return}
   if(!lvS){await startStream();if(!lvS)return}
-  try{speechSynthesis.cancel()}catch(e){}
+  stopSpeak();unlockAudio();
   lvBusy=true;ac=new AbortController();$('lmic').classList.add('rec');$('lst').textContent='🎤 أسمعك… (يتوقف لما تسكت، أو اضغط مرة ثانية)';$('ltx').textContent='';
   try{
     const r=await listenOnce(new MediaStream(lvS.getAudioTracks()));$('lmic').classList.remove('rec');
@@ -304,10 +308,11 @@ async function liveTalk(){
     const ans=await streamTo(await visionList(),msgs,'low',1500,v=>{$('ltx').textContent='🗣 '+text+'\n\n'+v.replace(/<think>[\s\S]*?(<\/think>|$)/g,'')},VX);
     const clean=ans.replace(/<think>[\s\S]*?<\/think>/g,'').trim();
     lvHist.push({role:'user',content:text},{role:'assistant',content:clean});lvHist=lvHist.slice(-8);
-    $('lst').textContent='✅ اضغط 🎤 لسؤال ثاني';speak(clean)}
+    $('lst').textContent='✅ اضغط 🎤 لسؤال ثاني';if(lvSpeak)speak(clean,m=>{$('lst').textContent='🔇 '+m})}
   catch(e){if(e.name!=='AbortError')$('lst').textContent='خطأ: '+e.message}
   finally{lvBusy=false;lvFrame=null;$('lmic').classList.remove('rec')}}
 async function dictate(){
+  unlockAudio();
   if(dic){stopRec();return}
   if(!ready()){$('set').classList.add('on');return}
   let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){alert('فعّل إذن المايك ('+e.name+')');return}
@@ -317,6 +322,49 @@ async function dictate(){
   st.getTracks().forEach(t=>t.stop());dic=false;$('dmic').classList.remove('rec');$('inp').placeholder='اسألني أي شي…';
   if(text){$('inp').value=($('inp').value+' '+text).trim();send()}}
 webBtn();
+
+// ---------- صوت قاسم (Orpheus عربي سعودي، وإلا صوت الجهاز) ----------
+const TTSA=document.createElement('audio');TTSA.setAttribute('playsinline','');document.body.appendChild(TTSA);
+let voOn=ls.get('vo',true),ttsTok=0,speaking=false;
+const SIL='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+function unlockAudio(){try{TTSA.src=SIL;const q=TTSA.play();q&&q.catch(()=>{})}catch(e){}}
+function voBtn(){$('vo').textContent=voOn?'🔊 صوت':'🔇 صامت';$('vo').className=voOn?'on':''}
+function toggleVo(){voOn=!voOn;ls.set('vo',voOn);voBtn();if(!voOn)stopSpeak()}
+function toast(m){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:90px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:30;font-size:14px;line-height:1.6';d.innerHTML=m;document.body.appendChild(d);setTimeout(()=>d.remove(),10000)}
+function tclean(t){return t.replace(/<think>[\s\S]*?<\/think>/g,'').replace(/```[\s\S]*?```/g,' ').replace(/https?:\/\/\S+/g,' ').replace(/[*#`_>|~\[\]{}]/g,' ').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,' ').replace(/\s+/g,' ').trim()}
+function chunks(t,max){max=max||180;const out=[];let cur='';for(const s of (t.match(/[^.!?؟\n]+[.!?؟\n]*/g)||[t])){
+  if((cur+' '+s).trim().length>max){if(cur.trim())out.push(cur.trim());cur=s;while(cur.length>max){out.push(cur.slice(0,max));cur=cur.slice(max)}}else cur+=' '+s}
+  if(cur.trim())out.push(cur.trim());return out}
+async function ttsBlob(text){
+  const body={model:'canopylabs/orpheus-arabic-saudi',voice:cfg.voice||'fahad',input:text,response_format:'wav'};
+  const go=()=>fetch(B()+'/audio/speech',{method:'POST',headers:hdr(),body:JSON.stringify(body)});
+  let r=await go();if(r.status===429){await new Promise(z=>setTimeout(z,Math.min(20,+r.headers.get('retry-after')||5)*1000));r=await go()}
+  if(!r.ok)throw new Error(await errOf(r));return await r.blob()}
+function playBlob(b){return new Promise((res,rej)=>{const u=URL.createObjectURL(b);
+  TTSA.onended=()=>{URL.revokeObjectURL(u);res()};TTSA.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('تشغيل الصوت فشل'))};TTSA.src=u;const q=TTSA.play();q&&q.catch(rej)})}
+function stopSpeak(){ttsTok++;speaking=false;try{TTSA.pause();TTSA.dispatchEvent(new Event('ended'))}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
+function browserSpeak(t){try{if(!window.speechSynthesis)return false;const u=new SpeechSynthesisUtterance(t.slice(0,900));u.lang='ar-SA';const v=(speechSynthesis.getVoices()||[]).find(x=>/^ar/i.test(x.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);return true}catch(e){return false}}
+async function speak(text,onErr){
+  const my=++ttsTok,t=tclean(text),parts=chunks(t).slice(0,12);if(!parts.length)return;
+  speaking=true;
+  try{
+    let next=ttsBlob(parts[0]);
+    for(let i=0;i<parts.length;i++){
+      const b=await next;if(my!==ttsTok)return;
+      next=i+1<parts.length?ttsBlob(parts[i+1]).catch(()=>null):null;
+      await playBlob(b);if(my!==ttsTok)return;
+      if(!next)break;
+      if(i+1<parts.length&&!(next=await next)){break}
+      const nb=next;next=Promise.resolve(nb)}
+  }catch(e){
+    if(my!==ttsTok)return;
+    const hint=/^(400|403|404)/.test(e.message)?'<br>غالباً لازم توافق على شروط موديل <b>canopylabs/orpheus-arabic-saudi</b> من console.groq.com (مرة وحدة).':'';
+    const used=browserSpeak(t);
+    const msg='صوت قاسم ما اشتغل ('+esc(e.message)+')'+(used?'، استخدمت صوت الجهاز':'، وصوت الجهاز مو متوفر')+hint;
+    onErr?onErr(msg.replace(/<[^>]+>/g,' ')):toast(msg)}
+  if(my===ttsTok)speaking=false}
+function testVoice(){unlockAudio();cfg.voice=$('vc').value;speak('أهلاً، أنا قاسم من إم أو دي صفر. هذا اختبار الصوت.')}
+voBtn();
 async function setPin(){const p=$('pin').value;if(p.length<4){alert('الرمز 4 خانات على الأقل');return}
   try{await SEC.setPin(p);$('pin').value='';alert('تم تفعيل القفل 🔒 وتشفير بياناتك بالرمز')}catch(e){alert('التشفير غير مدعوم في هذا المتصفح')}}
 async function rmPin(){await SEC.clearPin();alert('تم إلغاء القفل (البيانات تبقى مشفرة بمفتاح الجهاز)')}
