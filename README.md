@@ -1,4 +1,3 @@
-# Videooo — مساعد ذكي
-- APK: Actions > Build APK > Artifacts > Videooo-apk
-- موقع: Settings > Pages > Source = GitHub Actions
-- المفتاح (Groq) يُدخل من ⚙️ داخل التطبيق ولا يوضع في الملفات.
+# قاسم — MOD0
+Actions > Build APK > Artifacts > Qasim-apk
+المفتاح الافتراضي مموّه داخل www/keys.js. لتغييره: GROQ_KEY=مفتاحك python3 tools/inject_key.py
