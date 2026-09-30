@@ -1,3 +1,4 @@
 # قاسم — MOD0
 Actions > Build APK > Artifacts > Qasim-apk
-المفتاح الافتراضي مموّه داخل www/keys.js. لتغييره: GROQ_KEY=مفتاحك python3 tools/inject_key.py
+المفاتيح الافتراضية مموّهة داخل www/keys.js (ينتقل بينها تلقائياً).
+لتغييرها: GROQ_KEYS="k1,k2" python3 tools/inject_key.py
