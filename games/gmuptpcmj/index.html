@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>باك مان</title>
+<style>
+  body{margin:0;background:#111;color:#fff;font-family:Arial,Helvetica,sans-serif;}
+  canvas{display:block;width:100vw;height:100vh;background:#000;}
+  #info{position:absolute;top:10px;left:10px;font-size:1.2rem;}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="info">الضغط على الشاشة للتحكم</div>
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  let w, h, pac, walls, dots, dir, touchStart, touchEnd;
+  const speed = 2.5, radius = 15, dotRadius = 3;
+  const dirs = {up:0, right:1, down:2, left:3};
+
+  function init() {
+    resize();
+    pac = {x: w/2, y: h/2, dir: dirs.left};
+    walls = createWalls();
+    dots = createDots();
+    dir = pac.dir;
+    requestAnimationFrame(loop);
+  }
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function createWalls() {
+    const arr = [];
+    const step = 60;
+    for(let i=0;i<w;i+=step) arr.push({x:i,y:0,w:step,h:10});
+    for(let i=0;i<w;i+=step) arr.push({x:i,y:h-10,w:step,h:10});
+    for(let i=0;i<h;i+=step) arr.push({x:0,y:i,w:10,h:step});
+    for(let i=0;i<h;i+=step) arr.push({x:w-10,y:i,w:10,h:step});
+    return arr;
+  }
+
+  function createDots() {
+    const arr=[];
+    const step=30;
+    for(let y=step;y<h-step;y+=step)
+      for(let x=step;x<w-step;x+=step)
+        arr.push({x,y, eaten:false});
+    return arr;
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    walls.forEach(w=>{ctx.fillStyle='#444';ctx.fillRect(w.x,w.y,w.w,w.h);});
+    dots.forEach(d=>{
+      if(!d.eaten){ctx.fillStyle='#ff0';ctx.beginPath();ctx.arc(d.x,d.y,dotRadius,0,Math.PI*2);ctx.fill();}
+    });
+    ctx.fillStyle='#ff0';
+    ctx.beginPath();ctx.arc(pac.x,pac.y,radius,0,Math.PI*2);ctx.fill();
+  }
+
+  function move() {
+    let nx=pac.x, ny=pac.y;
+    switch(pac.dir){
+      case dirs.up: ny-=speed; break;
+      case dirs.right: nx+=speed; break;
+      case dirs.down: ny+=speed; break;
+      case dirs.left: nx-=speed; break;
+    }
+    const future = {x:nx,y:ny,w:radius*2,h:radius*2};
+    if(!collides(future)) {pac.x=nx;pac.y=ny;}
+    dots.forEach(d=>{if(!d.eaten && dist(pac.x,pac.y,d.x,d.y)<radius+dotRadius) d.eaten=true;});
+  }
+
+  function collides(rect){
+    return walls.some(w=>{
+      return rect.x < w.x + w.w && rect.x + rect.w > w.x &&
+             rect.y < w.y + w.h && rect.y + rect.h > w.y;
+    });
+  }
+
+  function dist(x1,y1,x2,y2){return Math.hypot(x1-x2,y1-y2);}
+
+  function loop(){move();draw();requestAnimationFrame(loop);}
+
+  canvas.addEventListener('touchstart',e=>{
+    touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  });
+  canvas.addEventListener('touchend',e=>{
+    touchEnd={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};
+    const dx=touchEnd.x-touchStart.x, dy=touchEnd.y-touchStart.y;
+    if(Math.abs(dx)>Math.abs(dy)){
+      pac.dir = dx>0?dirs.right:dirs.left;
+    }else{
+      pac.dir = dy>0?dirs.down:dirs.up;
+    }
+  });
+
+  window.addEventListener('resize',resize);
+  init();
+})();
+</script>
+</body>
+</html>
