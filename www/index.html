@@ -59,17 +59,21 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
 .pt{max-height:170px;overflow:auto;white-space:pre-wrap;font-size:12.5px;color:#aab3cf;margin-top:6px;line-height:1.6}
 .gen{max-width:100%;border-radius:12px;display:block;margin-bottom:6px}.dc{flex:none;background:var(--card);border-radius:8px;padding:8px 10px;font-size:12px}
 .hero{padding:26px 4px 6px}.hh{font-size:30px;font-weight:700;color:#9fb4ff}.hs{font-size:28px;font-weight:700;margin-bottom:18px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--card);border-radius:22px;padding:11px 16px;font-size:15px}
+#mdb,#imb{flex:none;white-space:nowrap;font-size:13px;color:#fff;padding:8px 12px;border-radius:10px;background:#2b3f70}#imb{background:var(--card);color:var(--mut)}#imb.on{background:#1d3b6b;color:#fff}
+#ms{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;z-index:15}#ms.on{display:flex}.msb{background:var(--card);width:100%;border-radius:20px 20px 0 0;padding:16px calc(16px) calc(20px + env(safe-area-inset-bottom,0px));max-height:80%;overflow:auto}
+.mo{display:block;width:100%;text-align:right;padding:12px;border-radius:12px;margin-top:8px;background:#0f1420;font-size:15px}.mo.on{outline:1px solid var(--ac)}.mo small{display:block;color:var(--mut);margin-top:2px}
+#lbx{position:fixed;inset:0;background:#000e;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:18;padding:12px}#lbi{max-width:100%;max-height:78%;border-radius:12px}.lbb{display:flex;gap:12px;margin-top:14px}.lbb button{background:var(--ac);border-radius:12px;padding:12px 20px;font-weight:600}
 </style>
 </head>
 <body>
-<header><div onclick="openList()" style="cursor:pointer;max-width:56%;overflow:hidden"><div style="font-size:18px;font-weight:700">🤖 قاسم <small style="font-weight:400">MOD0</small></div><small id="ct" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></small></div><div><button class="ic" onclick="newChat()">➕</button><button class="ic" onclick="openList()">📂</button><button class="ic" onclick="$('set').classList.add('on')">⚙️</button></div></header>
+<header><div onclick="openList()" style="cursor:pointer;max-width:56%;overflow:hidden"><div style="font-size:18px;font-weight:700">🤖 قاسم <small style="font-weight:400">MOD0</small></div><small id="ct" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></small></div><div><button class="ic" onclick="newChat()">➕</button><button class="ic" onclick="openList()">📂</button><button class="ic" onclick="showSet()">⚙️</button></div></header>
 <div id="tabs"><button class="tb on" onclick="tab(0)">💬 المحادثات</button><button class="tb" onclick="tab(1)">🎥 مباشر</button><button class="tb" onclick="tab(2)">🪞 شخصيتي</button></div>
 
 <div class="view on" id="v0">
   <div id="msgs"></div>
   <div id="comp">
-    <div id="modes"><button class="md" data-m="fast">⚡ سريع</button><button class="md on" data-m="think">🧠 تفكير</button><button class="md" data-m="deep">🔬 أعمق</button><button class="md" data-m="ultra">🧬 جداً</button><button class="md" data-m="promax">👑 Pro Max</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button></div>
-    <div id="qs" style="font-size:12px;color:var(--mut);padding:0 4px 6px"></div><div id="imgm" style="display:none;align-items:center;gap:8px;background:#1d3b6b;border-radius:10px;padding:6px 10px;margin-bottom:6px;font-size:13px">🖼️ وضع الصور: اكتب وصف الصورة اللي تبيها <button style="margin-inline-start:auto;font-size:14px" onclick="setImgMode(false)">✕</button></div><div id="th"></div>
+    <div id="modes"><button id="mdb" onclick="openModes()">🧠 تفكير ▾</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button></div>
+    <div id="qs" style="font-size:12px;color:var(--mut);padding:0 4px 6px"></div><div id="imgm" style="display:none;align-items:center;gap:6px;background:#1d3b6b;border-radius:10px;padding:6px 8px;margin-bottom:6px;font-size:13px;flex-wrap:wrap">🖼️ <select id="isz" style="width:auto;padding:4px"><option value="sq">مربعة</option><option value="pt">عمودية</option><option value="ls">أفقية</option></select><select id="ist" style="width:auto;padding:4px"><option value="auto">ستايل تلقائي</option><option value="real">واقعي</option><option value="cine">سينمائي</option><option value="anime">أنمي</option><option value="d3">ثلاثي الأبعاد</option><option value="oil">رسم زيتي</option><option value="water">ألوان مائية</option><option value="logo">لوجو</option></select><button style="margin-inline-start:auto;font-size:14px" onclick="setImgMode(false)">✕</button></div><div id="th"></div>
     <div class="row"><input type="file" id="pic" accept="image/*,.txt,.md,.csv,.json,.js,.ts,.py,.java,.kt,.html,.css,.xml,.log,.yml,.yaml,.sql,.sh" multiple hidden>
       <button class="rb g" onclick="pic.click()">📎</button><input type="file" id="cam" accept="image/*" capture="environment" hidden><button class="rb g" onclick="cam.click()">📷</button><button class="rb g" id="dmic" onclick="dictate()">🎤</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
   </div>
@@ -81,18 +85,18 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
     <label>نوع التحليل</label><select id="pak"><option value="عام">تحليل شامل للشخصية</option><option value="سمات">سمات الشخصية (العوامل الخمسة تقريباً)</option><option value="تواصل">أسلوب التواصل والتعبير</option><option value="قوة">نقاط القوة والضعف مع نصائح</option><option value="اهتمامات">الاهتمامات والقيم والأهداف</option></select>
     <label>سؤال خاص (اختياري)</label><input id="paq" placeholder="مثلاً: شو نقاط ضعفي بالتواصل؟">
     <label>نص إضافي من مصدر ثاني (اختياري)</label><textarea id="pax" rows="3" placeholder="الصق رسائل أو كتابات تخصك…"></textarea>
-    <label style="display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--tx)"><input type="checkbox" id="pau" style="width:auto"> 🧬 تحليل عميق جداً (أبطأ، 3 مراحل)</label><button class="btn" id="pago" onclick="analyze()">🔍 حلّل</button></div>
+    <button class="btn" id="pago" onclick="analyze()">🔍 حلّل</button></div>
   <div class="card" id="par" style="display:none"><div id="pat" style="line-height:1.75;font-size:15px;white-space:pre-wrap"></div><button class="btn s" onclick="copyPA()">📋 نسخ</button><br><small id="pad"></small></div>
 </div></div>
 <div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
 
 <div id="lock" style="position:fixed;inset:0;background:#0f1420;display:none;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:24px;z-index:20;color:#eef2ff"><div style="font-size:44px">🔒</div><b style="font-size:20px">قاسم</b><input id="lpin" type="password" inputmode="numeric" placeholder="الرمز" style="max-width:240px;text-align:center;background:#1a2236;border:1px solid #2a3452;border-radius:12px;padding:12px;color:#eef2ff;font:inherit"><button onclick="unlock()" style="max-width:240px;width:100%;background:#4f8cff;border:0;border-radius:12px;padding:12px;color:#fff;font:inherit;font-weight:600">فتح</button><small id="lerr" style="color:#ff5a6a"></small></div>
+<div id="ms" onclick="closeModes()"><div class="msb" onclick="event.stopPropagation()"><b>اختر النموذج</b><div id="msl"></div></div></div>
+<div id="lbx" onclick="closeLb()"><img id="lbi"><div class="lbb"><button onclick="event.stopPropagation();saveImg(lbUrl)">⬇️ تحميل</button><button onclick="closeLb()">✕ إغلاق</button></div></div>
 <div id="lv"><video id="lvv" autoplay playsinline muted></video>
  <div id="lvt"><button class="ic" onclick="closeLive()">✕</button><div><button class="ic" onclick="flipCam()">🔄</button></div></div>
  <div id="lpn"><div id="lst"></div><div id="ltx"></div></div><button id="lmic" onclick="liveTalk()">🎤</button></div>
-<div id="set"><label>مفتاح Groq الخاص فيك (اختياري — في مفاتيح جاهزة داخل التطبيق، وإذا حطيت مفتاحك يُستخدم أولاً وبدون حد الاستخدام)</label><input id="key" placeholder="gsk_..." style="direction:ltr">
-  <label>موديل الصور</label><input id="vm" style="direction:ltr"><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><label>🖼️ مفتاح Pollinations للصور (اختياري)</label><input id="pk" placeholder="من enter.pollinations.ai" style="direction:ltr">
-  <label>🔒 قفل التطبيق برمز (يشفّر بياناتك بالرمز؛ إذا نسيته ما في استرجاع)</label>
+<div id="set"><label>🔑 حالة المفاتيح</label><div id="ksx" style="font-size:13px;line-height:1.9;color:var(--mut)"></div><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><label>🔒 قفل التطبيق برمز (يشفّر بياناتك بالرمز؛ إذا نسيته ما في استرجاع)</label>
   <input id="pin" type="password" inputmode="numeric" placeholder="رمز جديد (4 خانات أو أكثر)">
   <div class="row"><button class="btn s" onclick="setPin()">تفعيل القفل</button><button class="btn s" onclick="rmPin()">إلغاء القفل</button></div>
   <label style="display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" id="pon" style="width:auto"> 🧩 قاسم يتكيّف مع أسلوبي تلقائياً</label>
@@ -106,12 +110,12 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const ls=SEC.ls;
 const GROQ='https://api.groq.com/openai/v1',PU=String((window.APP&&APP.proxy)||'').replace(/\/+$/,'');
 const BUILTIN=(()=>{try{const d=window.DK,a=Array.isArray(d)?d:d?[d]:[];return a.map(o=>String.fromCharCode(...o.a.map((x,i)=>x^o.b[i])))}catch(e){return []}})();
-const keyList=()=>[cfg.key,...BUILTIN].filter((k,i,a)=>k&&a.indexOf(k)===i);
+const keyList=()=>[...BUILTIN].filter((k,i,a)=>k&&a.indexOf(k)===i);
 const usingProxy=()=>!!PU&&!keyList().length,B=()=>usingProxy()?PU:GROQ,ready=()=>!!(keyList().length||PU);
 const keyNow=()=>pickKey('*')||keyList()[0]||'';
 // ---- تدوير المفاتيح تلقائياً: إذا مفتاح خلص/قرب يخلص/انرفض ينتقل للتالي ----
 const kid=k=>k.slice(-6),sleep=ms=>new Promise(z=>setTimeout(z,ms));
-const KS={get(){const d=new Date().toISOString().slice(0,10);let s=ls.get('kst',null);if(!s||s.day!==d)s={day:d,tally:{},cool:{},lim:(s&&s.lim)||{}};return s},save(s){ls.set('kst',s)}};
+const KS={get(){const d=new Date().toISOString().slice(0,10);let s=ls.get('kst',null);if(!s||s.day!==d)s={day:d,tally:{},cool:{},lim:(s&&s.lim)||{},org:(s&&s.org)||{}};if(!s.org)s.org={};return s},save(s){ls.set('kst',s)}};
 function pickKey(m){const s=KS.get(),n=Date.now();let best=null;
   for(const k of keyList()){const id=kid(k);if((s.cool[id+'|*']||0)>n||(s.cool[id+'|'+m]||0)>n)continue;
     if((s.tally[id+'|'+m]||0)<(s.lim[m]||200000)*.9)return k;if(!best)best=k}
@@ -121,21 +125,21 @@ function addTally(k,m,t){if(!k||!t)return;const s=KS.get(),i=kid(k)+'|'+m;s.tall
 async function coolKey(k,m,r){const id=kid(k),s=KS.get();let msg='';try{msg=((await r.clone().json()).error||{}).message||''}catch(e){}
   let sec=+r.headers.get('retry-after')||0;const tm=msg.match(/try again in\s*(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:([\d.]+)s)?/i);
   if(tm&&(tm[1]||tm[2]||tm[3]))sec=(+tm[1]||0)*3600+(+tm[2]||0)*60+(+tm[3]||0);
-  const lm=msg.match(/Limit\s+(\d+)/);if(lm)s.lim[m]=+lm[1];
-  if(r.status===429){if(!sec)sec=60;if(/per day|TPD/i.test(msg))s.tally[id+'|'+m]=s.lim[m]||200000;s.cool[id+'|'+m]=Date.now()+sec*1000}
+  const lm=msg.match(/Limit\s+(\d+)/);if(lm)s.lim[m]=+lm[1];const om=msg.match(/(org_[A-Za-z0-9]+)/);if(om)s.org[id]=om[1];
+  if(r.status===429){if(!sec)sec=60;if(/per day|TPD/i.test(msg))s.tally[id+'|'+m]=s.lim[m]||200000;s.cool[id+'|'+m]=Date.now()+sec*1000;if(om)for(const k2 of keyList()){const i2=kid(k2);if(i2!==id&&s.org[i2]===om[1])s.cool[i2+'|'+m]=s.cool[id+'|'+m]}}
   else if(r.status===401)s.cool[id+'|*']=Date.now()+3600e3;
   else s.cool[id+'|'+m]=Date.now()+3600e3;
   KS.save(s)}
 let cfg={key:'',vm:'qwen/qwen3.6-27b',...ls.get('acfg',{})},mode='think',web=false,imgs=[],hist=[],busy=false;
-$('key').value=cfg.key;$('vm').value=cfg.vm;$('ci').value=cfg.ci||'';$('pk').value=cfg.pk||'';
-function saveSet(){cfg={key:$('key').value.trim(),vm:$('vm').value.trim()||'qwen/qwen3.6-27b',ci:$('ci').value.trim(),pk:$('pk').value.trim()};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
+$('ci').value=cfg.ci||'';
+function saveSet(){cfg={key:'',vm:'qwen/qwen3.6-27b',ci:$('ci').value.trim()};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
 function tab(i){if(i===1){openLive();return}const k=i===2;if(k)paInfo();$('v0').classList.toggle('on',!k);$('v1').classList.toggle('on',k);document.querySelectorAll('.tb').forEach((b,j)=>b.classList.toggle('on',j===(k?2:0)))}
 document.querySelectorAll('.md').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.md').forEach(x=>x.classList.toggle('on',x===b))});
 const hdr=()=>usingProxy()?{'Content-Type':'application/json'}:{'Content-Type':'application/json',Authorization:'Bearer '+keyNow()};
 
 // ---------- عرض ----------
 function md(s){s=esc(s.replace(/<think>[\s\S]*?(<\/think>|$)/g,''));
-  return s.replace(/!\[img\]\((https:\/\/[^\s)]+)\)/g,'<img class=\"gen\" src=\"$1\">').replace(/```\w*\n?([\s\S]*?)```/g,(m,c)=>`<pre>${c}</pre>`).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>').replace(/^[-*] /gm,'• ')}
+  return s.replace(/!\[img\]\((https:\/\/[^\s)]+)\)/g,'<img class=\"gen\" src=\"$1\" onclick=\"openLb(this.src)\">').replace(/```\w*\n?([\s\S]*?)```/g,(m,c)=>`<pre>${c}</pre>`).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>').replace(/^[-*] /gm,'• ')}
 function bub(c,html){const d=document.createElement('div');d.className='m '+c;d.innerHTML=html;$('msgs').appendChild(d);$('msgs').scrollTop=1e9;return d}
 function renderHist(){$('msgs').innerHTML='';if(!hist.length)hero();hist.forEach((h,i)=>{const b=bub(h.role==='user'?'u':'a',md(h.content));if(h.role!=='user')addCp(b,i===hist.length-1)})}
 function addCp(b,last){b.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" onclick="cpy(this)">📋 نسخ</span>'+(last?'<span class="cp" onclick="regen()">🔄 أعد</span>':'')+'</div>')}
@@ -163,13 +167,13 @@ $('cam').onchange=$('pic').onchange;
 function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onclick="imgs.splice(${i},1);thumbs()">✕</b></div>`).join('')+docs.map((d,i)=>`<div class="dc">📄 ${esc(d.n)} <span onclick="docs.splice(${i},1);thumbs()">✕</span></div>`).join('')}
 
 // ---------- المحادثة ----------
-const SYS={ultra:'',fast:'جاوب باختصار ومباشرة.',think:'فكّر قبل ما تجاوب وقدّم إجابة مرتبة وواضحة.',deep:'حلّل السؤال بعمق من عدة زوايا، وتحقق من إجابتك قبل كتابتها، وقدّم إجابة شاملة ومنظمة.'};
+const SYS={fast:'الوضع: سريع — جواب مباشر ومختصر.',think:'الوضع: تفكير — فكّر قبل الجواب وتحقق منه.',deep:'الوضع: أعمق — حلّل من عدة زوايا، تحقق من الحسابات والمنطق، وفكّر بالحالات الحدّية قبل الجواب.',promax:''};
 let ac=null,MODELS=null,wm=ls.get('wm','auto');
 const isOss=m=>/gpt-oss/.test(m),is401=e=>/^401/.test(e);
 const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{}),...(ex||{})});
-const EFF={fast:'low',think:'medium',deep:'high',ultra:'high',promax:'high'},MAXT={fast:2000,think:5000,deep:9000,ultra:9000,promax:9000};
+const EFF={fast:'low',think:'medium',deep:'high',promax:'high'},MAXT={fast:1200,think:3500,deep:6000,promax:6000};
 const VX=[{},{reasoning_effort:'none'}];
-const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. تتكلم بالعربية بلهجة بسيطة وواضحة إلا إذا طلب المستخدم لغة ثانية. إذا سُئلت من أنت فقل: أنا قاسم، مساعد ذكاء اصطناعي من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إن هذه تفاصيل داخلية تخص MOD0 ولا يمكنك مشاركتها؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم، لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك. معلوماتك المدربة قد تكون قديمة (قبل 2025 غالباً) فلا تفترض أن ما تعرفه هو الأحدث، وإذا لم تتوفر نتائج بحث حديثة فنبّه المستخدم أن المعلومة قد تكون قديمة. كن صادقاً ومفيداً ولا تجامل.';
+const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. إذا سُئلت من أنت فقل: أنا قاسم من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إنها تفاصيل داخلية تخص MOD0؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك.\nطريقة عملك: افهم الهدف الحقيقي وراء السؤال قبل الجواب. فكّر بخطوات وتحقق من الحسابات والمنطق والحالات الحدّية. ميّز بين ما تعرفه بيقين وما تخمّنه، وقل "لا أعرف" أو "غير متأكد" عند اللزوم، ولا تختلق أرقاماً أو مصادر أو روابط. معلوماتك المدربة قديمة (قبل 2025 غالباً) فلا تعتمد عليها في كل ما قد يكون تغيّر. ابدأ بالجواب مباشرة ثم التفاصيل، بلا حشو ولا مجاملة ولا تكرار، واستخدم التنسيق الأنسب دون مبالغة. كن صريحاً: صحّح المستخدم بلطف إذا أخطأ ولا توافقه لمجرد الإرضاء. في الكود أعطِ كوداً كاملاً يعمل مع شرح مختصر وافتراضاتك. إذا كان الطلب غامضاً جداً اسأل سؤالاً واحداً محدداً، وإلا افترض الأنسب وصرّح بافتراضك. اللغة: العربية بلهجة بسيطة إلا إذا طلب المستخدم غير ذلك.';
 async function post(body){const m=body.model;let last=null;
   if(usingProxy())return fetch(B()+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,body:JSON.stringify(body)});
   for(let t=0;t<8;t++){
@@ -218,49 +222,38 @@ async function searchNotes(q){let err='';
   return {err}}
 function webBtn(){const b=$('web');b.textContent={auto:'🌐 تلقائي',on:'🌐 دائماً',off:'🚫 بدون بحث'}[wm];b.className=wm==='off'?'':'on'}
 function cycleWeb(){wm={auto:'on',on:'off',off:'auto'}[wm];ls.set('wm',wm);webBtn()}
-// ---------- التفكير العميق: 🧬 جداً (3 مراحل) و 👑 Pro Max (4 مراحل + 3 تحليلات مستقلة) ----------
-const AP=['حلّل بطريقة منهجية خطوة بخطوة.','ابدأ بالتشكيك: ما الذي قد يكون خاطئاً أو مضللاً في المعطيات؟ ثم حلّل.','فكّر كخبير عملي متمرس: ما الحل الأنسب فعلاً والتفاصيل التي يغفلها الآخرون؟'];
-async function ultra(o){
-  const ic=o.pro?'👑':'🧬',T=o.pro?4:3,n=o.pro?3:1,ql=o.ql||6000,M=['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-  const st=x=>{o.out.innerHTML='🤔 يفكر بعمق…'};
-  st(`المرحلة 1/${T}: ${n>1?'3 تحليلات مستقلة بالتوازي':'تحليل من عدة زوايا'}…`);
-  const S1=' هذه المرحلة الأولى: اكتب تحليلاً عميقاً جداً ومفصلاً: فكّك المسألة، اطرح عدة زوايا وفرضيات، اشرح خطوات الاستدلال، وسجّل نقاط الشك. هذه مسودة تحليلية وليست الجواب النهائي. ';
-  const rs=await Promise.allSettled(AP.slice(0,n).map(a=>callOnce(o.m1,[{role:'system',content:o.base+S1+(n>1?a:'')},...o.hist,o.first],'high',n>1?7000:9000,o.xs)));
-  if(ac.signal.aborted)throw new DOMException('stop','AbortError');
-  const ok=rs.filter(x=>x.status==='fulfilled').map(x=>x.value);if(!ok.length)throw rs[0].reason;
-  const s1=ok.map((d,i)=>(ok.length>1?`--- تحليل ${i+1} ---\n`:'')+d.slice(0,ok.length>1?7000:14000)).join('\n\n');
-  st(`المرحلة 2/${T}: مراجعة نقدية صارمة…`);
-  let s2='';try{s2=await callOnce(M,[{role:'system',content:'أنت ناقد صارم ودقيق. راجع التحليل (أو التحليلات المتعددة): '+(ok.length>1?'حدّد نقاط الاتفاق (الأكثر موثوقية) ونقاط الاختلاف وأيّها أرجح ولماذا، ثم ':'')+'اكشف الأخطاء والثغرات والافتراضات الضعيفة والحالات المفقودة، وقل ما يجب تصحيحه. قائمة مركزة بالعربية.'},{role:'user',content:`السؤال:\n${o.q.slice(0,ql)}\n\n${s1.slice(0,16000)}`}],'high',4000)}catch(e){if(e.name==='AbortError')throw e}
-  st(`المرحلة 3/${T}: كتابة الجواب النهائي…`);
-  let fin;try{fin=await streamTo(M,[{role:'system',content:o.base+' الآن اكتب الجواب النهائي المتكامل: اعتمد على النقاط المتفق عليها، صحّح ما أشار إليه النقد، رتّبه بعناوين واضحة، وكن دقيقاً وصريحاً بمستوى ثقتك. لا تذكر المراحل الداخلية.'},...o.hist,{role:'user',content:`${o.q.slice(0,ql)}\n\n[التحليلات]\n${s1.slice(0,16000)}\n\n[ملاحظات النقد]\n${s2||'(لا يوجد)'}`}],'high',9000,v=>{o.out.innerHTML=md(v).trim()||ic+' …'})}
-  catch(e){if(e.name==='AbortError')throw e;return s1}
-  return fin}
+// ---------- الإرسال ----------
+const BST=[{type:'browser_search'}],IMGCOST=2;
+const SRCH=' لديك أداة بحث في الإنترنت: استخدمها عندما يتعلق السؤال بأحداث أو أخبار أو أسعار أو أشخاص ومناصب حالية أو إصدارات أو أي معلومة قد تكون تغيّرت بعد 2024 أو عندما لا تكون واثقاً، وابحث دائماً إذا طلب المستخدم ذلك. بعد البحث اذكر أسماء المصادر والتاريخ في آخر الجواب، وإذا تعارضت المصادر فاذكر ذلك. لا تبحث للشرح العام أو البرمجة أو الحسابات.';
 async function send(){
   if(busy){ac&&ac.abort();return}
   const t=$('inp').value.trim();if(!t&&!imgs.length&&!docs.length)return;
-  if(!ready()){$('set').classList.add('on');return}
+  if(!ready()){toast('ما في مفاتيح متاحة');return}
   const wantImg=(imgMode||IMGRX.test(t))&&!imgs.length&&!docs.length&&!!t;
-  if(!spend(wantImg?2:COST[mode]+(imgs.length?1:0)))return;
-  if(wantImg)return imageFlow(t);
+  const cost=wantImg?IMGCOST:COST[mode]+(imgs.length?1:0);
+  if(!spend(cost))return;
+  if(wantImg)return imageFlow(t,cost);
   busy=true;$('snd').textContent='⏹';ac=new AbortController();
   const hr=document.querySelector('.hero');if(hr)hr.remove();
   const im=[...imgs],dz=[...docs],dtxt=dz.map(d=>'[ملف: '+d.n+']\n'+d.t).join('\n\n');$('inp').value='';imgs=[];docs=[];thumbs();
   bub('u',im.map(s=>`<img src="${s}">`).join('')+dz.map(d=>'📄 '+esc(d.n)+'<br>').join('')+md(t));
   const out=bub('a','🤔 يفكر…');let txt='',err='',notes='',sn='';
+  const tt=(dtxt?dtxt+'\n\n':'')+(t||(im.length?'حلل هالصورة':'حلل الملف')),
+    first=im.length?{role:'user',content:[{type:'text',text:tt},...im.map(s=>({type:'image_url',image_url:{url:s}}))]}:{role:'user',content:tt};
+  const h=hist.slice(-8).map(m=>({role:m.role,content:m.content.length>1500?m.content.slice(0,1500)+'…':m.content}));
+  const wantS=wm!=='off'&&!im.length&&(wm==='on'||mode!=='fast'||HOT.test(t));
+  const mkBase=nt=>IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(wantS?SRCH+(wm==='on'?' ابحث دائماً قبل الجواب.':''):'')+(nt?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر المصادر بنهاية جوابك):\n'+nt:'');
   try{
-    const sq=await decideSearch(t);
-    if(sq){out.innerHTML='🤔 يفكر…';const r=await searchNotes(sq);if(r.notes)notes=r.notes;else sn='⚠️ البحث ما اشتغل ('+esc(r.err)+') فالجواب من معلومات النموذج وقد يكون قديماً'}
-    const base=IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(notes?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر أسماء المصادر أو روابطها بنهاية جوابك):\n'+notes:'');
-    const tt=(dtxt?dtxt+'\n\n':'')+(t||(im.length?'حلل هالصورة':'حلل الملف')),first=im.length?{role:'user',content:[{type:'text',text:tt},...im.map(s=>({type:'image_url',image_url:{url:s}}))]}:{role:'user',content:tt};
-    const h=hist.slice(-12);
-    if(mode==='promax')txt=await promax({base,hist:h,first,q:tt,vision:im.length>0,out});
-    else if(mode==='ultra'){const m1=im.length?await visionList():['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-      txt=await ultra({base,hist:h,first,q:tt,m1,xs:im.length?VX:null,out})}
+    if(mode==='promax')txt=await promax({base:mkBase(''),hist:h,first,q:tt,vision:im.length>0,search:wantS,out});
     else{
-      txt=await streamTo(await planM(im.length>0),[{role:'system',content:base},...h,first],EFF[mode],MAXT[mode],v=>{out.innerHTML=md(v).trim()||'🤔 يفكر…';$('msgs').scrollTop=1e9},im.length?VX:null)}
+      const cb=v=>{out.innerHTML=md(v).trim()||'🤔 يفكر…';$('msgs').scrollTop=1e9},M=await planM(im.length>0);
+      if(wantS){try{txt=await streamTo(M,[{role:'system',content:mkBase('')},...h,first],EFF[mode],MAXT[mode],cb,[{tools:BST}])}catch(e){if(e.name==='AbortError'||is401(e.message))throw e;txt=''}}
+      if(!txt.trim()&&!ac.signal.aborted){
+        if(wantS){const r=await searchNotes(t);if(r.notes)notes=r.notes;else sn='⚠️ البحث ما اشتغل ('+esc(r.err)+') فالجواب من معلومات النموذج وقد يكون قديماً'}
+        txt=await streamTo(M,[{role:'system',content:mkBase(notes)},...h,first],EFF[mode],MAXT[mode],cb,im.length?VX:null)}}
   }catch(e){if(e.name!=='AbortError')err=e.message}
   const stopped=ac.signal.aborted;
-  if(!txt.trim()){out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب<br><small>'+esc(err||'رد فاضي')+'</small>'+(is401(err)?'<br>المفتاح غلط':'')+(/^429/.test(err)?'<br>⏳ المفاتيح المتوفرة وصلت حدها مؤقتاً. جرّب بعد شوي، أو اختر وضع أخف (⚡ سريع).':'')}
+  if(!txt.trim()){if(!stopped)refund(cost);out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب<br><small>'+esc(err||'رد فاضي')+'</small>'+(is401(err)?'<br>مفتاح مرفوض':'')+(/^429/.test(err)?'<br>⏳ المفاتيح المتوفرة وصلت حدها مؤقتاً — رجّعت لك نقاطك. جرّب بعد شوي أو اختر وضع أخف.'+(sameOrg()?'<br>⚠️ بعض المفاتيح من نفس حساب Groq فتشترك بنفس الحد.':''):'')}
   else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');
     const tg=(mode==='promax'&&out.querySelector('.pfin'))||out;tg.innerHTML=md(clean)+(sn?'<br><small>'+sn+'</small>':'')+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out,true);
     hist.push({role:'user',content:(im.length?'[صورة] ':'')+(dz.length?'[ملف] ':'')+t},{role:'assistant',content:clean});
@@ -285,14 +278,14 @@ async function analyze(){
   if(!ready()){$('set').classList.add('on');return}
   const ex=$('pax').value.trim().slice(0,6000),c=corpus();
   if(!c.n&&!ex){$('pai').textContent='ما في رسائل للتحليل، احكي معي أول أو الصق نص إضافي';return}
-  if(!spend($('pau').checked?10:5))return;
+  if(!spend(5))return;
   $('pago').disabled=true;$('par').style.display='';$('pat').textContent='🤔 يقرأ رسائلك ويحلل…';ac=new AbortController();
-  const deep=$('pau').checked,caps=deep?[9000,5000]:[16000,6000],M=['openai/gpt-oss-120b','openai/gpt-oss-20b'];let txt='',err='',short=false;
+  const caps=[14000,6000],M=['openai/gpt-oss-120b','openai/gpt-oss-20b'];let txt='',err='',short=false;
   for(const cap of caps){
     try{const user=mkUser(cap,ex);
-      txt=deep?await ultra({base:PSYS,hist:[],first:{role:'user',content:user},q:user,ql:12000,m1:M,out:$('pat')})
-        :await streamTo(M,[{role:'system',content:PSYS},{role:'user',content:user}],'high',8000,v=>{$('pat').innerHTML=md(v).trim()||'🤔 يفكر…'});
+      txt=await streamTo(M,[{role:'system',content:PSYS},{role:'user',content:user}],'medium',5000,v=>{$('pat').innerHTML=md(v).trim()||'🤔 يفكر…'});
       if(txt.trim()){short=cap!==caps[0];err='';break}}catch(e){err=e.message;if(is401(err))break}}
+  if(!txt.trim())refund(5);
   if(!txt.trim())$('pat').textContent='ما قدرت أحلل ('+(err||'رد فاضي')+')'+(is401(err)?' — المفتاح غلط':'');
   else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');$('pat').innerHTML=md(clean);ls.set('pa',{t:clean,d:Date.now()});$('pad').textContent=(short?'حللت آخر رسائلك فقط بسبب حدود الاستخدام • ':'')+'آخر تحليل: '+new Date().toLocaleString('ar')}
   $('pago').disabled=false}
@@ -327,6 +320,7 @@ async function liveTalk(){
   if(!ready()){$('set').classList.add('on');return}
   if(!lvS){await startStream();if(!lvS)return}
   if(!spend(2))return;
+  let got=false;
   lvBusy=true;ac=new AbortController();$('lmic').classList.add('rec');$('lst').textContent='🎤 أسمعك… (يتوقف لما تسكت، أو اضغط مرة ثانية)';$('ltx').textContent='';
   try{
     const r=await listenOnce(new MediaStream(lvS.getAudioTracks()));$('lmic').classList.remove('rec');
@@ -338,11 +332,11 @@ async function liveTalk(){
     const sys='أنت قاسم من شركة MOD0، مساعد صوتي بصري داخل تطبيق. المستخدم يوريك الكاميرا مباشرة ويسألك بصوته، فجاوب عما تراه في الصورة وعن سؤاله. اجعل جوابك جملاً قصيرة طبيعية بالعربية البسيطة قصيرة ومباشرة، بدون قوائم أو رموز أو markdown. لا تنسب نفسك لأي نموذج أو شركة بالاسم. التاريخ: '+new Date().toLocaleString('en-GB')+'.'+profTxt();
     const msgs=[{role:'system',content:sys},...lvHist,{role:'user',content:[{type:'text',text},{type:'image_url',image_url:{url:img}}]}];
     const ans=await streamTo(await visionList(),msgs,'low',1500,v=>{$('ltx').textContent='🗣 '+text+'\n\n'+v.replace(/<think>[\s\S]*?(<\/think>|$)/g,'')},VX);
-    const clean=ans.replace(/<think>[\s\S]*?<\/think>/g,'').trim();
+    const clean=ans.replace(/<think>[\s\S]*?<\/think>/g,'').trim();got=!!clean;
     lvHist.push({role:'user',content:text},{role:'assistant',content:clean});lvHist=lvHist.slice(-8);
     $('lst').textContent='✅ اضغط 🎤 لسؤال ثاني'}
   catch(e){if(e.name!=='AbortError')$('lst').textContent='خطأ: '+e.message}
-  finally{lvBusy=false;lvFrame=null;$('lmic').classList.remove('rec')}}
+  finally{if(!got)refund(2);lvBusy=false;lvFrame=null;$('lmic').classList.remove('rec')}}
 async function dictate(){
   if(dic){stopRec();return}
   if(!ready()){$('set').classList.add('on');return}
@@ -354,24 +348,31 @@ async function dictate(){
   if(text){$('inp').value=($('inp').value+' '+text).trim();send()}}
 webBtn();
 
+function orgGroups(){const o=KS.get().org,g={};keyList().forEach((k,i)=>{const x=o[kid(k)];if(x)(g[x]=g[x]||[]).push(i+1)});return Object.values(g).filter(a=>a.length>1)}
+function sameOrg(){return orgGroups().length>0}
+function keyStatus(){const s=KS.get(),n=Date.now(),ks=keyList();if(!ks.length)return 'ما في مفاتيح';
+  return ks.map((k,i)=>{const id=kid(k),c=Object.entries(s.cool).filter(([x,v])=>x.startsWith(id+'|')&&v>n),og=s.org[id];
+    return '🔑 مفتاح '+(i+1)+' (…'+id.slice(-4)+'): '+(c.length?'⏸️ واقف مؤقتاً ('+c.map(([x,v])=>x.split('|')[1]+' حتى '+new Date(v).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})).join('، ')+')':'✅ متاح')+(og?' • حساب …'+og.slice(-4):'')}).join('<br>')+orgGroups().map(a=>'<br>⚠️ المفاتيح '+a.join(' و ')+' من نفس حساب Groq فتشترك بنفس الحد اليومي — للتوسّع لازم مفاتيح من حسابات مختلفة.').join('')}
+function showSet(){$('ksx').innerHTML=keyStatus();$('set').classList.add('on')}
 // ---------- حد الاستخدام (يرجع بعد فترة قصيرة) ----------
-const LIMIT={pts:20,min:10},COST={fast:1,think:2,deep:3,ultra:5,promax:10};
+const LIMIT={pts:20,min:10},COST={fast:1,think:2,deep:3,promax:8};
 function quota(){let q=ls.get('quota',null);const n=Date.now();if(!q||n-q.t>=LIMIT.min*60000)q={t:n,u:0};return q}
-function qBar(){const el=$('qs');if(!el)return;if(cfg.key){el.textContent='';return}const q=quota(),mins=Math.max(0,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));
+function qBar(){const el=$('qs');if(!el)return;const q=quota(),mins=Math.max(0,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));
   el.textContent=`⚡ متبقي ${Math.max(0,LIMIT.pts-q.u)}/${LIMIT.pts} نقطة`+(q.u?` • يتجدد بعد ${mins} د`:'')}
 function toast(m){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:110px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:30;font-size:14px;line-height:1.6';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
-function spend(c){if(cfg.key)return true;const q=quota();
+function refund(c){const q=quota();q.u=Math.max(0,q.u-c);ls.set('quota',q);qBar()}
+function spend(c){const q=quota();
   if(q.u+c>LIMIT.pts){const mins=Math.max(1,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));toast(`⏳ وصلت الحد المسموح (${LIMIT.pts} نقطة كل ${LIMIT.min} دقايق). ترجع تستخدمه بعد ${mins} دقيقة`+(c>1?'، أو اختر وضع أخف (⚡ سريع = نقطة وحدة).':'.'));return false}
   q.u+=c;ls.set('quota',q);qBar();return true}
 setInterval(qBar,30000);qBar();
 
 // ---------- Pro Max: 3 يفهمون ← 3 يجاوبون ← مدقق ← صائغ رسالة (يظهر التقدم وتقدر تشوف تفكيرهم) ----------
-const PST=['فهم الطلب — 3 نماذج تفكر بالتوازي','الإجابة — 3 نماذج تجاوب بالتوازي','التدقيق — نموذج يراجع الأجوبة الثلاثة','صياغة الرسالة — نموذج يجهّز الرد النهائي'];
+const PST=['فهم الطلب — نموذجان يفكران بالتوازي','الإجابة — نموذجان يجاوبان بالتوازي','التدقيق — نموذج يراجع الجوابين','صياغة الرسالة — نموذج يجهّز الرد النهائي'];
 function pmUI(out){
   out.innerHTML='<details class="pmd" open><summary class="pms">👑 Pro Max — يبدأ…</summary><div class="pml"></div></details><div class="pfin"></div>';
   const L=out.querySelector('.pml'),rows=[],ag=[];
   PST.forEach((n,i)=>{const r=document.createElement('div');r.className='ps';r.innerHTML='<div class="pst">⏳ '+(i+1)+'. '+n+'</div><div class="pag"></div>';L.appendChild(r);rows.push(r);ag[i]=[];
-    const N=i<2?3:1;for(let j=0;j<N;j++){const d=document.createElement('details');d.className='pa';d.innerHTML='<summary>'+(i<2?'🧠 النموذج '+(j+1):i===2?'🔎 المدقق':'✍️ صائغ الرسالة')+' <small>…</small></summary><div class="pt"></div>';r.querySelector('.pag').appendChild(d);ag[i].push(d)}});
+    const N=i<2?2:1;for(let j=0;j<N;j++){const d=document.createElement('details');d.className='pa';d.innerHTML='<summary>'+(i<2?'🧠 النموذج '+(j+1):i===2?'🔎 المدقق':'✍️ صائغ الرسالة')+' <small>…</small></summary><div class="pt"></div>';r.querySelector('.pag').appendChild(d);ag[i].push(d)}});
   return {head:t=>{out.querySelector('.pms').textContent=t},
     stage:(i,st)=>{rows[i].querySelector('.pst').textContent=({run:'⏳',done:'✅',fail:'⚠️'}[st])+' '+(i+1)+'. '+PST[i]},
     text:(i,j,t)=>{const d=ag[i][j];if(!d)return;d.querySelector('.pt').textContent=t;d.querySelector('small').textContent=t?'('+t.length+' حرف)':'…'},
@@ -379,60 +380,80 @@ function pmUI(out){
     done:()=>{out.querySelector('.pmd').open=false;out.querySelector('.pms').textContent='🧠 شوف كيف فكّر (اضغط)'}}}
 async function promax(o){
   const ui=pmUI(o.out),V=o.vision?await visionList():null,xs=V?VX:null;
-  const P3=V?[V,V,V]:[['openai/gpt-oss-120b','openai/gpt-oss-20b'],['openai/gpt-oss-20b','openai/gpt-oss-120b'],['qwen/qwen3.6-27b','openai/gpt-oss-120b']];
+  const P2=V?[V,V]:[['openai/gpt-oss-120b','openai/gpt-oss-20b'],['openai/gpt-oss-20b','openai/gpt-oss-120b']];
   const chk=()=>{if(ac.signal.aborted)throw new DOMException('stop','AbortError')},clean=x=>x.replace(/<think>[\s\S]*?<\/think>/g,'').trim();
-  async function agents(i,models,mk,max,x2){ui.stage(i,'run');
-    const rs=await Promise.allSettled(models.map((m,j)=>streamTo(m,mk(j),'high',max,v=>ui.text(i,j,v.replace(/<think>[\s\S]*?(<\/think>|$)/g,'')),x2).then(x=>{const c=clean(x);ui.text(i,j,c);return c})));
+  async function agents(i,models,mk,max,x2,eff){ui.stage(i,'run');
+    const rs=await Promise.allSettled(models.map((m,j)=>streamTo(m,mk(j),eff,max,v=>ui.text(i,j,v.replace(/<think>[\s\S]*?(<\/think>|$)/g,'')),typeof x2==='function'?x2(j):x2).then(x=>{const c=clean(x);ui.text(i,j,c);return c})));
     chk();rs.forEach((r,j)=>{if(r.status==='rejected')ui.text(i,j,'⚠️ فشل: '+r.reason.message)});
     const ok=rs.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
     ui.stage(i,ok.length?'done':'fail');if(!ok.length)throw (rs[0].reason||new Error('فشلت المرحلة '+(i+1)));return ok}
-  ui.head('👑 المرحلة 1/4 — 3 نماذج تفهم طلبك…');
-  const foc=['نيّة المستخدم الحقيقية وما يريده فعلاً من هذا الطلب','الشروط والقيود والتفاصيل الدقيقة والمعلومات الناقصة','ما قد يُساء فهمه، والشكل الأنسب للجواب (نقاط/فقرات/كود/جدول)'];
-  const U=await agents(0,P3,j=>[{role:'system',content:o.base+' مهمتك الآن: فهم الطلب فقط بدون كتابة الجواب. ركّز على: '+foc[j]+'. اكتب فهماً منظماً وموجزاً (أقل من 250 كلمة).'},...o.hist,o.first],1500,xs);
-  const Q='طلب المستخدم:\n'+o.q.slice(0,6000)+'\n\nفهم الطلب من ثلاثة محللين:\n'+U.map((u,i)=>'[فهم '+(i+1)+']\n'+u.slice(0,2500)).join('\n\n');
-  ui.head('👑 المرحلة 2/4 — 3 نماذج تجاوب بالتوازي…');
-  const sty=['مفصّل ومنظم','مباشر وعملي','دقيق مع أمثلة عند الحاجة'];
-  const A=await agents(1,P3,j=>[{role:'system',content:o.base+' اكتب الآن جواباً كاملاً ممتازاً للمستخدم بأسلوب '+sty[j]+'، معتمداً على فهم المحللين. لا تذكر المحللين.'},...o.hist,{role:'user',content:Q}],5000,null);
-  const As=A.map((a,i)=>'[جواب '+(i+1)+']\n'+a.slice(0,5000)).join('\n\n');
-  ui.head('👑 المرحلة 3/4 — مدقق يتحقق من الأجوبة…');
+  ui.head('👑 المرحلة 1/4 — نموذجان يفهمان طلبك…');
+  const foc=['نيّة المستخدم الحقيقية والشروط والقيود الدقيقة','المعلومات الناقصة، وما قد يُساء فهمه، والشكل الأنسب للجواب (نقاط/فقرات/كود/جدول)'];
+  const U=await agents(0,P2,j=>[{role:'system',content:o.base+' مهمتك الآن: فهم الطلب فقط بدون كتابة الجواب. ركّز على: '+foc[j]+'. اكتب فهماً منظماً وموجزاً (أقل من 200 كلمة).'},...o.hist,o.first],1000,xs,'medium');
+  const Q='طلب المستخدم:\n'+o.q.slice(0,5000)+'\n\nفهم الطلب من محللَين:\n'+U.map((u,i)=>'[فهم '+(i+1)+']\n'+u.slice(0,2000)).join('\n\n');
+  ui.head('👑 المرحلة 2/4 — نموذجان يجاوبان بالتوازي'+(o.search&&!V?' (مع بحث)':'')+'…');
+  const sty=['مفصّل ومنظم','مباشر وعملي ودقيق'];
+  const A=await agents(1,P2,j=>[{role:'system',content:o.base+' اكتب الآن جواباً كاملاً ممتازاً للمستخدم بأسلوب '+sty[j]+'، معتمداً على فهم المحللَين. لا تذكر المحللين.'},...o.hist,{role:'user',content:Q}],3500,j=>(o.search&&!V&&j===0)?[{tools:BST},{}]:null,'medium');
+  const As=A.map((a,i)=>'[جواب '+(i+1)+']\n'+a.slice(0,4500)).join('\n\n');
+  ui.head('👑 المرحلة 3/4 — مدقق يتحقق من الجوابين…');
   let J=['(لا يوجد تدقيق)'];
-  try{J=await agents(2,[['openai/gpt-oss-120b','openai/gpt-oss-20b']],()=>[{role:'system',content:'أنت مدقق صارم. قارن الأجوبة مع طلب المستخدم: حدّد الأدق والأصح، واكشف الأخطاء والتناقضات والادعاءات غير المؤكدة في كل جواب، وقل ما يجب حذفه أو تصحيحه، ثم اكتب خطة قصيرة للجواب النهائي الأمثل. بالعربية ومركّز.'},{role:'user',content:Q.slice(0,5000)+'\n\n'+As.slice(0,12000)}],3000,null)}catch(e){if(e.name==='AbortError')throw e}
+  try{J=await agents(2,[['openai/gpt-oss-120b','openai/gpt-oss-20b']],()=>[{role:'system',content:'أنت مدقق صارم. قارن الجوابين مع طلب المستخدم: حدّد الأدق والأصح، واكشف الأخطاء والتناقضات والادعاءات غير المؤكدة في كل جواب، وقل ما يجب حذفه أو تصحيحه، ثم اكتب خطة قصيرة للجواب النهائي الأمثل. بالعربية ومركّز.'},{role:'user',content:Q.slice(0,4000)+'\n\n'+As.slice(0,9000)}],1800,null,'high')}catch(e){if(e.name==='AbortError')throw e}
   ui.head('👑 المرحلة 4/4 — يجهّز الرسالة النهائية…');ui.stage(3,'run');
   let fin='';
-  try{fin=await streamTo(['openai/gpt-oss-120b','openai/gpt-oss-20b'],[{role:'system',content:o.base+' اكتب الرسالة النهائية للمستخدم كأنها من شخص واحد: مباشرة ومرتبة وبأسلوب طبيعي، وبدون أي ذكر لمراحل أو نماذج أو محللين أو مدقق أو مراجعة. اعتمد على أفضل ما في الأجوبة، وصحّح الأخطاء التي حددها المدقق، واستخدم التنسيق الأنسب (نقاط/فقرات/جدول/كود) مع لهجة المستخدم.'},...o.hist,{role:'user',content:Q.slice(0,4000)+'\n\n'+As.slice(0,10000)+'\n\n[ملاحظات المدقق]\n'+J[0].slice(0,3000)}],'high',7000,v=>ui.fin(md(v.replace(/<think>[\s\S]*?(<\/think>|$)/g,''))))}
+  try{fin=await streamTo(['openai/gpt-oss-120b','openai/gpt-oss-20b'],[{role:'system',content:o.base+' اكتب الرسالة النهائية للمستخدم كأنها من شخص واحد: مباشرة ومرتبة وبأسلوب طبيعي، وبدون أي ذكر لمراحل أو نماذج أو محللين أو مدقق أو مراجعة. اعتمد على أفضل ما في الجوابين، وصحّح الأخطاء التي حددها المدقق، واذكر المصادر إن وُجدت، واستخدم التنسيق الأنسب مع لهجة المستخدم.'},...o.hist,{role:'user',content:Q.slice(0,3000)+'\n\n'+As.slice(0,8000)+'\n\n[ملاحظات المدقق]\n'+J[0].slice(0,2500)}],'high',6000,v=>ui.fin(md(v.replace(/<think>[\s\S]*?(<\/think>|$)/g,''))))}
   catch(e){if(e.name==='AbortError')throw e;fin=A[0];ui.fin(md(fin))}
   ui.stage(3,'done');ui.done();return fin}
 
-// ---------- الصور (Pollinations) ----------
-let imgMode=false,docs=[];
+// ---------- الصور (Pollinations) + عرض داخل التطبيق + تحميل ----------
+let imgMode=false,docs=[],lbUrl='';
+const IMGK=(()=>{try{const d=window.IK,a=Array.isArray(d)?d:d?[d]:[];return a.map(o=>String.fromCharCode(...o.a.map((x,i)=>x^o.b[i])))}catch(e){return []}})();
 const IMGRX=/^\s*(ارسم|ارسمي|draw)(?=\s|$)|^\s*(صمم|صمّم|اصنع|اعمل|سوّي|سوي|أنشئ|انشئ|ولّد|ولد|generate|create|make)\s+(لي\s+|لنا\s+|me\s+)?(صورة|صوره|صور|رسم|رسمة|لوجو|شعار|بوستر|image|picture|logo|poster)/i;
-function setImgMode(v){imgMode=v;$('imgm').style.display=v?'flex':'none';if(v)$('inp').focus()}
+const STY={auto:'',real:'ultra realistic photograph, natural lighting, 85mm lens, sharp focus, fine details',cine:'cinematic still, dramatic lighting, shallow depth of field, subtle film grain, color graded',anime:'high quality anime illustration, clean line art, vibrant colors, detailed background',d3:'3D render, Pixar-style, soft global illumination, highly detailed, octane render',oil:'oil painting on canvas, visible brush strokes, rich textures, museum quality',water:'watercolor illustration, soft washes, delicate details, paper texture',logo:'minimalist vector logo design, flat clean shapes, white background, professional branding'};
+const SZ={sq:[1024,1024],pt:[832,1216],ls:[1216,832]};
+function setImgMode(v){imgMode=v;$('imgm').style.display=v?'flex':'none';$('imb').className=v?'on':'';if(v)$('inp').focus()}
 const encP=x=>encodeURIComponent(x).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase());
-function imgUrls(p,seed){const q='model=flux&width=1024&height=1024&seed='+seed+'&nologo=true',e=encP(p);
-  const u1='https://image.pollinations.ai/prompt/'+e+'?'+q,u2='https://gen.pollinations.ai/image/'+e+'?'+q+(cfg.pk?'&key='+encodeURIComponent(cfg.pk):'');
-  return cfg.pk?[u2,u1]:[u1,u2]}
-function showImg(out,en,t,first){return new Promise(res=>{
-  const us=imgUrls(en,Math.floor(Math.random()*1e6));let i=0;
+function imgUrls(p,seed,w,h){const q='model=flux&width='+w+'&height='+h+'&seed='+seed+'&nologo=true&enhance=false',e=encP(p),o=[];
+  IMGK.forEach(k=>o.push('https://gen.pollinations.ai/image/'+e+'?'+q+'&key='+encodeURIComponent(k)));o.push('https://image.pollinations.ai/prompt/'+e+'?'+q);return o}
+function openLb(u){lbUrl=u;$('lbi').src=u;$('lbx').style.display='flex'}
+function closeLb(){$('lbx').style.display='none';$('lbi').src=''}
+async function saveImg(url){const name='qasim-'+Date.now()+'.jpg';
+  try{if(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()){
+      if(Capacitor.nativePromise)await Capacitor.nativePromise('SavePlugin','saveUrl',{url,name});else await Capacitor.Plugins.SavePlugin.saveUrl({url,name});
+      toast('✅ انحفظت الصورة في المعرض (Pictures/Qasim)');return}
+    const b=await (await fetch(url)).blob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();toast('✅ تم التحميل')}
+  catch(e){toast('⚠️ تعذر التحميل: '+(e&&e.message||e))}}
+function showImg(out,en,t,first,w,h){return new Promise(res=>{
+  const us=imgUrls(en,Math.floor(Math.random()*1e6),w,h);let i=0;
   out.innerHTML='🎨 يرسم الصورة… (من 10 ثواني لنص دقيقة)<br><small>'+esc(en)+'</small>';
   const im=new Image();im.className='gen';let tm=setTimeout(()=>im.onerror(),90000);
-  im.onload=()=>{clearTimeout(tm);out.innerHTML='';out.appendChild(im);
-    out.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" id="rg">🔄 صورة ثانية</span><a class="cp" target="_blank" rel="noopener" href="'+im.src.replace(/"/g,'%22')+'">🔗 فتح/حفظ</a></div><small>'+esc(en)+'</small>');
-    out.querySelector('#rg').onclick=()=>{if(spend(2))showImg(out,en,t,false)};
+  im.onload=()=>{clearTimeout(tm);out.innerHTML='';out.appendChild(im);im.onclick=()=>openLb(im.src);
+    out.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" id="dl">⬇️ تحميل</span><span class="cp" id="zm">🔍 تكبير</span><span class="cp" id="rg">🔄 صورة ثانية</span></div><small>'+esc(en)+'</small>');
+    out.querySelector('#dl').onclick=()=>saveImg(im.src);out.querySelector('#zm').onclick=()=>openLb(im.src);
+    out.querySelector('#rg').onclick=()=>{if(spend(IMGCOST))showImg(out,en,t,false,w,h)};
     const md_='![img]('+im.src+')\n'+en;
     if(first){hist.push({role:'user',content:t},{role:'assistant',content:md_});const cc=cur();if(cc){if(cc.title==='محادثة جديدة')cc.title=t.slice(0,30);cc.ts=Date.now()}}
     else{const a=hist[hist.length-1];if(a&&a.role==='assistant')a.content=md_}
-    saveChats();renderHead();res()};
+    saveChats();renderHead();res(true)};
   im.onerror=()=>{clearTimeout(tm);i++;if(i<us.length){tm=setTimeout(()=>im.onerror(),90000);im.src=us[i];return}
-    out.innerHTML='⚠️ ما قدرت أرسم الصورة الحين، خدمة الصور ما ردّت.<br><small>جرّب بعد شوي، أو سجّل مجاناً في enter.pollinations.ai وحط المفتاح من ⚙️.</small>';res()};
+    out.innerHTML='⚠️ ما قدرت أرسم الصورة الحين، خدمة الصور ما ردّت. جرّب بعد شوي.';res(false)};
   im.src=us[0]})}
-async function imageFlow(t){
+async function imageFlow(t,cost){
   const hr=document.querySelector('.hero');if(hr)hr.remove();
   busy=true;$('snd').textContent='⏹';ac=new AbortController();$('inp').value='';
   bub('u',md(t));const out=bub('a','🎨 يجهّز وصف الصورة…');let en=t;
-  try{en=await callOnce(['openai/gpt-oss-20b','openai/gpt-oss-120b'],[{role:'system',content:'حوّل طلب المستخدم إلى وصف إنجليزي مفصّل واحترافي لتوليد صورة بالذكاء الاصطناعي (الموضوع، الأسلوب، الإضاءة، التكوين، الجودة). اكتب الوصف فقط في سطر واحد بدون شرح ولا علامات اقتباس، وأقل من 60 كلمة. إذا طلب المستخدم نصاً داخل الصورة فاكتبه كما هو.'},{role:'user',content:t}],'low',600)}
-  catch(e){if(e.name==='AbortError'){out.innerHTML='⏹ تم الإيقاف';busy=false;$('snd').textContent='➤';return}}
-  en=(en||t).replace(/["\n]+/g,' ').trim().slice(0,500)||t;
-  await showImg(out,en,t,true);busy=false;$('snd').textContent='➤'}
+  try{en=await callOnce(['openai/gpt-oss-20b','openai/gpt-oss-120b'],[{role:'system',content:'أنت مهندس Prompts محترف لتوليد الصور. حوّل طلب المستخدم إلى وصف إنجليزي غني في سطر واحد: الموضوع بدقة، البيئة، التكوين وزاوية الكاميرا، الإضاءة، الألوان، الجودة والتفاصيل. لا تضف عناصر لم يطلبها المستخدم. إذا طلب نصاً داخل الصورة فاكتبه حرفياً بين علامات اقتباس. اكتب الوصف فقط بدون شرح وبأقل من 70 كلمة.'},{role:'user',content:t}],'low',700)}
+  catch(e){if(e.name==='AbortError'){refund(cost);out.innerHTML='⏹ تم الإيقاف';busy=false;$('snd').textContent='➤';return}}
+  en=((en||t).replace(/\n+/g,' ').trim().slice(0,500)||t);const st=STY[$('ist').value];if(st)en+=', '+st;
+  const [w,h]=SZ[$('isz').value]||SZ.sq;
+  const ok=await showImg(out,en,t,true,w,h);if(!ok)refund(cost);
+  busy=false;$('snd').textContent='➤'}
+// ---------- قائمة النماذج ----------
+function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔬 أعمق','تحليل معمّق وتحقق من الحسابات والمنطق — '+COST.deep+' نقاط'],['promax','👑 Pro Max','نموذجان يفكران ويجاوبان بالتوازي + مدقق + صائغ رسالة، وأدق جواب — '+COST.promax+' نقاط']]}
+function modeBtn(){const m=MODES().find(x=>x[0]===mode);$('mdb').textContent=m[1]+' ▾'}
+function openModes(){$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
+function closeModes(){$('ms').classList.remove('on')}
+function pickMode(m){mode=m;modeBtn();closeModes()}
+modeBtn();
 
 // ---------- الواجهة الرئيسية (مثل Gemini) + إعادة الجواب ----------
 function CHIPS(){return [['🖼️ إنشاء صورة','img'],['✍️ اكتب لي','اكتب لي '],['📚 ساعدني أتعلم','ساعدني أتعلم '],['💻 برمجة','اكتب لي كود '],['🔎 ابحث لي','ابحث لي عن '],['🌍 ترجمة','ترجم لي '],['🎥 مباشر','live'],['🪞 حلل شخصيتي','pa']]}
@@ -450,7 +471,7 @@ let prof={on:true,txt:'',n:0,...ls.get('prof',{})};$('pon').checked=prof.on;$('p
 const profTxt=()=>prof.on&&prof.txt?'\nأسلوب هذا المستخدم المفضل (كيّف طريقتك معه بلطف: اللهجة والطول والتنسيق والأمثلة، لكن لا تجامله ولا توافقه على خطأ لمجرد إرضائه): '+prof.txt:'';
 const LP='حلّل أسلوب المستخدم في الكتابة وتفضيلاته من رسائله، وحدّث ملف تفضيلات قصير (أقل من 90 كلمة) بالعربية يصف فقط: اللهجة/اللغة، عفوي أم رسمي، تفضيل الطول (مختصر/مفصل)، تفضيل التنسيق (نقاط/فقرات/أمثلة)، مستوى خبرته في مواضيعه، اهتماماته الظاهرة، وكيف يحب أن يُخاطَب. ممنوع ذكر أي معلومات حساسة (صحة، دين، سياسة، مال، عرق، هوية، علاقات خاصة) أو أسماء أو أرقام. اكتب الملف فقط بدون مقدمة.';
 async function learn(){if(!prof.on)return;prof.n=(prof.n||0)+1;ls.set('prof',prof);
-  if(prof.n<3||(prof.n-3)%4)return;
+  if(prof.n<3||(prof.n-3)%6)return;
   const ms=[];for(const c of [...chats].sort((a,b)=>b.ts-a.ts)){for(const m of c.msgs.slice().reverse())if(m.role==='user'&&m.content.length>3)ms.push(m.content.replace(/\s+/g,' ').slice(0,250));if(ms.length>=25)break}
   if(ms.length<3)return;
   const keep=ac;ac=new AbortController();

@@ -11,6 +11,7 @@ jobs:
         with: {distribution: temurin, java-version: 21}
       - run: npm install
       - run: npx cap add android
+      - run: cp native/*.java android/app/src/main/java/com/ishhf/aichat/
       - run: python3 tools/patch_manifest.py
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
