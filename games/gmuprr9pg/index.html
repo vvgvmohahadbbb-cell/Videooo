@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لعبة القفز</title>
+<style>
+  html, body {margin:0; padding:0; height:100%; overflow:hidden; background:#222; font-family:Arial,Helvetica,sans-serif;}
+  #gameCanvas {display:block; width:100%; height:100%;}
+  #ui {position:absolute; top:10px; left:10px; right:10px; text-align:center; color:#fff;}
+  button {padding:10px 20px; margin:5px; font-size:1.2em; border:none; border-radius:5px; background:#ff5722; color:#fff;}
+  button:active {background:#e64a19;}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="ui">
+  <h1>لعبة القفز</h1>
+  <button id="startBtn">ابدأ</button>
+  <button id="restartBtn" style="display:none;">أعد اللعب</button>
+  <p id="score">النتيجة: 0</p>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const startBtn = document.getElementById('startBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const scoreEl = document.getElementById('score');
+  let width, height, player, obstacles, score, gameLoopId, isRunning;
+
+  function resize() {
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  function init() {
+    resize();
+    window.addEventListener('resize', resize);
+    player = {x:50, y:height-70, w:30, h:30, vy:0, onGround:true};
+    obstacles = [];
+    score = 0;
+    isRunning = false;
+    scoreEl.textContent = 'النتيجة: 0';
+    restartBtn.style.display = 'none';
+  }
+
+  function spawnObstacle() {
+    const w = 20 + Math.random()*30;
+    const h = 20 + Math.random()*40;
+    const x = width;
+    const y = height - h - 40;
+    obstacles.push({x, y, w, h, vx:-4});
+  }
+
+  function update(dt) {
+    if (!isRunning) return;
+    // gravity
+    player.vy += 0.5;
+    player.y += player.vy;
+    if (player.y + player.h >= height - 40) {
+      player.y = height - 40 - player.h;
+      player.vy = 0;
+      player.onGround = true;
+    }
+    // obstacles
+    obstacles.forEach(o => o.x += o.vx);
+    obstacles = obstacles.filter(o => o.x + o.w > 0);
+    // collision
+    obstacles.forEach(o => {
+      if (player.x < o.x + o.w && player.x + player.w > o.x &&
+          player.y < o.y + o.h && player.y + player.h > o.y) {
+        endGame();
+      }
+    });
+    // scoring
+    score += dt * 0.01;
+    scoreEl.textContent = 'النتيجة: ' + Math.floor(score);
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,width,height);
+    // ground
+    ctx.fillStyle='#444';
+    ctx.fillRect(0,height-40,width,40);
+    // player
+    ctx.fillStyle='#ffeb3b';
+    ctx.fillRect(player.x,player.y,player.w,player.h);
+    // obstacles
+    ctx.fillStyle='#f44336';
+    obstacles.forEach(o => ctx.fillRect(o.x,o.y,o.w,o.h));
+  }
+
+  function loop(timestamp) {
+    const dt = timestamp - (loop.last || timestamp);
+    loop.last = timestamp;
+    update(dt);
+    draw();
+    gameLoopId = requestAnimationFrame(loop);
+  }
+
+  function startGame() {
+    if (isRunning) return;
+    isRunning = true;
+    startBtn.style.display = 'none';
+    restartBtn.style.display = 'none';
+    obstacles = [];
+    score = 0;
+    player = {x:50, y:height-70, w:30, h:30, vy:0, onGround:true};
+    loop.last = performance.now();
+    gameLoopId = requestAnimationFrame(loop);
+    setInterval(spawnObstacle, 1500);
+  }
+
+  function endGame() {
+    isRunning = false;
+    cancelAnimationFrame(gameLoopId);
+    restartBtn.style.display = 'inline-block';
+    // persist high score
+    try {
+      const high = localStorage.getItem('highScore') || 0;
+      if (score > high) localStorage.setItem('highScore', Math.floor(score));
+    } catch(e){}
+  }
+
+  function handleTouch(e) {
+    e.preventDefault();
+    if (!player.onGround) return;
+    player.vy = -12;
+    player.onGround = false;
+  }
+
+  startBtn.addEventListener('click', startGame);
+  restartBtn.addEventListener('click', startGame);
+  canvas.addEventListener('touchstart', handleTouch);
+  canvas.addEventListener('mousedown', handleTouch);
+
+  init();
+})();
+</script>
+</body>
+</html>
