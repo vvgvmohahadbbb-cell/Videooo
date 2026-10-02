@@ -170,13 +170,26 @@ body>div[style*="bottom:110px"]{animation:pop .2s ease-out both;border:1px solid
 #splash .ld i{display:block;height:100%;width:40%;border-radius:4px;background:var(--grad);animation:ldm 1s ease-in-out infinite}
 @keyframes ldm{0%{transform:translateX(250%)}100%{transform:translateX(-250%)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== مؤشر التفكير (حبل متحرك) ===== */
+.thk{min-width:150px;animation:pop2 .3s cubic-bezier(.2,.9,.3,1) both}
+@keyframes pop2{from{opacity:0;transform:scale(.92) translateY(6px)}}
+.thl{font-weight:600;color:#9fb4ff}
+.rope{position:relative;height:4px;margin-top:10px;border-radius:4px;background:rgba(91,140,255,.16);overflow:hidden}
+.rope i{position:absolute;top:0;bottom:0;left:0;width:45%;border-radius:4px;background:linear-gradient(90deg,transparent,#5b8cff,#8b5cf6,transparent);animation:rope 1.3s ease-in-out infinite;will-change:transform}
+@keyframes rope{0%{transform:translateX(-110%)}100%{transform:translateX(250%)}}
+#comp{position:relative}
+body.busy #comp::before{content:"";position:absolute;top:0;left:14px;right:14px;height:3px;border-radius:3px;background:rgba(91,140,255,.16)}
+body.busy #comp::after{content:"";position:absolute;top:0;left:14px;width:35%;height:3px;border-radius:3px;background:linear-gradient(90deg,#5b8cff,#8b5cf6);animation:bar 1.2s ease-in-out infinite;will-change:transform}
+@keyframes bar{0%,100%{transform:translateX(0)}50%{transform:translateX(150%)}}
+body.busy #snd{animation:sp 1s ease-in-out infinite}
+@keyframes sp{50%{transform:scale(.9)}}
 </style>
 </head>
 <body>
 <div id="splash"><div class="lg">🤖</div><div class="nm">قاسم</div><div class="sb">MOD0</div><div class="ld"><i></i></div></div>
 <script>
 (function(){function hide(){var x=document.getElementById('splash');if(x){x.classList.add('out');setTimeout(function(){x&&x.remove()},500)}}
-addEventListener('load',function(){setTimeout(hide,900)});setTimeout(hide,3000);
+addEventListener('load',function(){setTimeout(hide,900)});document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('snd');if(!b||!window.MutationObserver)return;new MutationObserver(function(){document.body.classList.toggle('busy',b.textContent.trim()==='⏹')}).observe(b,{childList:true,characterData:true,subtree:true})});setTimeout(hide,3000);
 var sel='.btn,.tb,.chip,.mo,.rb,.ic,#mdb,#imb,#web,#lvb,#vo,.md';
 document.addEventListener('pointerdown',function(e){try{var b=e.target.closest&&e.target.closest(sel);if(!b||b.disabled)return;
 if(navigator.vibrate)navigator.vibrate(8);
@@ -232,7 +245,7 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 <script type="text/plain" id="app-src">
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ls=SEC.ls;const THK='<span class="dots"><i></i><i></i><i></i></span> يفكر';
+const ls=SEC.ls;const THK='<span class="dots"><i></i><i></i><i></i></span> يفكر'; const THK2='<div class="thk"><span class="thl"><span class="dots"><i></i><i></i><i></i></span> يفكر</span><div class="rope"><i></i></div></div>';
 const GROQ='https://api.groq.com/openai/v1',PU=String((window.APP&&APP.proxy)||'').replace(/\/+$/,'');
 const BUILTIN=(()=>{try{const d=window.DK,a=Array.isArray(d)?d:d?[d]:[];return a.map(o=>String.fromCharCode(...o.a.map((x,i)=>x^o.b[i])))}catch(e){return []}})();
 const keyList=()=>[...BUILTIN].filter((k,i,a)=>k&&a.indexOf(k)===i);
@@ -388,7 +401,7 @@ async function send(){
   const hr=document.querySelector('.hero');if(hr)hr.remove();
   const im=[...imgs],dz=[...docs],dtxt=dz.map(d=>'[ملف: '+d.n+']\n'+d.t).join('\n\n');$('inp').value='';imgs=[];docs=[];thumbs();
   bub('u',im.map(s=>`<img src="${s}">`).join('')+dz.map(d=>'📄 '+esc(d.n)+'<br>').join('')+md(t));
-  const out=bub('a',THK);let txt='',err='',notes='',sn='';
+  const out=bub('a',THK2);let txt='',err='',notes='',sn='';
   const tt=(dtxt?dtxt+'\n\n':'')+(t||(im.length?'حلل هالصورة':'حلل الملف')),
     first=im.length?{role:'user',content:[{type:'text',text:tt},...im.map(s=>({type:'image_url',image_url:{url:s}}))]}:{role:'user',content:tt};
   const h=hist.slice(-8).map(m=>({role:m.role,content:m.content.length>1500?m.content.slice(0,1500)+'…':m.content}));
@@ -396,7 +409,7 @@ async function send(){
   const mkBase=nt=>IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(wantS?SRCH+(wm==='on'?' ابحث دائماً قبل الجواب.':''):'')+(nt?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر المصادر بنهاية جوابك):\n'+nt:'');
   try{
     {
-      const cb=v=>{out.innerHTML=(/\[\[/.test(v)?'🔄 يتحقق من التحديث…':md(v).trim())||THK;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
+      const cb=v=>{out.innerHTML=(/\[\[/.test(v)?'🔄 يتحقق من التحديث…':md(v).trim())||THK2;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
       if(wantS){try{txt=await streamTo(M,[{role:'system',content:mkBase('')},...h,first],eff0,max0,cb,[{tools:BST}])}catch(e){if(e.name==='AbortError'||is401(e.message))throw e;txt=''}}
       if(!txt.trim()&&!ac.signal.aborted){
         if(wantS){const r=await searchNotes(t);if(r.notes)notes=r.notes;else sn='⚠️ البحث ما اشتغل ('+esc(r.err)+') فالجواب من معلومات النموذج وقد يكون قديماً'}
