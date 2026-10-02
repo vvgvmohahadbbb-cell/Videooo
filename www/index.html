@@ -508,23 +508,24 @@ async function studioGo(refine){const t=$('sbp').value.trim();if(!t||SB.busy)ret
   SB.busy=1;$('sbs').innerHTML=THK+' يبني…';ac=new AbortController();
   const msgs=[{role:'system',content:SBSYS},...(refine&&SB.html?[{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'عدّل حسب هذا الطلب وأعد الملف كاملاً: '+t}]:[{role:'user',content:t}])];
   try{const M=m==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-    const r=await callOnce(M,msgs,EFF[m],14000),mm=r.match(/```html\s*([\s\S]*?)```/i)||r.match(/(<!DOCTYPE[\s\S]*<\/html>)/i),h=mm?mm[1]:'';
+    const r=await callOnce(M,msgs,EFF[m],6500),mm=r.match(/```html\s*([\s\S]*?)```/i)||r.match(/(<!DOCTYPE[\s\S]*<\/html>)/i),h=mm?mm[1]:'';
     if(!/<html|<canvas|<body/i.test(h))throw new Error('ما طلع كود صالح');
     SB.html=h;$('sbf').srcdoc=h;$('sbf').style.display='block';$('sbx').style.display='block';$('sbs').textContent='✅ جاهز — جرّبه، واكتب أي تعديل، أو اضغط APK';$('sbp').value=''}
   catch(e){refund(c);$('sbs').textContent='⚠️ '+(e.name==='AbortError'?'تم الإيقاف':'ما قدرت أبني: '+e.message)}
   SB.busy=0}
 function sbSave(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SB.html],{type:'text/html'}));a.download='qasim-app.html';document.body.appendChild(a);a.click();a.remove()}
-async function sbApk(){let g=ls.get('gh',{});
-  if(!g.t||!g.r){const t=prompt('إعداد لمرة وحدة — GitHub Token (صلاحيات repo و workflow):'),r=t&&prompt('اسم المستودع العام (user/repo):');if(!t||!r)return;g={t:t.trim(),r:r.trim()};ls.set('gh',g)}
-  const nm=(prompt('اسم التطبيق:','لعبتي')||'').trim();if(!nm)return;const slug='g'+Date.now().toString(36);
-  const H={Authorization:'Bearer '+g.t,Accept:'application/vnd.github+json','Content-Type':'application/json'},A='https://api.github.com/repos/'+g.r,st=t=>$('sbs').textContent=t;
-  try{st('📤 يرفع…');const ri=await fetch(A,{headers:H});if(!ri.ok)throw new Error('المستودع '+ri.status);const ref=(await ri.json()).default_branch;
-    let r=await fetch(A+'/contents/games/'+slug+'/index.html',{method:'PUT',headers:H,body:JSON.stringify({message:'game '+slug,content:btoa(unescape(encodeURIComponent(SB.html)))})});if(!r.ok)throw new Error('رفع '+r.status);
-    r=await fetch(A+'/actions/workflows/game-apk.yml/dispatches',{method:'POST',headers:H,body:JSON.stringify({ref,inputs:{slug,name:nm}})});if(!r.ok)throw new Error('تشغيل البناء '+r.status);
-    const t0=Date.now();
+async function sbApk(){
+  const W=String((window.APP&&APP.build)||'').replace(/\/+$/,''),st=t=>$('sbs').textContent=t,G=/script\.google\.com|googleusercontent\.com/.test(W);
+  if(!W){st('⚠️ رابط خادم البناء غير مضبوط');return}
+  if(!SB.html){st('⚠️ ابنِ لعبة أولاً');return}
+  const nm=(prompt('اسم التطبيق:','لعبتي')||'').trim();if(!nm)return;
+  try{st('📤 يرسل…');
+    const r=await (G?fetch(W,{method:'POST',body:JSON.stringify({path:'build',html:SB.html,name:nm})}):fetch(W+'/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:SB.html,name:nm})}));
+    const j=await r.json().catch(()=>({}));if(!r.ok||j.error)throw new Error(j.error||('خطأ '+r.status));
+    const slug=j.slug,t0=Date.now();
     for(;;){const e=(Date.now()-t0)/1000;st('🏗️ يبني التطبيق… باقي تقريباً '+Math.max(5,Math.round(360-e))+' ث');await sleep(8000);
-      const rl=await fetch(A+'/releases/tags/'+slug,{headers:H});
-      if(rl.ok){const as=((await rl.json()).assets||[])[0];if(as){await saveImg(as.browser_download_url,nm+'.apk','application/vnd.android.package-archive',(p,t)=>st(t));return}}
+      const s=await fetch(G?W+'?path=status&slug='+encodeURIComponent(slug):W+'/status?slug='+encodeURIComponent(slug)).then(x=>x.json()).catch(()=>({}));
+      if(s.url){await saveImg(s.url,nm+'.apk','application/vnd.android.package-archive',(p,t)=>st(t));return}
       if(e>900)throw new Error('تأخر البناء')}}
   catch(e){st('⚠️ '+e.message)}}
 </script>
