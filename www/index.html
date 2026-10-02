@@ -66,9 +66,141 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
 #lvb{flex:none;white-space:nowrap;font-size:13px;padding:8px 12px;border-radius:10px;background:var(--card);color:var(--mut)}
 .dots i{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:#9fb4ff;animation:bn 1.2s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes bn{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 #lbx{touch-action:none;overflow:hidden}#lbi{touch-action:none;max-width:100%;max-height:72%;transform-origin:center;will-change:transform}#lbp{display:none;width:70%;height:6px;background:#2a3452;border-radius:4px;margin-top:12px;overflow:hidden}#lbpb{height:100%;width:0;background:var(--ac);transition:width .2s}
+/* ===== طبقة التصميم الاحترافي ===== */
+:root{--bg:#0a0e19;--bg2:#0e1424;--card:#141b2e;--card2:#1a2340;--bd:rgba(255,255,255,.07);--tx:#e9edfb;--mut:#8d97b5;--ac:#5b8cff;--ac2:#8b5cf6;--ok:#1fa97a;--r:#ff5a6a;--grad:linear-gradient(135deg,#5b8cff,#8b5cf6);--sh:0 8px 24px rgba(0,0,0,.35);--rad:18px}
+html{-webkit-tap-highlight-color:transparent;color-scheme:dark}
+body{background:radial-gradient(120% 60% at 50% -10%,#16204a 0%,var(--bg) 55%) fixed,var(--bg);font-family:"Segoe UI",system-ui,-apple-system,Tahoma,Roboto,sans-serif;letter-spacing:.1px;-webkit-font-smoothing:antialiased}
+::selection{background:#5b8cff55}
+*{scrollbar-width:thin;scrollbar-color:#2a3558 transparent}
+button{transition:transform .12s ease,background .2s ease,opacity .2s ease,box-shadow .2s ease;-webkit-user-select:none;user-select:none}
+button:active{transform:scale(.96)}
+input,textarea,select{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:11px 14px;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px #5b8cff33}
+input::placeholder,textarea::placeholder{color:#6c7696}
+/* الرأس */
+header{position:sticky;top:0;z-index:5;padding:12px 16px 10px;background:linear-gradient(var(--bg),#0a0e19cc 70%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+header>div:first-child>div{font-size:19px!important;letter-spacing:.2px}
+header>div:first-child small:first-child{color:var(--ac);font-weight:600!important}
+header .ic,.ic{width:40px;height:40px;padding:0;margin-inline-start:6px;border-radius:12px;background:var(--card);border:1px solid var(--bd);font-size:18px;display:inline-grid;place-items:center}
+#ct{font-size:12px;margin-top:2px}
+/* التبويبات */
+#tabs{margin:2px 16px 10px;padding:4px;gap:4px;background:var(--card);border:1px solid var(--bd);border-radius:16px}
+.tb{padding:10px 8px;border-radius:12px;background:transparent;font-weight:600;font-size:14px}
+.tb.on{background:var(--grad);color:#fff;box-shadow:0 6px 16px #5b8cff44}
+/* الرسائل */
+#msgs{padding:10px 16px 14px;gap:12px;scroll-behavior:smooth}
+.m{padding:12px 15px;border-radius:20px;line-height:1.8;font-size:15.5px;animation:rise .28s ease both;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.u{background:var(--grad);color:#fff;border-end-start-radius:6px}
+.a{background:var(--card);border:1px solid var(--bd);border-end-end-radius:6px}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.m img{border-radius:14px}
+pre{background:#080c16;border:1px solid var(--bd);border-radius:14px;padding:12px;font-size:13px;line-height:1.6}
+code{background:#0c1220;border:1px solid var(--bd);font-size:.92em}
+pre code{background:none;border:0;padding:0}
+/* الشاشة الرئيسية */
+.hero{padding:34px 4px 10px}
+.hh{font-size:32px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hs{font-size:26px;line-height:1.35;color:var(--tx);margin-bottom:22px}
+.chip{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 16px;font-size:14.5px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.chip:active{background:var(--card2)}
+/* منطقة الكتابة */
+#comp{padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 22%);border-top:0}
+#modes{gap:8px;margin-bottom:6px;padding:2px 0 4px;scrollbar-width:none}#modes::-webkit-scrollbar{display:none}
+#mdb,#imb,#web,#vo,#lvb,.md{min-height:36px;padding:0 14px!important;border-radius:999px!important;border:1px solid var(--bd);font-size:13px!important;font-weight:600;display:inline-flex;align-items:center}
+#mdb{background:rgba(91,140,255,.16);border-color:#5b8cff66;color:#cfe0ff}
+#imb,#lvb,#web,#vo{background:var(--card);color:var(--mut)}
+#imb.on{background:rgba(91,140,255,.22);color:#fff;border-color:#5b8cff88}
+#web.on,#vo.on{background:rgba(31,169,122,.22);color:#aef0d6;border-color:#1fa97a88}
+.md.on{background:rgba(91,140,255,.22);outline:0;border-color:#5b8cff88}
+#qs{padding:0 6px 8px!important;font-size:12px!important;color:var(--mut)}
+.row{gap:8px;align-items:flex-end;padding:6px;background:var(--card);border:1px solid var(--bd);border-radius:26px;box-shadow:var(--sh)}
+#inp{border:0;background:transparent;box-shadow:none!important;padding:10px 6px;font-size:15.5px;max-height:120px}
+.rb{width:42px!important;height:42px!important;font-size:17px!important;background:var(--grad);box-shadow:0 6px 16px #5b8cff44}
+.rb.g{background:transparent;box-shadow:none;color:var(--mut)}
+.rb.g:active{background:var(--card2)}
+#snd{width:44px!important;height:44px!important}
+#th{margin-bottom:6px}#th img{height:60px;border-radius:12px;border:1px solid var(--bd)}
+#imgm{border:1px solid var(--bd);background:var(--card)!important;border-radius:14px!important}
+/* البطاقات والأزرار */
+.pad{padding:6px 16px 28px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;margin-bottom:14px;box-shadow:var(--sh);line-height:1.7}
+.card b{font-size:16px}
+.card label{display:block;margin:12px 0 6px;font-weight:600}
+.btn{background:var(--grad);border-radius:14px;padding:14px;font-size:15px;font-weight:700;color:#fff;box-shadow:0 8px 20px #5b8cff40;margin-top:12px}
+.btn.s{background:var(--card2);color:var(--tx);box-shadow:none;border:1px solid var(--bd)}
+.btn:disabled{opacity:.5}
+iframe{border:1px solid var(--bd);border-radius:18px;box-shadow:var(--sh)}
+#sbs{line-height:1.7}
+.xi,.ci{border-bottom:1px solid var(--bd)}
+/* القوائم والنوافذ */
+#cl,#ov{background:var(--bg)}
+#set{background:rgba(8,11,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#ms{background:rgba(4,6,12,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.msb{background:var(--card);border:1px solid var(--bd);border-bottom:0;border-radius:26px 26px 0 0;position:relative;padding-top:26px}
+.msb::before{content:"";position:absolute;top:9px;left:50%;margin-left:-22px;width:44px;height:5px;border-radius:5px;background:#2e3a60}
+.mo{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:14px}
+.mo.on{border-color:var(--ac);background:rgba(91,140,255,.12);outline:0}
+.pmd{background:var(--bg2);border:1px solid var(--bd)}
+#lbx{background:rgba(0,0,0,.92)}.lbb button{background:var(--grad);border-radius:14px}
+#lock{background:radial-gradient(100% 60% at 50% 0,#16204a,var(--bg))!important}
+.dots i{background:var(--ac)}
+@media (min-width:700px){body{border-inline:1px solid var(--bd)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== الحركات والتأثيرات ===== */
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(40% 30% at 20% 20%,#5b8cff26,transparent 70%),radial-gradient(35% 30% at 80% 70%,#8b5cf626,transparent 70%);animation:aur 22s ease-in-out infinite alternate}
+@keyframes aur{to{transform:translate3d(6%,4%,0) scale(1.15)}}
+.btn,.tb,.chip,.mo,.rb,.ic,#mdb,#imb,#web,#lvb,#vo,.md{position:relative;overflow:hidden}
+.rp{position:absolute;border-radius:50%;background:rgba(255,255,255,.28);transform:scale(0);animation:rpl .55s ease-out forwards;pointer-events:none}
+@keyframes rpl{to{transform:scale(1);opacity:0}}
+.btn:not(.s)::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);transform:translateX(-120%);animation:shine 4.5s ease-in-out infinite}
+@keyframes shine{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.view.on{animation:vin .32s cubic-bezier(.2,.8,.3,1) both}
+@keyframes vin{from{opacity:0;transform:translateY(12px)}}
+#ms.on{animation:fadein .2s ease both}
+#ms.on .msb{animation:sheet .34s cubic-bezier(.2,.9,.3,1) both}
+@keyframes sheet{from{transform:translateY(100%)}}
+@keyframes fadein{from{opacity:0}}
+#cl.on{animation:slidein .3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes slidein{from{opacity:0;transform:translateX(-28px)}}
+#set.on{animation:zoomin .25s ease both}
+@keyframes zoomin{from{opacity:0;transform:scale(.97)}}
+body>div[style*="bottom:110px"]{animation:pop .28s cubic-bezier(.2,.9,.3,1) both;border:1px solid var(--bd);box-shadow:var(--sh)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}}
+.hh{background-size:220% 100%;background-image:linear-gradient(90deg,#5b8cff,#8b5cf6,#38bdf8,#5b8cff);animation:flow 7s linear infinite}
+@keyframes flow{to{background-position:-220% 0}}
+.hs{animation:rise .5s .08s ease both}
+.chips .chip{animation:rise .45s ease both}
+.chips .chip:nth-child(1){animation-delay:.12s}.chips .chip:nth-child(2){animation-delay:.2s}.chips .chip:nth-child(3){animation-delay:.28s}.chips .chip:nth-child(4){animation-delay:.36s}.chips .chip:nth-child(5){animation-delay:.44s}.chips .chip:nth-child(n+6){animation-delay:.5s}
+#snd.rd{animation:glow 1.8s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 8px #5b8cff22,0 6px 16px #5b8cff55}}
+.dots i{animation:bn 1.2s infinite}
+/* شاشة البداية */
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(100% 60% at 50% 0,#16204a,#0a0e19);animation:spl 0s 3.2s forwards;transition:opacity .45s ease,transform .45s ease}
+#splash.out{opacity:0;transform:scale(1.04);pointer-events:none}
+@keyframes spl{to{opacity:0;visibility:hidden;pointer-events:none}}
+#splash .lg{width:96px;height:96px;border-radius:28px;background:var(--grad);display:grid;place-items:center;font-size:48px;box-shadow:0 14px 40px #5b8cff55;animation:lgp 1.6s ease-in-out infinite}
+@keyframes lgp{50%{transform:scale(1.07);box-shadow:0 18px 54px #8b5cf666}}
+#splash .nm{font-size:30px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:rise .6s .1s ease both}
+#splash .sb{color:var(--mut);font-size:13px;letter-spacing:2px;animation:rise .6s .25s ease both}
+#splash .ld{width:120px;height:4px;border-radius:4px;background:#1c2540;overflow:hidden;margin-top:10px}
+#splash .ld i{display:block;height:100%;width:40%;border-radius:4px;background:var(--grad);animation:ldm 1.1s ease-in-out infinite}
+@keyframes ldm{0%{transform:translateX(250%)}100%{transform:translateX(-250%)}}
 </style>
 </head>
 <body>
+<div id="splash"><div class="lg">🤖</div><div class="nm">قاسم</div><div class="sb">MOD0</div><div class="ld"><i></i></div></div>
+<script>
+(function(){function hide(){var x=document.getElementById('splash');if(x){x.classList.add('out');setTimeout(function(){x&&x.remove()},500)}}
+addEventListener('load',function(){setTimeout(hide,900)});setTimeout(hide,3000);
+var sel='.btn,.tb,.chip,.mo,.rb,.ic,#mdb,#imb,#web,#lvb,#vo,.md';
+document.addEventListener('pointerdown',function(e){try{var b=e.target.closest&&e.target.closest(sel);if(!b||b.disabled)return;
+if(navigator.vibrate)navigator.vibrate(8);
+var r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*1.6,s=document.createElement('span');s.className='rp';
+s.style.cssText='width:'+d+'px;height:'+d+'px;left:'+(e.clientX-r.left-d/2)+'px;top:'+(e.clientY-r.top-d/2)+'px';
+b.appendChild(s);setTimeout(function(){s.remove()},600)}catch(_){}},{passive:true});
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){var s=document.getElementById('snd');if(s)s.classList.toggle('rd',!!e.target.value.trim())}});
+})();
+</script>
 <header><div onclick="openList()" style="cursor:pointer;max-width:56%;overflow:hidden"><div style="font-size:18px;font-weight:700">🤖 قاسم <small style="font-weight:400">MOD0</small></div><small id="ct" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></small></div><div><button class="ic" onclick="newChat()">➕</button><button class="ic" onclick="openList()">📂</button><button class="ic" onclick="showSet()">⚙️</button></div></header>
 <div id="tabs"><button class="tb on" onclick="tab(0)">💬 قاسم</button><button class="tb" onclick="tab(3)">🛠️ استوديو</button></div>
 
@@ -92,9 +224,9 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
   <div class="card" id="par" style="display:none"><div id="pat" style="line-height:1.75;font-size:15px;white-space:pre-wrap"></div><button class="btn s" onclick="copyPA()">📋 نسخ</button><br><small id="pad"></small></div>
 </div></div>
 <div class="view" id="v2"><div class="pad"><div class="card"><b>🛠️ استوديو قاسم</b><br><small>صف لعبة أو تطبيق 2D، جرّبه هنا، اطلب تعديلات، وإذا عجبك حوّله لـ APK.</small>
-<label>النموذج</label><select id="sbm"><option value="fast">⚡ سريع</option><option value="think" selected>🧠 تفكير</option><option value="deep">🔥 أقوى</option></select>
-<label>شو تبي؟</label><textarea id="sbp" rows="3" placeholder="مثلاً: لعبة ثعبان بألوان نيون…"></textarea>
-<button class="btn" onclick="studioGo(0)">✨ ابنِ جديد</button><button class="btn s" onclick="studioGo(1)">✏️ عدّل الحالي</button><div id="sbs" style="margin-top:8px;font-size:13px;color:var(--mut)"></div></div>
+<label>النموذج</label><select id="sbm"><option value="fast">⚡ سريع</option><option value="think" selected>🧠 تفكير</option><option value="deep">🔥 أعمق</option></select>
+<label>شو تبي؟</label><textarea id="sbp" rows="3" placeholder="مثلاً: لعبة ثعبان نيون، أو آلة حاسبة علمية، أو مؤقت بومودورو…"></textarea>
+<button class="btn" onclick="studioGo(0)">🆕 ابنِ جديد</button><button class="btn s" onclick="studioGo(1)">✏️ عدّل الحالي</button><div id="sbs" style="margin-top:8px;font-size:13px;color:var(--mut)"></div></div>
 <iframe id="sbf" sandbox="allow-scripts" style="display:none"></iframe><div id="sbx" style="display:none"><button class="btn" onclick="sbApk()">📱 اعمل APK</button><button class="btn s" onclick="sbSave()">💾 حفظ HTML</button></div></div></div>
 <div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
 
@@ -177,13 +309,13 @@ function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onc
 // ---------- المحادثة ----------
 const SYS={
 fast:'الوضع: سريع. أجب مباشرة وبدقة في أقل عدد ممكن من الجمل (سطر أو سطران للأسئلة البسيطة). لا تخمّن: إن لم تكن متأكداً قلها بإيجاز واقترح كيف يتحقق المستخدم. تأكد أنك أجبت عن كل أجزاء السؤال.',
-think:'الوضع: تفكير. اتبع هذا بصمت قبل الجواب: (1) حدّد المطلوب بدقة وما يلزم ليكون الجواب كاملاً. (2) قسّم المسألة إلى خطوات صغيرة وحلّها بالترتيب. (3) تحقق من النتيجة بطريقة مختلفة (إعادة حساب أو مثال اختبار أو فحص منطقي). (4) أعطِ الجواب النهائي أولاً بوضوح ثم أهم خطوات الحل فقط. إذا لم يكفِ الجواب الدقيق بسبب نقص معلومة فاذكر الافتراض الذي اعتمدت عليه.',
-deep:'الوضع: أقوى (أعلى مستوى تفكير). اتبع هذا بصمت قبل الجواب: (1) حدّد الهدف الحقيقي والافتراضات الضمنية ومعايير الجواب الجيد. (2) ضع حلّين أو فرضيتين مختلفتين على الأقل، قارن بينهما، واختر الأقوى مع السبب. (3) نفّذ الحل بدقة وبخطوات متتابعة. (4) اختبر نتيجتك: أعد الحساب بطريقة مستقلة، جرّب حالات حدّية وأمثلة مضادة، وابحث عن أقوى اعتراض ممكن على جوابك. (5) صحّح أي خطأ وجدته. اكتب الجواب بهذا الترتيب: النتيجة النهائية أولاً، ثم الشرح المختصر المنظم، ثم «درجة الثقة» (عالية أو متوسطة أو منخفضة) مع ما قد يغيّر الجواب. في الكود اكتب حلاً كاملاً يعمل مع معالجة الأخطاء وطريقة التشغيل. لا تطل بلا فائدة: الدقة قبل الطول.'
+think:'الوضع: تفكير عميق. اتبع هذا بصمت قبل الجواب: (1) أعد صياغة المطلوب بدقة واستخرج القيود والأرقام والمعطيات وما يلزم ليكون الجواب كاملاً. (2) ضع خطة من خطوات صغيرة مرتبة وحلّها واحدة واحدة دون قفز. (3) فكّر في فرضية بديلة واحدة على الأقل وقارنها بحلّك. (4) تحقق من النتيجة بطريقة مستقلة (إعادة حساب، مثال اختبار، حالة حدّية، فحص منطقي) وابحث عن خطأ محتمل فيها. (5) صحّح أي خلل ثم اكتب الجواب النهائي أولاً بوضوح ثم أهم الخطوات فقط. إذا نقصت معلومة فصرّح بالافتراض الذي اعتمدت عليه.',
+deep:'الوضع: أعمق (أعلى مستوى تفكير). اتبع هذا بصمت قبل الجواب: (1) حدّد الهدف الحقيقي والافتراضات الضمنية والقيود ومعايير الجواب الجيد. (2) فكّك المسألة إلى مسائل فرعية وحدّد أصعب جزء فيها وابدأ به. (3) ضع ثلاثة حلول أو فرضيات مختلفة، قارن بينها بمعايير واضحة، واختر الأقوى مع السبب. (4) نفّذ الحل بدقة وبخطوات متتابعة. (5) راجع نفسك كمدقق مستقل: أعد الحساب بطريقة ثانية، جرّب حالات حدّية وأمثلة مضادة، وابحث عن أقوى اعتراض ممكن على جوابك. (6) صحّح أي خطأ ثم راجع مرة أخيرة أن كل أجزاء الطلب مغطاة. اكتب الجواب بهذا الترتيب: النتيجة النهائية أولاً، ثم الشرح المختصر المنظم، ثم «درجة الثقة» (عالية أو متوسطة أو منخفضة) مع ما قد يغيّر الجواب. في الكود اكتب حلاً كاملاً يعمل مع معالجة الأخطاء وطريقة التشغيل. لا تطل بلا فائدة: الدقة قبل الطول.'
 };
 let ac=null,MODELS=null,wm=ls.get('wm','auto');
 const isOss=m=>/gpt-oss/.test(m),is401=e=>/^401/.test(e);
 const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{}),...(ex||{})});
-const EFF={fast:'low',think:'medium',deep:'high'},MAXT={fast:1200,think:3500,deep:6000};
+const EFF={fast:'low',think:'high',deep:'high'},MAXT={fast:1200,think:5500,deep:7000};
 const VX=[{},{reasoning_effort:'none'}];
 const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. إذا سُئلت من أنت فقل: أنا قاسم من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إنها تفاصيل داخلية تخص MOD0؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك.\nطريقة عملك: افهم الهدف الحقيقي وراء السؤال قبل الجواب، وتأكد أن إجابتك تغطي كل أجزاء الطلب. قسّم المشكلات المعقدة إلى خطوات وتحقق من الحسابات والمنطق والحالات الحدّية قبل أن تجيب. ميّز بين ما تعرفه بيقين وما تخمّنه، وقل \"لا أعرف\" أو \"غير متأكد\" عند اللزوم، ولا تختلق أرقاماً أو مصادر أو روابط. معلوماتك المدربة قديمة (قبل 2025 غالباً) فلا تعتمد عليها في كل ما قد يكون تغيّر. ابدأ بالجواب مباشرة ثم التفاصيل، بلا حشو ولا مجاملة ولا تكرار، واستخدم التنسيق الأنسب دون مبالغة. كن صريحاً: صحّح المستخدم بلطف إذا أخطأ ولا توافقه لمجرد الإرضاء، وإذا وجدت خطأ في جوابك السابق فاعترف به وصحّحه. في النصائح أعطِ خطوات عملية محددة مع المفاضلات والمخاطر. في الكود أعطِ كوداً كاملاً يعمل مع معالجة الأخطاء وشرح مختصر وافتراضاتك. في الحساب أظهر الخطوات المهمة وراجع الناتج. إذا كان الطلب غامضاً جداً اسأل سؤالاً واحداً محدداً، وإلا افترض الأنسب وصرّح بافتراضك. إذا طلب المستخدم تحديث هذا التطبيق (قاسم) أو الحصول على نسخة أحدث منه بأي صياغة فأجب بهذه الكلمة فقط بدون أي نص آخر: [[UPDATE]]. اللغة: العربية بلهجة بسيطة إلا إذا طلب المستخدم غير ذلك.';
 // ---- وكيل Google Script: المفاتيح على الخادم والتطبيق يرسل الطلب فقط ----
@@ -263,7 +395,7 @@ async function send(){
   if(!ready()){toast('الخدمة غير متاحة حالياً');return}
   const wantImg=(imgMode||IMGRX.test(t))&&!imgs.length&&!docs.length&&!!t;
   const HARD=/(كود|برمج|احسب|معادل|قارن|حلل|اشرح|خطوات|لماذا|ليش|كيف|خطة|اكتب|[\d٠-٩]\s*[\+\-\*\/×÷^xX]\s*[\d٠-٩]|code|function|bug|error|why|how)/i,
-    easy=mode==='think'&&!wantImg&&!imgs.length&&!docs.length&&t.length>0&&t.length<=60&&!HARD.test(t);
+    easy=false;
   const cost=wantImg?COST[mode]:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=easy?'low':EFF[mode],max0=easy?1500:MAXT[mode];
   if(!spend(cost))return;
   if(wantImg)return imageFlow(t,cost);
@@ -452,7 +584,7 @@ async function imageFlow(t,cost){
   const ok=await showImg(out,en,t,true,w,h);if(!ok)refund(cost);
   busy=false;$('snd').textContent='➤'}
 // ---------- قائمة النماذج ----------
-function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔥 أقوى','أقوى وضع: يقارن حلولاً ويتحقق بأكثر من طريقة ويقيّم ثقته — '+COST.deep+' نقاط']]}
+function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔥 أعمق','الأعمق والأقوى: يخطط ويقارن حلولاً ويختبر ويراجع نفسه قبل الجواب — '+COST.deep+' نقاط']]}
 function modeBtn(){const m=MODES().find(x=>x[0]===mode);$('mdb').textContent=m[1]+' ▾'}
 function openModes(){$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
 function closeModes(){$('ms').classList.remove('on')}
@@ -489,11 +621,11 @@ async function orFallback(body){if(!ORK.length||body.tools||/compound|qwen|llama
   for(const k of ORK){try{const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+k},signal:ac.signal,body:JSON.stringify(nb)});if(r.ok)return r}catch(e){if(e.name==='AbortError')throw e}}return null}
 // ---------- الاستوديو ----------
 let SB={html:'',busy:0,err:''};
-const SBSYS='أنت مطوّر ألعاب وتطبيقات ويب 2D محترف. اكتب ملف HTML واحد كامل ومستقل (CSS وJS داخله، بدون مكتبات أو روابط خارجية) لشاشة جوال باللمس. ابدأ الملف بتعليق HTML قصير للخطة (الفكرة، التحكم، الفوز والخسارة، الشكل) في 5 أسطر كحد أقصى ثم الكود. الجودة المطلوبة: viewport meta وtouch-action:none ومنع التمرير والتكبير؛ canvas متجاوب مع devicePixelRatio؛ شاشة بداية وزر إعادة ونتيجة وأعلى نتيجة (localStorage داخل try/catch)؛ صعوبة تتصاعد تدريجياً؛ حركة سلسة بـ requestAnimationFrame مع delta-time؛ تأثيرات خفيفة (اهتزاز الشاشة، جزيئات، تكبير وتصغير) وأصوات WebAudio قصيرة مع زر كتم؛ ألوان متناسقة وخط واضح وواجهة عربية RTL؛ تحقق من القيم الفارغة لتجنب الأخطاء. تكون اللعبة ممتعة من أول 10 ثواني. أعد الكود فقط داخل كتلة ```html بدون أي شرح.';
+const SBSYS='أنت مصمم ومطوّر واجهات محترف. اصنع ما يطلبه المستخدم سواء كان لعبة أو تطبيقاً أو أداة (آلة حاسبة، محوّل وحدات، مؤقت، قائمة مهام، متتبع، نماذج، لوحة معلومات…) كملف HTML واحد كامل ومستقل (CSS وJS داخله، بدون مكتبات أو روابط خارجية) لشاشة جوال باللمس. حدّد النوع من الطلب واختر له التصميم الأنسب. ابدأ بتعليق HTML من سطرين كحد أقصى ثم الكود مباشرة. قاعدة الحجم: كود مضغوط وذكي لا يتجاوز نحو 350 سطراً، بدون تعليقات وبأسماء متغيرات قصيرة، وأعطِ الأولوية لأن يعمل كل شيء بلا أخطاء وأن يكتمل الملف حتى </html>. الأساس التقني: viewport meta، منع التكبير والتمرير غير المقصود، تخطيط متجاوب بـ flex/grid، RTL وواجهة عربية، تحقق من القيم الفارغة، localStorage داخل try/catch. التصميم الاحترافي: متغيرات CSS للألوان، ألوان متناسقة وتدرجات هادئة، زوايا مدورة وظلال ناعمة، خط واضح بأحجام مريحة للمس (أزرار لا تقل عن 44px)، حركات انتقال سلسة، اهتزاز خفيف navigator.vibrate عند اللمس، وأيقونات إيموجي مناسبة للمحتوى لتزيين الأزرار والعناوين (لا تستخدم رموزاً على شكل صليب أو نجمة براقة). إذا كانت لعبة: شاشة بداية وزر إعادة ونتيجة وأعلى نتيجة، صعوبة تتصاعد تدريجياً، requestAnimationFrame مع delta-time، canvas متجاوب مع devicePixelRatio، جزيئات واهتزاز شاشة وأصوات WebAudio قصيرة مع زر كتم، وتكون ممتعة من أول 10 ثوانٍ. إذا كان تطبيقاً أو أداة: كل الوظائف تعمل فعلاً بدقة (مثلاً الحاسبة تدعم الترتيب الصحيح للعمليات والفاصلة والمسح والتراجع)، حالات الخطأ تظهر برسالة واضحة، وتحفظ الإعدادات والبيانات المهمة. أعد الكود فقط داخل كتلة ```html بدون أي شرح.';
 const REFSYS='أنت مطوّر ويب محترف تعدّل ملف HTML موجود. لا تعد الملف كاملاً. أعد فقط كتل تعديل (واحدة أو أكثر) بهذه الصيغة بالضبط:\n<<<<<<< SEARCH\n(أسطر منسوخة حرفياً من الكود الحالي، من 2 إلى 8 أسطر وتكون فريدة)\n=======\n(النص الجديد)\n>>>>>>> REPLACE\nإذا كان التعديل يغيّر أكثر من نصف الملف فأعد الملف كاملاً داخل كتلة ```html بدلاً من ذلك. بدون أي شرح.';
 const SEFF={fast:'low',think:'low',deep:'medium'},SCAP={fast:5000,think:6500,deep:6500},SPCAP=2500;
 const SBREP='<script>addEventListener("error",function(e){parent.postMessage({qerr:(e.message||"error")+" (سطر "+e.lineno+")"},"*")});addEventListener("unhandledrejection",function(e){parent.postMessage({qerr:"promise: "+(e.reason&&e.reason.message||e.reason)},"*")})<\/script>';
-const SBTIPS=['💡 اللعبة تُكتب سطراً سطراً… خلّك معي','🎮 بعد ما تجهز جرّبها واطلب تعديلاً صغيراً بدل إعادة البناء — أسرع وأخف','📱 زر «اعمل APK» يحوّلها لتطبيق تثبّته على جوالك','✨ كلما كان وصفك أدق (الشكل، التحكم، الفوز) طلعت اللعبة أحسن'];
+const SBTIPS=['💡 الكود يُكتب سطراً سطراً… خلّك معي','🎮 بعد ما تجهز جرّبه واطلب تعديلاً صغيراً بدل إعادة البناء — أسرع وأخف','📱 زر «اعمل APK» يحوّله لتطبيق تثبّته على جوالك','💡 كلما كان وصفك أدق (الشكل، الألوان، التحكم) طلع الناتج أحسن'];
 function sbProg(p,t){$('sbs').innerHTML='<div style="height:6px;background:#1c2540;border-radius:6px;overflow:hidden"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,#4f8cff,#7c5cff);transition:width .3s"></div></div><div style="margin-top:6px">'+t+'</div>'}
 function sbShow(h){const f=$('sbf');f.srcdoc=/<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,m=>m+SBREP):/<html[^>]*>/i.test(h)?h.replace(/<html[^>]*>/i,m=>m+SBREP):SBREP+h;f.style.display='block'}
 function sbFull(r){const mm=r.match(/```html\s*([\s\S]*?)```/i)||r.match(/```html\s*([\s\S]*)$/i)||r.match(/(<!DOCTYPE[\s\S]*<\/html>)/i);return mm?mm[1]:''}
@@ -523,15 +655,23 @@ async function studioGo(refine,fix){
       if(!h){sbProg(30,'🔁 يعيد المحاولة بطريقة ثانية…');
         const m2=[{role:'system',content:SBSYS},{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'عدّل حسب هذا الطلب وأعد الملف كاملاً: '+t}];
         r=await streamTo(M,m2,SEFF[m],sbMax(m2,SCAP[m]),onT);stop();h=sbFull(r)}}
-    else h=sbFull(r);
-    if(!/<\/html>/i.test(h))throw new Error('الكود انقطع قبل ما يكتمل — بسّط الطلب أو جرّب وضع أخف');
+    else{h=sbFull(r);
+      for(let k=0;k<2&&h&&!/<\/html>/i.test(h)&&!ac.signal.aborted;k++){
+        sbProg(90,'🔁 يكمل الكود… ('+(k+1)+'/2)');
+        const tail=h.slice(-2200),m3=[{role:'system',content:'أكمل ملف HTML التالي من حيث انقطع بالضبط بدون تكرار أي جزء وبدون شرح، واختمه بإغلاق كل الوسوم حتى </html>. أعد التتمة فقط داخل كتلة ```html.'},{role:'user',content:'الطلب الأصلي: '+t+'\nآخر جزء كُتب:\n'+tail}];
+        const c2=await streamTo(M,m3,'low',sbMax(m3,SCAP[m]),()=>{});stop();
+        const mm=c2.match(/```html\s*([\s\S]*?)(```|$)/i),add=mm?mm[1]:c2;
+        const ov=Math.min(300,tail.length);let cut=0;
+        for(let L=ov;L>=20;L--){if(add.startsWith(tail.slice(-L))){cut=L;break}}
+        h+=add.slice(cut)}}
+    if(!/<\/html>/i.test(h))throw new Error('الكود انقطع قبل ما يكتمل — بسّط الطلب شوي وجرّب مرة ثانية');
     SB.html=h;sbShow(h);try{ls.set('sb',h)}catch(e){}
     $('sbx').style.display='block';$('sbs').textContent='✅ جاهز — جرّبه، واكتب أي تعديل، أو اضغط APK';$('sbp').value=''}
   catch(e){refund(c);$('sbs').textContent='⚠️ '+(e.name==='AbortError'?'تم الإيقاف':'ما قدرت أبني: '+e.message)}
   finally{clearInterval(tp);clearInterval(tw);SB.busy=0}}
 addEventListener('message',e=>{const d=e.data;if(!d||!d.qerr||e.source!==$('sbf').contentWindow||SB.err||SB.busy)return;SB.err=String(d.qerr).slice(0,200);
   let b=$('sbe');if(!b){b=document.createElement('button');b.id='sbe';b.className='btn s';$('sbx').appendChild(b)}
-  b.style.display='';b.textContent='🔧 فيه خطأ في اللعبة — صلّحه تلقائياً (نقطة)';b.onclick=()=>studioGo(1,SB.err)});
+  b.style.display='';b.textContent='🔧 فيه خطأ بالتطبيق — صلّحه تلقائياً (نقطة)';b.onclick=()=>studioGo(1,SB.err)});
 // ---------- التحديث الذاتي (من GitHub Releases) ----------
 const APPVER=+(window.APP_VER||0);
 const UPRX=/^(حدثني|حدث|حدث التطبيق|حدث لي التطبيق|حدث نفسك|تحديث|التحديث|تحديث التطبيق|في تحديث|فيه تحديث|هل في تحديث|هل فيه تحديث|نسخة جديدة|update|check update)\s*[!.؟?]*$/i;
@@ -566,7 +706,7 @@ function sbSave(){const a=document.createElement('a');a.href=URL.createObjectURL
 async function sbApk(){
   const W=String((window.APP&&APP.build)||'').replace(/\/+$/,''),st=t=>$('sbs').textContent=t,G=/script\.google\.com|googleusercontent\.com/.test(W);
   if(!W){st('⚠️ رابط خادم البناء غير مضبوط');return}
-  if(!SB.html){st('⚠️ ابنِ لعبة أولاً');return}
+  if(!SB.html){st('⚠️ ابنِ تطبيقاً أو لعبة أولاً');return}
   const nm=(prompt('اسم التطبيق:','لعبتي')||'').trim();if(!nm)return;
   const old=$('sbi');if(old)old.remove();
   try{st('📤 يرسل…');

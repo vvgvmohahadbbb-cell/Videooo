@@ -24,7 +24,7 @@ jobs:
           if [ -n "$KS" ]; then
             mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore && echo "using fixed signing key"
           else
-            echo "no fixed key: updates over an older install will need a reinstall"
+            echo "::warning::DEBUG_KEYSTORE_B64 غير مضبوط: كل نسخة بتوقيع مختلف ولازم تحذف القديمة قبل التثبيت"
           fi
       - run: npm install
       - run: npx cap add android
