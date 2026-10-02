@@ -92,7 +92,7 @@ small{color:var(--mut)}label{color:var(--mut);font-size:13px}
   <div class="card" id="par" style="display:none"><div id="pat" style="line-height:1.75;font-size:15px;white-space:pre-wrap"></div><button class="btn s" onclick="copyPA()">📋 نسخ</button><br><small id="pad"></small></div>
 </div></div>
 <div class="view" id="v2"><div class="pad"><div class="card"><b>🛠️ استوديو قاسم</b><br><small>صف لعبة أو تطبيق 2D، جرّبه هنا، اطلب تعديلات، وإذا عجبك حوّله لـ APK.</small>
-<label>النموذج</label><select id="sbm"><option value="fast">⚡ سريع</option><option value="think" selected>🧠 تفكير</option><option value="deep">🔬 أعمق</option></select>
+<label>النموذج</label><select id="sbm"><option value="fast">⚡ سريع</option><option value="think" selected>🧠 تفكير</option><option value="deep">🔥 أقوى</option></select>
 <label>شو تبي؟</label><textarea id="sbp" rows="3" placeholder="مثلاً: لعبة ثعبان بألوان نيون…"></textarea>
 <button class="btn" onclick="studioGo(0)">✨ ابنِ جديد</button><button class="btn s" onclick="studioGo(1)">✏️ عدّل الحالي</button><div id="sbs" style="margin-top:8px;font-size:13px;color:var(--mut)"></div></div>
 <iframe id="sbf" sandbox="allow-scripts" style="display:none"></iframe><div id="sbx" style="display:none"><button class="btn" onclick="sbApk()">📱 اعمل APK</button><button class="btn s" onclick="sbSave()">💾 حفظ HTML</button></div></div></div>
@@ -175,13 +175,17 @@ $('cam').onchange=$('pic').onchange;
 function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onclick="imgs.splice(${i},1);thumbs()">✕</b></div>`).join('')+docs.map((d,i)=>`<div class="dc">📄 ${esc(d.n)} <span onclick="docs.splice(${i},1);thumbs()">✕</span></div>`).join('')}
 
 // ---------- المحادثة ----------
-const SYS={fast:'الوضع: سريع — جواب مباشر ومختصر.',think:'الوضع: تفكير — قبل الجواب حدّد المطلوب بدقة، وحلّه بخطوات قصيرة، ثم تحقق من النتيجة بطريقة ثانية سريعة. أعطِ الجواب النهائي واضحاً بدون سرد خطواتك الطويلة.',deep:'الوضع: أعمق — حدّد المطلوب والافتراضات، فكّر بحلّين مختلفين على الأقل وقارن بينهما، تحقق من الحسابات والمنطق والحالات الحدّية، ثم أعطِ أفضل جواب بإيجاز واذكر نقطة ضعفه المحتملة إن وُجدت.',promax:''};
+const SYS={
+fast:'الوضع: سريع. أجب مباشرة وبدقة في أقل عدد ممكن من الجمل (سطر أو سطران للأسئلة البسيطة). لا تخمّن: إن لم تكن متأكداً قلها بإيجاز واقترح كيف يتحقق المستخدم. تأكد أنك أجبت عن كل أجزاء السؤال.',
+think:'الوضع: تفكير. اتبع هذا بصمت قبل الجواب: (1) حدّد المطلوب بدقة وما يلزم ليكون الجواب كاملاً. (2) قسّم المسألة إلى خطوات صغيرة وحلّها بالترتيب. (3) تحقق من النتيجة بطريقة مختلفة (إعادة حساب أو مثال اختبار أو فحص منطقي). (4) أعطِ الجواب النهائي أولاً بوضوح ثم أهم خطوات الحل فقط. إذا لم يكفِ الجواب الدقيق بسبب نقص معلومة فاذكر الافتراض الذي اعتمدت عليه.',
+deep:'الوضع: أقوى (أعلى مستوى تفكير). اتبع هذا بصمت قبل الجواب: (1) حدّد الهدف الحقيقي والافتراضات الضمنية ومعايير الجواب الجيد. (2) ضع حلّين أو فرضيتين مختلفتين على الأقل، قارن بينهما، واختر الأقوى مع السبب. (3) نفّذ الحل بدقة وبخطوات متتابعة. (4) اختبر نتيجتك: أعد الحساب بطريقة مستقلة، جرّب حالات حدّية وأمثلة مضادة، وابحث عن أقوى اعتراض ممكن على جوابك. (5) صحّح أي خطأ وجدته. اكتب الجواب بهذا الترتيب: النتيجة النهائية أولاً، ثم الشرح المختصر المنظم، ثم «درجة الثقة» (عالية أو متوسطة أو منخفضة) مع ما قد يغيّر الجواب. في الكود اكتب حلاً كاملاً يعمل مع معالجة الأخطاء وطريقة التشغيل. لا تطل بلا فائدة: الدقة قبل الطول.'
+};
 let ac=null,MODELS=null,wm=ls.get('wm','auto');
 const isOss=m=>/gpt-oss/.test(m),is401=e=>/^401/.test(e);
 const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{}),...(ex||{})});
-const EFF={fast:'low',think:'medium',deep:'high',promax:'high'},MAXT={fast:1200,think:3500,deep:6000,promax:6000};
+const EFF={fast:'low',think:'medium',deep:'high'},MAXT={fast:1200,think:3500,deep:6000};
 const VX=[{},{reasoning_effort:'none'}];
-const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. إذا سُئلت من أنت فقل: أنا قاسم من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إنها تفاصيل داخلية تخص MOD0؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك.\nطريقة عملك: افهم الهدف الحقيقي وراء السؤال قبل الجواب. فكّر بخطوات وتحقق من الحسابات والمنطق والحالات الحدّية. ميّز بين ما تعرفه بيقين وما تخمّنه، وقل "لا أعرف" أو "غير متأكد" عند اللزوم، ولا تختلق أرقاماً أو مصادر أو روابط. معلوماتك المدربة قديمة (قبل 2025 غالباً) فلا تعتمد عليها في كل ما قد يكون تغيّر. ابدأ بالجواب مباشرة ثم التفاصيل، بلا حشو ولا مجاملة ولا تكرار، واستخدم التنسيق الأنسب دون مبالغة. كن صريحاً: صحّح المستخدم بلطف إذا أخطأ ولا توافقه لمجرد الإرضاء. في الكود أعطِ كوداً كاملاً يعمل مع شرح مختصر وافتراضاتك. إذا كان الطلب غامضاً جداً اسأل سؤالاً واحداً محدداً، وإلا افترض الأنسب وصرّح بافتراضك. اللغة: العربية بلهجة بسيطة إلا إذا طلب المستخدم غير ذلك.';
+const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. إذا سُئلت من أنت فقل: أنا قاسم من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إنها تفاصيل داخلية تخص MOD0؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك.\nطريقة عملك: افهم الهدف الحقيقي وراء السؤال قبل الجواب، وتأكد أن إجابتك تغطي كل أجزاء الطلب. قسّم المشكلات المعقدة إلى خطوات وتحقق من الحسابات والمنطق والحالات الحدّية قبل أن تجيب. ميّز بين ما تعرفه بيقين وما تخمّنه، وقل \"لا أعرف\" أو \"غير متأكد\" عند اللزوم، ولا تختلق أرقاماً أو مصادر أو روابط. معلوماتك المدربة قديمة (قبل 2025 غالباً) فلا تعتمد عليها في كل ما قد يكون تغيّر. ابدأ بالجواب مباشرة ثم التفاصيل، بلا حشو ولا مجاملة ولا تكرار، واستخدم التنسيق الأنسب دون مبالغة. كن صريحاً: صحّح المستخدم بلطف إذا أخطأ ولا توافقه لمجرد الإرضاء، وإذا وجدت خطأ في جوابك السابق فاعترف به وصحّحه. في النصائح أعطِ خطوات عملية محددة مع المفاضلات والمخاطر. في الكود أعطِ كوداً كاملاً يعمل مع معالجة الأخطاء وشرح مختصر وافتراضاتك. في الحساب أظهر الخطوات المهمة وراجع الناتج. إذا كان الطلب غامضاً جداً اسأل سؤالاً واحداً محدداً، وإلا افترض الأنسب وصرّح بافتراضك. إذا طلب المستخدم تحديث هذا التطبيق (قاسم) أو الحصول على نسخة أحدث منه بأي صياغة فأجب بهذه الكلمة فقط بدون أي نص آخر: [[UPDATE]]. اللغة: العربية بلهجة بسيطة إلا إذا طلب المستخدم غير ذلك.';
 async function post(body){const m=body.model;let last=null;
   if(usingProxy())return fetch(B()+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,body:JSON.stringify(body)});
   for(let t=0;t<8;t++){
@@ -237,11 +241,12 @@ async function send(){
   if(busy){ac&&ac.abort();return}
   const t=$('inp').value.trim();if(!t&&!imgs.length&&!docs.length)return;
   if(/(حلل|حللي|تحليل)\s*(لي\s*)?شخصيتي/.test(t)&&!imgs.length){$('inp').value='';tab(2);return}
+  if(isUpd(t)&&!imgs.length&&!docs.length){$('inp').value='';doUpdate();return}
   if(!ready()){toast('الخدمة غير متاحة حالياً');return}
   const wantImg=(imgMode||IMGRX.test(t))&&!imgs.length&&!docs.length&&!!t;
   const HARD=/(كود|برمج|احسب|معادل|قارن|حلل|اشرح|خطوات|لماذا|ليش|كيف|خطة|اكتب|[\d٠-٩]\s*[\+\-\*\/×÷^xX]\s*[\d٠-٩]|code|function|bug|error|why|how)/i,
     easy=mode==='think'&&!wantImg&&!imgs.length&&!docs.length&&t.length>0&&t.length<=60&&!HARD.test(t);
-  const cost=wantImg?COST[mode==='promax'?'deep':mode]:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=easy?'low':EFF[mode],max0=easy?1500:MAXT[mode];
+  const cost=wantImg?COST[mode]:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=easy?'low':EFF[mode],max0=easy?1500:MAXT[mode];
   if(!spend(cost))return;
   if(wantImg)return imageFlow(t,cost);
   busy=true;$('snd').textContent='⏹';ac=new AbortController();
@@ -255,18 +260,18 @@ async function send(){
   const wantS=wm!=='off'&&!im.length&&(wm==='on'||mode!=='fast'||HOT.test(t));
   const mkBase=nt=>IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(wantS?SRCH+(wm==='on'?' ابحث دائماً قبل الجواب.':''):'')+(nt?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر المصادر بنهاية جوابك):\n'+nt:'');
   try{
-    if(mode==='promax')txt=await promax({base:mkBase(''),hist:h,first,q:tt,vision:im.length>0,search:wantS,out});
-    else{
-      const cb=v=>{out.innerHTML=md(v).trim()||THK;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
+    {
+      const cb=v=>{out.innerHTML=(/\[\[/.test(v)?'🔄 يتحقق من التحديث…':md(v).trim())||THK;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
       if(wantS){try{txt=await streamTo(M,[{role:'system',content:mkBase('')},...h,first],eff0,max0,cb,[{tools:BST}])}catch(e){if(e.name==='AbortError'||is401(e.message))throw e;txt=''}}
       if(!txt.trim()&&!ac.signal.aborted){
         if(wantS){const r=await searchNotes(t);if(r.notes)notes=r.notes;else sn='⚠️ البحث ما اشتغل ('+esc(r.err)+') فالجواب من معلومات النموذج وقد يكون قديماً'}
         txt=await streamTo(M,[{role:'system',content:mkBase(notes)},...h,first],eff0,max0,cb,im.length?VX:null)}}
   }catch(e){if(e.name!=='AbortError')err=e.message}
   const stopped=ac.signal.aborted;
+  if(!stopped&&/\[\[UPDATE\]\]/.test(txt)){refund(cost);busy=false;$('snd').textContent='➤';doUpdate(out);return}
   if(!txt.trim()){if(!stopped)refund(cost);out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب<br><small>'+esc(err||'رد فاضي')+'</small>'+''+(/^429/.test(err)?'<br>⏳ الخدمة مشغولة مؤقتاً — رجّعت لك نقاطك. جرّب بعد شوي أو اختر وضع أخف.':'')}
   else{const clean=txt.replace(/<think>[\s\S]*?<\/think>/g,'');
-    const tg=(mode==='promax'&&out.querySelector('.pfin'))||out;tg.innerHTML=md(clean)+(sn?'<br><small>'+sn+'</small>':'')+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out,true);
+    const tg=out;tg.innerHTML=md(clean)+(sn?'<br><small>'+sn+'</small>':'')+(stopped?'<br><small>⏹ تم الإيقاف</small>':'');addCp(out,true);
     hist.push({role:'user',content:(im.length?'[صورة] ':'')+(dz.length?'[ملف] ':'')+t},{role:'assistant',content:clean});
     if(hist.length>200)hist.splice(0,hist.length-200);const cc=cur();if(cc){if(cc.title==='محادثة جديدة')cc.title=(t||'صورة').slice(0,30);cc.ts=Date.now()}saveChats();renderHead()}
   busy=false;$('snd').textContent='➤';if(txt.trim())learn().catch(()=>{})}
@@ -366,7 +371,7 @@ function keyStatus(){const s=KS.get(),n=Date.now(),ks=keyList();if(!ks.length)re
     return '🔑 مفتاح '+(i+1)+' (…'+id.slice(-4)+'): '+(c.length?'⏸️ واقف مؤقتاً ('+c.map(([x,v])=>x.split('|')[1]+' حتى '+new Date(v).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})).join('، ')+')':'✅ متاح')+(og?' • حساب …'+og.slice(-4):'')}).join('<br>')+orgGroups().map(a=>'<br>⚠️ المفاتيح '+a.join(' و ')+' من نفس حساب Groq فتشترك بنفس الحد اليومي — للتوسّع لازم مفاتيح من حسابات مختلفة.').join('')}
 function showSet(){$('set').classList.add('on')}
 // ---------- حد الاستخدام (يرجع بعد فترة قصيرة) ----------
-const LIMIT={pts:20,min:10},COST={fast:1,think:2,deep:3,promax:8};
+const LIMIT={pts:20,min:10},COST={fast:1,think:2,deep:3};
 function quota(){let q=ls.get('quota',null);const n=Date.now();if(!q||n-q.t>=LIMIT.min*60000)q={t:n,u:0};return q}
 function qBar(){const el=$('qs');if(!el)return;const q=quota(),mins=Math.max(0,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));
   el.textContent=`⚡ متبقي ${Math.max(0,LIMIT.pts-q.u)}/${LIMIT.pts} نقطة`+(q.u?` • يتجدد بعد ${mins} د`:'')}
@@ -376,44 +381,6 @@ function spend(c){const q=quota();
   if(q.u+c>LIMIT.pts){const mins=Math.max(1,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));toast(`⏳ وصلت الحد المسموح (${LIMIT.pts} نقطة كل ${LIMIT.min} دقايق). ترجع تستخدمه بعد ${mins} دقيقة`+(c>1?'، أو اختر وضع أخف (⚡ سريع = نقطة وحدة).':'.'));return false}
   q.u+=c;ls.set('quota',q);qBar();return true}
 setInterval(qBar,30000);qBar();
-
-// ---------- Pro Max: 3 يفهمون ← 3 يجاوبون ← مدقق ← صائغ رسالة (يظهر التقدم وتقدر تشوف تفكيرهم) ----------
-const PST=['فهم الطلب — نموذجان يفكران بالتوازي','الإجابة — نموذجان يجاوبان بالتوازي','التدقيق — نموذج يراجع الجوابين','صياغة الرسالة — نموذج يجهّز الرد النهائي'];
-function pmUI(out){
-  out.innerHTML='<details class="pmd" open><summary class="pms">👑 Pro Max — يبدأ…</summary><div class="pml"></div></details><div class="pfin"></div>';
-  const L=out.querySelector('.pml'),rows=[],ag=[];
-  PST.forEach((n,i)=>{const r=document.createElement('div');r.className='ps';r.innerHTML='<div class="pst">⏳ '+(i+1)+'. '+n+'</div><div class="pag"></div>';L.appendChild(r);rows.push(r);ag[i]=[];
-    const N=i<2?2:1;for(let j=0;j<N;j++){const d=document.createElement('details');d.className='pa';d.innerHTML='<summary>'+(i<2?'🧠 النموذج '+(j+1):i===2?'🔎 المدقق':'✍️ صائغ الرسالة')+' <small>…</small></summary><div class="pt"></div>';r.querySelector('.pag').appendChild(d);ag[i].push(d)}});
-  return {head:t=>{out.querySelector('.pms').textContent=t},
-    stage:(i,st)=>{rows[i].querySelector('.pst').textContent=({run:'⏳',done:'✅',fail:'⚠️'}[st])+' '+(i+1)+'. '+PST[i]},
-    text:(i,j,t)=>{const d=ag[i][j];if(!d)return;d.querySelector('.pt').textContent=t;d.querySelector('small').textContent=t?'('+t.length+' حرف)':'…'},
-    fin:h=>{out.querySelector('.pfin').innerHTML=h;try{$('msgs').scrollTop=1e9}catch(e){}},
-    done:()=>{out.querySelector('.pmd').open=false;out.querySelector('.pms').textContent='🧠 شوف كيف فكّر (اضغط)'}}}
-async function promax(o){
-  const ui=pmUI(o.out),V=o.vision?await visionList():null,xs=V?VX:null;
-  const P2=V?[V,V]:[['openai/gpt-oss-120b','openai/gpt-oss-20b'],['openai/gpt-oss-20b','openai/gpt-oss-120b']];
-  const chk=()=>{if(ac.signal.aborted)throw new DOMException('stop','AbortError')},clean=x=>x.replace(/<think>[\s\S]*?<\/think>/g,'').trim();
-  async function agents(i,models,mk,max,x2,eff){ui.stage(i,'run');
-    const rs=await Promise.allSettled(models.map((m,j)=>streamTo(m,mk(j),eff,max,v=>ui.text(i,j,v.replace(/<think>[\s\S]*?(<\/think>|$)/g,'')),typeof x2==='function'?x2(j):x2).then(x=>{const c=clean(x);ui.text(i,j,c);return c})));
-    chk();rs.forEach((r,j)=>{if(r.status==='rejected')ui.text(i,j,'⚠️ فشل: '+r.reason.message)});
-    const ok=rs.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
-    ui.stage(i,ok.length?'done':'fail');if(!ok.length)throw (rs[0].reason||new Error('فشلت المرحلة '+(i+1)));return ok}
-  ui.head('👑 المرحلة 1/4 — نموذجان يفهمان طلبك…');
-  const foc=['نيّة المستخدم الحقيقية والشروط والقيود الدقيقة','المعلومات الناقصة، وما قد يُساء فهمه، والشكل الأنسب للجواب (نقاط/فقرات/كود/جدول)'];
-  const U=await agents(0,P2,j=>[{role:'system',content:o.base+' مهمتك الآن: فهم الطلب فقط بدون كتابة الجواب. ركّز على: '+foc[j]+'. اكتب فهماً منظماً وموجزاً (أقل من 200 كلمة).'},...o.hist,o.first],1000,xs,'medium');
-  const Q='طلب المستخدم:\n'+o.q.slice(0,5000)+'\n\nفهم الطلب من محللَين:\n'+U.map((u,i)=>'[فهم '+(i+1)+']\n'+u.slice(0,2000)).join('\n\n');
-  ui.head('👑 المرحلة 2/4 — نموذجان يجاوبان بالتوازي'+(o.search&&!V?' (مع بحث)':'')+'…');
-  const sty=['مفصّل ومنظم','مباشر وعملي ودقيق'];
-  const A=await agents(1,P2,j=>[{role:'system',content:o.base+' اكتب الآن جواباً كاملاً ممتازاً للمستخدم بأسلوب '+sty[j]+'، معتمداً على فهم المحللَين. لا تذكر المحللين.'},...o.hist,{role:'user',content:Q}],3500,j=>(o.search&&!V&&j===0)?[{tools:BST},{}]:null,'medium');
-  const As=A.map((a,i)=>'[جواب '+(i+1)+']\n'+a.slice(0,4500)).join('\n\n');
-  ui.head('👑 المرحلة 3/4 — مدقق يتحقق من الجوابين…');
-  let J=['(لا يوجد تدقيق)'];
-  try{J=await agents(2,[['openai/gpt-oss-120b','openai/gpt-oss-20b']],()=>[{role:'system',content:'أنت مدقق صارم. قارن الجوابين مع طلب المستخدم: حدّد الأدق والأصح، واكشف الأخطاء والتناقضات والادعاءات غير المؤكدة في كل جواب، وقل ما يجب حذفه أو تصحيحه، ثم اكتب خطة قصيرة للجواب النهائي الأمثل. بالعربية ومركّز.'},{role:'user',content:Q.slice(0,4000)+'\n\n'+As.slice(0,9000)}],1800,null,'high')}catch(e){if(e.name==='AbortError')throw e}
-  ui.head('👑 المرحلة 4/4 — يجهّز الرسالة النهائية…');ui.stage(3,'run');
-  let fin='';
-  try{fin=await streamTo(['openai/gpt-oss-120b','openai/gpt-oss-20b'],[{role:'system',content:o.base+' اكتب الرسالة النهائية للمستخدم كأنها من شخص واحد: مباشرة ومرتبة وبأسلوب طبيعي، وبدون أي ذكر لمراحل أو نماذج أو محللين أو مدقق أو مراجعة. اعتمد على أفضل ما في الجوابين، وصحّح الأخطاء التي حددها المدقق، واذكر المصادر إن وُجدت، واستخدم التنسيق الأنسب مع لهجة المستخدم.'},...o.hist,{role:'user',content:Q.slice(0,3000)+'\n\n'+As.slice(0,8000)+'\n\n[ملاحظات المدقق]\n'+J[0].slice(0,2500)}],'high',6000,v=>ui.fin(md(v.replace(/<think>[\s\S]*?(<\/think>|$)/g,''))))}
-  catch(e){if(e.name==='AbortError')throw e;fin=A[0];ui.fin(md(fin))}
-  ui.stage(3,'done');ui.done();return fin}
 
 // ---------- الصور (Pollinations) + عرض داخل التطبيق + تحميل ----------
 let imgMode=false,docs=[],lbUrl='';
@@ -460,14 +427,14 @@ async function imageFlow(t,cost){
   const hr=document.querySelector('.hero');if(hr)hr.remove();
   busy=true;$('snd').textContent='⏹';ac=new AbortController();$('inp').value='';
   bub('u',md(t));const out=bub('a','🎨 يجهّز وصف الصورة…');let en=t;
-  try{en=await callOnce((mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']),[{role:'system',content:'أنت مهندس Prompts محترف لتوليد الصور. حوّل طلب المستخدم إلى وصف إنجليزي غني في سطر واحد: الموضوع بدقة، البيئة، التكوين وزاوية الكاميرا، الإضاءة، الألوان، الجودة والتفاصيل. لا تضف عناصر لم يطلبها المستخدم. إذا طلب نصاً داخل الصورة فاكتبه حرفياً بين علامات اقتباس. اكتب الوصف فقط بدون شرح وبأقل من 70 كلمة.'},{role:'user',content:t}],EFF[mode==='promax'?'deep':mode],900)}
+  try{en=await callOnce((mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']),[{role:'system',content:'أنت مهندس Prompts محترف لتوليد الصور. حوّل طلب المستخدم إلى وصف إنجليزي غني في سطر واحد: الموضوع بدقة، البيئة، التكوين وزاوية الكاميرا، الإضاءة، الألوان، الجودة والتفاصيل. لا تضف عناصر لم يطلبها المستخدم. إذا طلب نصاً داخل الصورة فاكتبه حرفياً بين علامات اقتباس. اكتب الوصف فقط بدون شرح وبأقل من 70 كلمة.'},{role:'user',content:t}],EFF[mode],900)}
   catch(e){if(e.name==='AbortError'){refund(cost);out.innerHTML='⏹ تم الإيقاف';busy=false;$('snd').textContent='➤';return}}
   en=((en||t).replace(/\n+/g,' ').trim().slice(0,500)||t);const st=STY[$('ist').value];if(st)en+=', '+st;
   const [w,h]=SZ[$('isz').value]||SZ.sq;
   const ok=await showImg(out,en,t,true,w,h);if(!ok)refund(cost);
   busy=false;$('snd').textContent='➤'}
 // ---------- قائمة النماذج ----------
-function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔬 أعمق','تحليل معمّق وتحقق من الحسابات والمنطق — '+COST.deep+' نقاط'],['promax','👑 Pro Max','نموذجان يفكران ويجاوبان بالتوازي + مدقق + صائغ رسالة، وأدق جواب — '+COST.promax+' نقاط']]}
+function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔥 أقوى','أقوى وضع: يقارن حلولاً ويتحقق بأكثر من طريقة ويقيّم ثقته — '+COST.deep+' نقاط']]}
 function modeBtn(){const m=MODES().find(x=>x[0]===mode);$('mdb').textContent=m[1]+' ▾'}
 function openModes(){$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
 function closeModes(){$('ms').classList.remove('on')}
@@ -547,6 +514,36 @@ async function studioGo(refine,fix){
 addEventListener('message',e=>{const d=e.data;if(!d||!d.qerr||e.source!==$('sbf').contentWindow||SB.err||SB.busy)return;SB.err=String(d.qerr).slice(0,200);
   let b=$('sbe');if(!b){b=document.createElement('button');b.id='sbe';b.className='btn s';$('sbx').appendChild(b)}
   b.style.display='';b.textContent='🔧 فيه خطأ في اللعبة — صلّحه تلقائياً (نقطة)';b.onclick=()=>studioGo(1,SB.err)});
+// ---------- التحديث الذاتي (من GitHub Releases) ----------
+const APPVER=+(window.APP_VER||0);
+const UPRX=/^(حدثني|حدث|حدث التطبيق|حدث لي التطبيق|حدث نفسك|تحديث|التحديث|تحديث التطبيق|في تحديث|فيه تحديث|هل في تحديث|هل فيه تحديث|نسخة جديدة|update|check update)\s*[!.؟?]*$/i;
+const isUpd=t=>{const x=String(t).replace(/[\u064B-\u0652]/g,'').trim();if(UPRX.test(x))return true;if(x.length>40||/(عن|حول|كيف|اشرح|شرح)/.test(x))return false;return /(حدث|تحديث|update|upgrade)/i.test(x)&&/(التطبيق|تطبيق|قاسم|نفسك|\bapp\b)/i.test(x)};
+async function checkUpdate(manual){
+  const repo=(window.APP&&APP.repo)||'';
+  if(!repo){if(manual)toast('⚠️ مستودع التحديث غير مضبوط');return null}
+  try{const r=await fetch('https://api.github.com/repos/'+repo+'/releases/tags/app-latest',{headers:{Accept:'application/vnd.github+json'}});
+    if(!r.ok)throw new Error(r.status===404?'ما في نسخة منشورة بعد':'خطأ '+r.status);
+    const j=await r.json(),v=parseInt(j.name,10)||0,a=(j.assets||[]).find(x=>/\.apk$/i.test(x.name));
+    if(!a)throw new Error('ملف التحديث غير موجود');
+    return{v,url:a.browser_download_url,notes:String(j.body||'').slice(0,200),newer:v>APPVER}}
+  catch(e){if(manual)toast('⚠️ '+e.message);return null}}
+function upBar(p,t){let d=$('upb');if(!d){d=document.createElement('div');d.id='upb';d.style.cssText='position:fixed;bottom:110px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:40;font-size:14px;line-height:1.7';d.innerHTML='<div style="height:6px;background:#1c2540;border-radius:6px;overflow:hidden"><div id="upp" style="height:100%;width:0;background:linear-gradient(90deg,#4f8cff,#7c5cff)"></div></div><div id="upt" style="margin-top:6px"></div>';document.body.appendChild(d)}
+  $('upp').style.width=Math.max(0,Math.min(100,p))+'%';$('upt').textContent=t}
+async function doUpdate(out){
+  const say=m=>{if(out)out.innerHTML=m;else toast(m.replace(/<[^>]*>/g,''))};
+  const u=await checkUpdate(!out);if(!u){if(out)say('⚠️ ما قدرت أتحقق من التحديث الآن، جرّب بعد شوي');return}
+  if(!u.newer){say('✅ أنت على آخر نسخة (رقم '+APPVER+')');return}
+  say('🆕 نسخة جديدة رقم '+u.v+(u.notes?'<br><small>'+esc(u.notes)+'</small>':'')+'<br>⬇️ يحمّلها الآن…');
+  try{const r=await saveImg(u.url,'qasim-'+u.v+'.apk','application/vnd.android.package-archive',upBar);
+    const d=$('upb');if(d)d.remove();
+    if(r&&r.uri&&window.Capacitor&&Capacitor.Plugins.DownloadPlugin){
+      const x=await Capacitor.Plugins.DownloadPlugin.install({uri:r.uri});
+      say(x&&x.needPermission?'⚙️ فعّل «السماح بالتثبيت» لقاسم في الصفحة اللي فتحتها، ثم ارجع واكتب «حدثني» مرة ثانية':'📲 افتحت شاشة التثبيت — اضغط «تحديث»')}
+    else say('✅ نزل التحديث في Download/Qasim — افتحه للتثبيت')}
+  catch(e){const d=$('upb');if(d)d.remove();say('⚠️ '+esc(String(e&&e.message||e)))}}
+setTimeout(async()=>{try{const u=await checkUpdate(false);if(!u||!u.newer)return;
+  const o=bub('a','🆕 <b>فيه نسخة جديدة من قاسم (رقم '+u.v+')</b>'+(u.notes?'<br><small>'+esc(u.notes)+'</small>':'')+'<br>');
+  const bt=document.createElement('button');bt.className='btn';bt.textContent='🔄 حدّث الآن';bt.onclick=()=>{o.innerHTML='🔄 يتحقق…';doUpdate(o)};o.appendChild(bt);toast('🆕 فيه تحديث جديد')}catch(e){}},2500);
 function sbSave(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SB.html],{type:'text/html'}));a.download='qasim-app.html';document.body.appendChild(a);a.click();a.remove()}
 async function sbApk(){
   const W=String((window.APP&&APP.build)||'').replace(/\/+$/,''),st=t=>$('sbs').textContent=t,G=/script\.google\.com|googleusercontent\.com/.test(W);

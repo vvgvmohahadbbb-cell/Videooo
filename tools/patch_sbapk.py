@@ -55,6 +55,8 @@ if old_ret in s2:
 c = open('www/config.js', encoding='utf-8').read()
 m = re.search(r"proxy:\s*'([^']*)'", c)
 proxy = m.group(1) if m else ''
+mr = re.search(r"repo:\s*'([^']*)'", c)
+repo = mr.group(1) if mr else ''
 open('www/config.js', 'w', encoding='utf-8').write(
-    "window.APP = { proxy: '%s', build: '%s' };\n" % (proxy, url))
+    "window.APP = { proxy: '%s', build: '%s', repo: '%s' };\n" % (proxy, url, repo))
 print('تم ضبط config.js')

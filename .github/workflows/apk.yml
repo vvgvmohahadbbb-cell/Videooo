@@ -1,5 +1,11 @@
 name: Build APK
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['games/**']
+  workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -9,11 +15,30 @@ jobs:
         with: {node-version: 22}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: 21}
+      - name: رقم النسخة
+        run: echo "window.APP_VER=${{ github.run_number }};" >> www/config.js
+      - name: مفتاح التوقيع الثابت (اختياري)
+        env:
+          KS: ${{ secrets.DEBUG_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS" ]; then
+            mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore && echo "using fixed signing key"
+          else
+            echo "no fixed key: updates over an older install will need a reinstall"
+          fi
       - run: npm install
       - run: npx cap add android
+      - run: sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
       - run: cp native/*.java android/app/src/main/java/com/ishhf/aichat/
       - run: python3 tools/patch_manifest.py
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with: {name: Qasim-apk, path: android/app/build/outputs/apk/debug/app-debug.apk}
+      - name: نشر التحديث
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk qasim.apk
+          gh release delete app-latest --cleanup-tag -y || true
+          gh release create app-latest qasim.apk --title "${{ github.run_number }}" --notes "$(git log -1 --pretty=%s)" --target "${{ github.sha }}"

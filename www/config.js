@@ -1,1 +1,1 @@
-window.APP = { proxy: '', build: 'https://script.google.com/macros/s/AKfycbxIf45FWVSSz6WCH6sdJMg-w0YTgS4jEqTPnLx8kh-Zi00XiPLM8bejmIqD19xYqKU/exec' };
+window.APP = { proxy: '', build: 'https://script.google.com/macros/s/AKfycbxIf45FWVSSz6WCH6sdJMg-w0YTgS4jEqTPnLx8kh-Zi00XiPLM8bejmIqD19xYqKU/exec', repo: 'vvgvmohahadbbb-cell/Videooo' };
