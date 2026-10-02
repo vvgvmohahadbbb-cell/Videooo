@@ -119,7 +119,7 @@ const ls=SEC.ls;const THK='<span class="dots"><i></i><i></i><i></i></span> يف�
 const GROQ='https://api.groq.com/openai/v1',PU=String((window.APP&&APP.proxy)||'').replace(/\/+$/,'');
 const BUILTIN=(()=>{try{const d=window.DK,a=Array.isArray(d)?d:d?[d]:[];return a.map(o=>String.fromCharCode(...o.a.map((x,i)=>x^o.b[i])))}catch(e){return []}})();
 const keyList=()=>[...BUILTIN].filter((k,i,a)=>k&&a.indexOf(k)===i);
-const usingProxy=()=>!!PU&&!keyList().length,B=()=>usingProxy()?PU:GROQ,ready=()=>!!(keyList().length||PU);
+const GASP=/script\.google\.com\/macros/.test(PU),usingProxy=()=>!!PU&&!keyList().length,B=()=>usingProxy()?PU:GROQ,ready=()=>!!(keyList().length||PU);
 const keyNow=()=>pickKey('*')||keyList()[0]||'';
 // ---- تدوير المفاتيح تلقائياً: إذا مفتاح خلص/قرب يخلص/انرفض ينتقل للتالي ----
 const kid=k=>k.slice(-6),sleep=ms=>new Promise(z=>setTimeout(z,ms));
@@ -186,7 +186,25 @@ const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)
 const EFF={fast:'low',think:'medium',deep:'high'},MAXT={fast:1200,think:3500,deep:6000};
 const VX=[{},{reasoning_effort:'none'}];
 const IDENT='أنت "قاسم"، مساعد ذكاء اصطناعي من شركة MOD0، داخل تطبيق جوال. إذا سُئلت من أنت فقل: أنا قاسم من MOD0. وإذا سُئلت عن التقنية أو النموذج أو الشركة المزوّدة فقل إنها تفاصيل داخلية تخص MOD0؛ لا تنسب نفسك لأي نموذج أو شركة بالاسم لا بالتأكيد ولا بالنفي، ولا تختلق معلومات عن نفسك.\nطريقة عملك: افهم الهدف الحقيقي وراء السؤال قبل الجواب، وتأكد أن إجابتك تغطي كل أجزاء الطلب. قسّم المشكلات المعقدة إلى خطوات وتحقق من الحسابات والمنطق والحالات الحدّية قبل أن تجيب. ميّز بين ما تعرفه بيقين وما تخمّنه، وقل \"لا أعرف\" أو \"غير متأكد\" عند اللزوم، ولا تختلق أرقاماً أو مصادر أو روابط. معلوماتك المدربة قديمة (قبل 2025 غالباً) فلا تعتمد عليها في كل ما قد يكون تغيّر. ابدأ بالجواب مباشرة ثم التفاصيل، بلا حشو ولا مجاملة ولا تكرار، واستخدم التنسيق الأنسب دون مبالغة. كن صريحاً: صحّح المستخدم بلطف إذا أخطأ ولا توافقه لمجرد الإرضاء، وإذا وجدت خطأ في جوابك السابق فاعترف به وصحّحه. في النصائح أعطِ خطوات عملية محددة مع المفاضلات والمخاطر. في الكود أعطِ كوداً كاملاً يعمل مع معالجة الأخطاء وشرح مختصر وافتراضاتك. في الحساب أظهر الخطوات المهمة وراجع الناتج. إذا كان الطلب غامضاً جداً اسأل سؤالاً واحداً محدداً، وإلا افترض الأنسب وصرّح بافتراضك. إذا طلب المستخدم تحديث هذا التطبيق (قاسم) أو الحصول على نسخة أحدث منه بأي صياغة فأجب بهذه الكلمة فقط بدون أي نص آخر: [[UPDATE]]. اللغة: العربية بلهجة بسيطة إلا إذا طلب المستخدم غير ذلك.';
+// ---- وكيل Google Script: المفاتيح على الخادم والتطبيق يرسل الطلب فقط ----
+const DEV=(()=>{let d='';try{d=ls.get('dev','')}catch(e){}if(!d||typeof d!=='string'){d=Array.from(crypto.getRandomValues(new Uint8Array(14)),x=>(x%36).toString(36)).join('');try{ls.set('dev',d)}catch(e){}}return d})();
+function typeStream(txt){const enc=new TextEncoder();let i=0;
+  return new ReadableStream({async pull(c){
+    if(i>=txt.length||(ac&&ac.signal.aborted)){c.enqueue(enc.encode('data: [DONE]\n\n'));c.close();return}
+    const n=Math.max(10,Math.ceil(txt.length/70)),ch=txt.slice(i,i+n);i+=n;
+    c.enqueue(enc.encode('data: '+JSON.stringify({choices:[{delta:{content:ch}}]})+'\n\n'));await sleep(16)}})}
+async function gasPost(body){
+  const want=!!body.stream,b={...body};delete b.stream;let r;
+  try{r=await fetch(PU,{method:'POST',signal:ac.signal,body:JSON.stringify({path:'chat',dev:DEV,body:b})})}
+  catch(e){if(e.name==='AbortError')throw e;return new Response(JSON.stringify({error:{message:'تعذر الاتصال بالخادم'}}),{status:503})}
+  let j={};try{j=await r.json()}catch(e){}
+  const st=+j.status||502,d=j.data||{error:{message:j.error||'خطأ في الخادم'}};
+  if(st<200||st>=300)return new Response(JSON.stringify(d),{status:st});
+  if(!want)return new Response(JSON.stringify(d),{status:200});
+  const txt=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
+  return new Response(typeStream(txt),{status:200,headers:{'Content-Type':'text/event-stream'}})}
 async function post(body){const m=body.model;let last=null;
+  if(usingProxy()&&GASP)return gasPost(body);
   if(usingProxy())return fetch(B()+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,body:JSON.stringify(body)});
   for(let t=0;t<8;t++){
     const k=pickKey(m);
@@ -216,7 +234,7 @@ async function streamTo(models,messages,eff,max,onText,xs){let err='',acc='';
     catch(e){if(e.name==='AbortError')return acc;if(is401(e.message))throw e;err=e.message}}
   throw new Error(err||'رد فاضي')}
 // اكتشاف موديلات الصور تلقائياً من حسابك
-async function visionList(){if(!MODELS){try{const r=await fetch(B()+'/models',{headers:hdr()});MODELS=r.ok?(await r.json()).data.map(x=>x.id):[]}catch(e){MODELS=[]}}
+async function visionList(){if(!MODELS&&usingProxy()&&GASP)MODELS=[];if(!MODELS){try{const r=await fetch(B()+'/models',{headers:hdr()});MODELS=r.ok?(await r.json()).data.map(x=>x.id):[]}catch(e){MODELS=[]}}
   const f=MODELS.filter(x=>/qwen3\.[5-9]|llama-4|maverick|scout|vision|pixtral|gemma-?[34]/i.test(x)&&!/guard|whisper|tts/i.test(x));
   return [...new Set([cfg.vm,'qwen/qwen3.6-27b',...f])].filter(Boolean)}
 async function planM(img){return img?await visionList():mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
@@ -328,7 +346,7 @@ async function listenOnce(stream){
     if(Math.sqrt(q/buf.length)>0.03){spoke=true;last=Date.now()}const n=Date.now();if((spoke&&n-last>1500)||n-t0>25000||(!spoke&&n-t0>9000))stopRec()},150);
   const done=new Promise(r=>rec.onstop=r);rec.start();await done;clearInterval(iv);try{ctx.close()}catch(e){}lvRec=null;
   return {blob:new Blob(ch,{type:rec.mimeType||'audio/webm'}),ext:/mp4/.test(rec.mimeType||'')?'m4a':'webm',spoke}}
-async function stt(blob,ext){let err='';for(const m of ['whisper-large-v3-turbo','whisper-large-v3']){const fd=new FormData();fd.append('file',blob,'a.'+ext);fd.append('model',m);fd.append('response_format','text');
+async function stt(blob,ext){let err='';for(const m of ['whisper-large-v3-turbo','whisper-large-v3']){if(usingProxy()&&GASP){const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(blob)});const r2=await fetch(PU,{method:'POST',signal:ac.signal,body:JSON.stringify({path:'stt',dev:DEV,b64,ext,model:m})});const j2=await r2.json().catch(()=>({}));if(j2.ok)return String(j2.text||'').trim();err=j2.error||'خطأ';continue}const fd=new FormData();fd.append('file',blob,'a.'+ext);fd.append('model',m);fd.append('response_format','text');
   const r=await fetch(B()+'/audio/transcriptions',{method:'POST',headers:usingProxy()?{}:{Authorization:'Bearer '+keyNow()},body:fd,signal:ac.signal});
   if(r.ok)return (await r.text()).trim();err=await errOf(r)}throw new Error('تفريغ الصوت: '+err)}
 async function liveTalk(){
@@ -494,9 +512,9 @@ async function studioGo(refine,fix){
   const patch=!!((refine||fix)&&SB.html);sbProg(3,THK+' يخطط…');
   const msgs=patch?[{role:'system',content:REFSYS},{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'التعديل المطلوب: '+t}]:[{role:'system',content:SBSYS},{role:'user',content:t}];
   const M=m==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-  let ti=0;const tp=setInterval(()=>{ti++},6000);
+  let ti=0,got=0,el=0;const tp=setInterval(()=>{ti++},6000),tw=setInterval(()=>{el++;if(!got)sbProg(Math.min(35,4+el*1.3),THK+' يخطط… '+el+' ث')},1000);
   try{
-    const onT=v=>{const n=v.split('\n').length;sbProg(Math.min(92,8+n/4.2),'✍️ '+(patch?'يجهّز التعديل':'يكتب الكود')+'… '+n+' سطر<br><small>'+SBTIPS[ti%SBTIPS.length]+'</small>')};
+    const onT=v=>{got=1;const n=v.split('\n').length;sbProg(Math.min(92,8+n/4.2),'✍️ '+(patch?'يجهّز التعديل':'يكتب الكود')+'… '+n+' سطر<br><small>'+SBTIPS[ti%SBTIPS.length]+'</small>')};
     const stop=()=>{if(ac.signal.aborted){const e=new Error('stop');e.name='AbortError';throw e}};
     let r=await streamTo(M,msgs,SEFF[m],sbMax(msgs,patch?SPCAP:SCAP[m]),onT);stop();
     let h='';
@@ -510,7 +528,7 @@ async function studioGo(refine,fix){
     SB.html=h;sbShow(h);try{ls.set('sb',h)}catch(e){}
     $('sbx').style.display='block';$('sbs').textContent='✅ جاهز — جرّبه، واكتب أي تعديل، أو اضغط APK';$('sbp').value=''}
   catch(e){refund(c);$('sbs').textContent='⚠️ '+(e.name==='AbortError'?'تم الإيقاف':'ما قدرت أبني: '+e.message)}
-  finally{clearInterval(tp);SB.busy=0}}
+  finally{clearInterval(tp);clearInterval(tw);SB.busy=0}}
 addEventListener('message',e=>{const d=e.data;if(!d||!d.qerr||e.source!==$('sbf').contentWindow||SB.err||SB.busy)return;SB.err=String(d.qerr).slice(0,200);
   let b=$('sbe');if(!b){b=document.createElement('button');b.id='sbe';b.className='btn s';$('sbx').appendChild(b)}
   b.style.display='';b.textContent='🔧 فيه خطأ في اللعبة — صلّحه تلقائياً (نقطة)';b.onclick=()=>studioGo(1,SB.err)});
