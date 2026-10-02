@@ -1,0 +1,64 @@
+<!-- حاسبة عربية احترافية -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1">
+<title>حاسبة</title>
+<style>
+:root{--bg:#f2f6fa;--fg:#212121;--btn:#e8edf3;--op:#4a90e2;--eq:#2b6cb0;--shadow:rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--fg);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#disp{flex:1;background:var(--btn);margin:10px;border-radius:12px;padding:12px;font-size:2rem;display:flex;align-items:flex-end;justify-content:flex-end;overflow-x:auto;word-break:keep-all}
+#keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 10px 10px}
+button{height:56px;background:#fff;border:none;border-radius:10px;font-size:1.4rem;color:var(--fg);box-shadow:0 2px 4px var(--shadow);transition:background .2s}
+button:active{background:var(--op);color:#fff}
+button.op{background:var(--op);color:#fff}
+button.eq{grid-column:span 2;background:var(--eq);color:#fff}
+</style>
+</head>
+<body>
+<div id="disp">0</div>
+<div id="keys">
+<button data-v="C">مسح</button>
+<button data-v="⌫">←</button>
+<button data-v="%">٪</button>
+<button data-v="/" class="op">÷</button>
+<button data-v="7">7</button>
+<button data-v="8">8</button>
+<button data-v="9">9</button>
+<button data-v="*" class="op">×</button>
+<button data-v="4">4</button>
+<button data-v="5">5</button>
+<button data-v="6">6</button>
+<button data-v="-" class="op">−</button>
+<button data-v="1">1</button>
+<button data-v="2">2</button>
+<button data-v="3">3</button>
+<button data-v="+" class="op">+</button>
+<button data-v="0" style="grid-column:span 2">0</button>
+<button data-v=".">.</button>
+<button data-v="=" class="eq">=</button>
+</div>
+<script>
+const d=document.getElementById('disp'),k=document.getElementById('keys')
+let e=''
+function f(v){return v.toString().replace(/\.0+$/,'')}
+function c(x){try{let r=Function('return '+x)();return isFinite(r)?f(r):'خطأ'}catch{return'خطأ'}}
+function u(){d.textContent=e||'0'}
+k.addEventListener('click',t=>{
+if(t.target.tagName!='BUTTON')return
+let v=t.target.dataset.v
+try{navigator.vibrate(30)}catch{}
+if(v==='C'){e='';u();return}
+if(v==='⌫'){e=e.slice(0,-1);u();return}
+if(v==='='){let r=c(e);try{localStorage.setItem('calcLast',r)}catch{}e=r;u();return}
+if(v==='%'&&e){e+='*0.01';u();return}
+if(/[0-9.]/.test(v)){e+=v;u();return}
+if(/[+\-*/]/.test(v)){e+=` ${v} `;u()}
+})
+try{let s=localStorage.getItem('calcLast');if(s) e=s}catch{}
+u()
+</script>
+</body>
+</html>
