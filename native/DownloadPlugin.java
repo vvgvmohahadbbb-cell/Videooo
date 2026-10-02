@@ -2,9 +2,12 @@ package com.ishhf.aichat;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.provider.MediaStore;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -40,6 +43,7 @@ public class DownloadPlugin extends Plugin {
                     InputStream in = h.getInputStream();
                     OutputStream os;
                     Uri uri = null;
+                    File savedFile = null;
                     String where;
                     ContentResolver cr = getContext().getContentResolver();
                     if (Build.VERSION.SDK_INT >= 29) {
@@ -63,6 +67,7 @@ public class DownloadPlugin extends Plugin {
                     } else {
                         File d = getContext().getExternalFilesDir(apk ? Environment.DIRECTORY_DOWNLOADS : Environment.DIRECTORY_PICTURES);
                         File f = new File(d, name);
+                        savedFile = f;
                         os = new FileOutputStream(f);
                         where = f.getAbsolutePath();
                     }
@@ -90,11 +95,42 @@ public class DownloadPlugin extends Plugin {
                     }
                     JSObject r = new JSObject();
                     r.put("where", where);
+                    String outUri = "";
+                    try {
+                        if (uri != null) outUri = uri.toString();
+                        else if (savedFile != null) outUri = androidx.core.content.FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", savedFile).toString();
+                    } catch (Exception ignored) {}
+                    r.put("uri", outUri);
                     call.resolve(r);
                 } catch (Exception e) {
                     call.reject(String.valueOf(e.getMessage()));
                 }
             }
         }).start();
+    }
+
+    @PluginMethod
+    public void install(PluginCall call) {
+        String u = call.getString("uri");
+        if (u == null || u.length() == 0) { call.reject("no uri"); return; }
+        try {
+            Context c = getContext();
+            if (Build.VERSION.SDK_INT >= 26 && !c.getPackageManager().canRequestPackageInstalls()) {
+                Intent s = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + c.getPackageName()));
+                s.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                c.startActivity(s);
+                JSObject r = new JSObject();
+                r.put("needPermission", true);
+                call.resolve(r);
+                return;
+            }
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setDataAndType(Uri.parse(u), "application/vnd.android.package-archive");
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(i);
+            call.resolve(new JSObject());
+        } catch (Exception e) {
+            call.reject(String.valueOf(e.getMessage()));
+        }
     }
 }

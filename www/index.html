@@ -175,7 +175,7 @@ $('cam').onchange=$('pic').onchange;
 function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onclick="imgs.splice(${i},1);thumbs()">✕</b></div>`).join('')+docs.map((d,i)=>`<div class="dc">📄 ${esc(d.n)} <span onclick="docs.splice(${i},1);thumbs()">✕</span></div>`).join('')}
 
 // ---------- المحادثة ----------
-const SYS={fast:'الوضع: سريع — جواب مباشر ومختصر.',think:'الوضع: تفكير — فكّر قبل الجواب وتحقق منه.',deep:'الوضع: أعمق — حلّل من عدة زوايا، تحقق من الحسابات والمنطق، وفكّر بالحالات الحدّية قبل الجواب.',promax:''};
+const SYS={fast:'الوضع: سريع — جواب مباشر ومختصر.',think:'الوضع: تفكير — قبل الجواب حدّد المطلوب بدقة، وحلّه بخطوات قصيرة، ثم تحقق من النتيجة بطريقة ثانية سريعة. أعطِ الجواب النهائي واضحاً بدون سرد خطواتك الطويلة.',deep:'الوضع: أعمق — حدّد المطلوب والافتراضات، فكّر بحلّين مختلفين على الأقل وقارن بينهما، تحقق من الحسابات والمنطق والحالات الحدّية، ثم أعطِ أفضل جواب بإيجاز واذكر نقطة ضعفه المحتملة إن وُجدت.',promax:''};
 let ac=null,MODELS=null,wm=ls.get('wm','auto');
 const isOss=m=>/gpt-oss/.test(m),is401=e=>/^401/.test(e);
 const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{}),...(ex||{})});
@@ -239,7 +239,9 @@ async function send(){
   if(/(حلل|حللي|تحليل)\s*(لي\s*)?شخصيتي/.test(t)&&!imgs.length){$('inp').value='';tab(2);return}
   if(!ready()){toast('الخدمة غير متاحة حالياً');return}
   const wantImg=(imgMode||IMGRX.test(t))&&!imgs.length&&!docs.length&&!!t;
-  const cost=wantImg?COST[mode==='promax'?'deep':mode]:COST[mode]+(imgs.length?1:0);
+  const HARD=/(كود|برمج|احسب|معادل|قارن|حلل|اشرح|خطوات|لماذا|ليش|كيف|خطة|اكتب|[\d٠-٩]\s*[\+\-\*\/×÷^xX]\s*[\d٠-٩]|code|function|bug|error|why|how)/i,
+    easy=mode==='think'&&!wantImg&&!imgs.length&&!docs.length&&t.length>0&&t.length<=60&&!HARD.test(t);
+  const cost=wantImg?COST[mode==='promax'?'deep':mode]:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=easy?'low':EFF[mode],max0=easy?1500:MAXT[mode];
   if(!spend(cost))return;
   if(wantImg)return imageFlow(t,cost);
   busy=true;$('snd').textContent='⏹';ac=new AbortController();
@@ -256,10 +258,10 @@ async function send(){
     if(mode==='promax')txt=await promax({base:mkBase(''),hist:h,first,q:tt,vision:im.length>0,search:wantS,out});
     else{
       const cb=v=>{out.innerHTML=md(v).trim()||THK;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
-      if(wantS){try{txt=await streamTo(M,[{role:'system',content:mkBase('')},...h,first],EFF[mode],MAXT[mode],cb,[{tools:BST}])}catch(e){if(e.name==='AbortError'||is401(e.message))throw e;txt=''}}
+      if(wantS){try{txt=await streamTo(M,[{role:'system',content:mkBase('')},...h,first],eff0,max0,cb,[{tools:BST}])}catch(e){if(e.name==='AbortError'||is401(e.message))throw e;txt=''}}
       if(!txt.trim()&&!ac.signal.aborted){
         if(wantS){const r=await searchNotes(t);if(r.notes)notes=r.notes;else sn='⚠️ البحث ما اشتغل ('+esc(r.err)+') فالجواب من معلومات النموذج وقد يكون قديماً'}
-        txt=await streamTo(M,[{role:'system',content:mkBase(notes)},...h,first],EFF[mode],MAXT[mode],cb,im.length?VX:null)}}
+        txt=await streamTo(M,[{role:'system',content:mkBase(notes)},...h,first],eff0,max0,cb,im.length?VX:null)}}
   }catch(e){if(e.name!=='AbortError')err=e.message}
   const stopped=ac.signal.aborted;
   if(!txt.trim()){if(!stopped)refund(cost);out.innerHTML=stopped?'⏹ تم الإيقاف':'ما قدرت أجاوب<br><small>'+esc(err||'رد فاضي')+'</small>'+''+(/^429/.test(err)?'<br>⏳ الخدمة مشغولة مؤقتاً — رجّعت لك نقاطك. جرّب بعد شوي أو اختر وضع أخف.':'')}
@@ -436,7 +438,7 @@ async function saveImg(url,name,mime,ui){name=name||('qasim-'+Date.now()+'.jpg')
   const t0=Date.now();let real=0;const iv=setInterval(()=>{if(real)return;const e=(Date.now()-t0)/1000,p=Math.min(92,100*(1-Math.exp(-e/6)));ui(p,'⬇️ '+Math.round(p)+'% • باقي ~'+Math.max(1,Math.ceil(12-e))+' ث')},200);
   try{if(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()){const P=Capacitor.Plugins.DownloadPlugin;let h=null;
       try{h=await P.addListener('dlprogress',e=>{if(e.total>0){real=1;const p=e.got/e.total*100,el=(Date.now()-t0)/1000;ui(p,'⬇️ '+Math.round(p)+'% • باقي ~'+Math.max(0,Math.ceil(el*(100-p)/Math.max(p,1)))+' ث')}})}catch(x){}
-      const r=await P.download({url,name,mime});if(h&&h.remove)h.remove();clearInterval(iv);ui(100,'✅ تم التحميل');toast('✅ انحفظ في '+((r&&r.where)||'الجهاز'));return}
+      const r=await P.download({url,name,mime});if(h&&h.remove)h.remove();clearInterval(iv);ui(100,'✅ تم التحميل');toast('✅ انحفظ في '+((r&&r.where)||'الجهاز'));return r}
     const b=await (await fetch(url)).blob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();clearInterval(iv);ui(100,'✅ تم التحميل')}
   catch(e){clearInterval(iv);ui(0,'⚠️ تعذر التحميل');toast('⚠️ تعذر التحميل: '+(e&&e.message||e))}}
 function showImg(out,en,t,first,w,h){return new Promise(res=>{
@@ -501,33 +503,79 @@ async function orFallback(body){if(!ORK.length||body.tools||/compound|qwen|llama
   const nb={...body,model:body.model+':free',max_tokens:body.max_completion_tokens};delete nb.max_completion_tokens;delete nb.reasoning_effort;delete nb.include_reasoning;
   for(const k of ORK){try{const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+k},signal:ac.signal,body:JSON.stringify(nb)});if(r.ok)return r}catch(e){if(e.name==='AbortError')throw e}}return null}
 // ---------- الاستوديو ----------
-let SB={html:'',busy:0};
-const SBSYS='أنت مطوّر ألعاب وتطبيقات ويب 2D محترف. اكتب ملف HTML واحد كامل ومستقل (CSS وJS داخل الملف، بدون مكتبات أو روابط خارجية، وأي تخزين داخل try/catch) يعمل على شاشة جوال باللمس، بتصميم أنيق وواجهة بالعربية وحركة سلسة (requestAnimationFrame) وcanvas للألعاب. أعد الكود فقط داخل كتلة ```html بدون أي شرح.';
-async function studioGo(refine){const t=$('sbp').value.trim();if(!t||SB.busy)return;const m=$('sbm').value,c=COST[m]+1;
+let SB={html:'',busy:0,err:''};
+const SBSYS='أنت مطوّر ألعاب وتطبيقات ويب 2D محترف. اكتب ملف HTML واحد كامل ومستقل (CSS وJS داخله، بدون مكتبات أو روابط خارجية) لشاشة جوال باللمس. ابدأ الملف بتعليق HTML قصير للخطة (الفكرة، التحكم، الفوز والخسارة، الشكل) في 5 أسطر كحد أقصى ثم الكود. الجودة المطلوبة: viewport meta وtouch-action:none ومنع التمرير والتكبير؛ canvas متجاوب مع devicePixelRatio؛ شاشة بداية وزر إعادة ونتيجة وأعلى نتيجة (localStorage داخل try/catch)؛ صعوبة تتصاعد تدريجياً؛ حركة سلسة بـ requestAnimationFrame مع delta-time؛ تأثيرات خفيفة (اهتزاز الشاشة، جزيئات، تكبير وتصغير) وأصوات WebAudio قصيرة مع زر كتم؛ ألوان متناسقة وخط واضح وواجهة عربية RTL؛ تحقق من القيم الفارغة لتجنب الأخطاء. تكون اللعبة ممتعة من أول 10 ثواني. أعد الكود فقط داخل كتلة ```html بدون أي شرح.';
+const REFSYS='أنت مطوّر ويب محترف تعدّل ملف HTML موجود. لا تعد الملف كاملاً. أعد فقط كتل تعديل (واحدة أو أكثر) بهذه الصيغة بالضبط:\n<<<<<<< SEARCH\n(أسطر منسوخة حرفياً من الكود الحالي، من 2 إلى 8 أسطر وتكون فريدة)\n=======\n(النص الجديد)\n>>>>>>> REPLACE\nإذا كان التعديل يغيّر أكثر من نصف الملف فأعد الملف كاملاً داخل كتلة ```html بدلاً من ذلك. بدون أي شرح.';
+const SEFF={fast:'low',think:'low',deep:'medium'},SCAP={fast:5000,think:6500,deep:6500},SPCAP=2500;
+const SBREP='<script>addEventListener("error",function(e){parent.postMessage({qerr:(e.message||"error")+" (سطر "+e.lineno+")"},"*")});addEventListener("unhandledrejection",function(e){parent.postMessage({qerr:"promise: "+(e.reason&&e.reason.message||e.reason)},"*")})<\/script>';
+const SBTIPS=['💡 اللعبة تُكتب سطراً سطراً… خلّك معي','🎮 بعد ما تجهز جرّبها واطلب تعديلاً صغيراً بدل إعادة البناء — أسرع وأخف','📱 زر «اعمل APK» يحوّلها لتطبيق تثبّته على جوالك','✨ كلما كان وصفك أدق (الشكل، التحكم، الفوز) طلعت اللعبة أحسن'];
+function sbProg(p,t){$('sbs').innerHTML='<div style="height:6px;background:#1c2540;border-radius:6px;overflow:hidden"><div style="height:100%;width:'+p+'%;background:linear-gradient(90deg,#4f8cff,#7c5cff);transition:width .3s"></div></div><div style="margin-top:6px">'+t+'</div>'}
+function sbShow(h){const f=$('sbf');f.srcdoc=/<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,m=>m+SBREP):/<html[^>]*>/i.test(h)?h.replace(/<html[^>]*>/i,m=>m+SBREP):SBREP+h;f.style.display='block'}
+function sbFull(r){const mm=r.match(/```html\s*([\s\S]*?)```/i)||r.match(/```html\s*([\s\S]*)$/i)||r.match(/(<!DOCTYPE[\s\S]*<\/html>)/i);return mm?mm[1]:''}
+function sbEdits(html,r){const re=/<<<<<<< SEARCH\r?\n([\s\S]*?)\r?\n=======\r?\n([\s\S]*?)\r?\n?>>>>>>> REPLACE/g;let m,n=0,out=html;
+  while((m=re.exec(r))){const a=m[1],b=m[2],i=out.indexOf(a);
+    if(i>=0)out=out.slice(0,i)+b+out.slice(i+a.length);
+    else{const rx=new RegExp(a.trim().split(/\r?\n/).map(l=>l.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('\\s*')),mm=rx.exec(out);if(!mm)return null;out=out.slice(0,mm.index)+b+out.slice(mm.index+mm[0].length)}
+    n++}
+  return n?out:null}
+const sbMax=(msgs,cap)=>Math.max(1500,Math.min(cap,7600-Math.ceil(JSON.stringify(msgs).length/2.5)));
+async function studioGo(refine,fix){
+  const t=fix?('أصلح هذا الخطأ فقط بدون تغيير الباقي: '+fix):$('sbp').value.trim();if(!t||SB.busy)return;
+  const m=fix?'fast':$('sbm').value,c=COST[m];
   if(!ready()){toast('الخدمة غير متاحة حالياً');return}if(!spend(c))return;
-  SB.busy=1;$('sbs').innerHTML=THK+' يبني…';ac=new AbortController();
-  const msgs=[{role:'system',content:SBSYS},...(refine&&SB.html?[{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'عدّل حسب هذا الطلب وأعد الملف كاملاً: '+t}]:[{role:'user',content:t}])];
-  try{const M=m==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-    const r=await callOnce(M,msgs,EFF[m],6500),mm=r.match(/```html\s*([\s\S]*?)```/i)||r.match(/(<!DOCTYPE[\s\S]*<\/html>)/i),h=mm?mm[1]:'';
-    if(!/<html|<canvas|<body/i.test(h))throw new Error('ما طلع كود صالح');
-    SB.html=h;$('sbf').srcdoc=h;$('sbf').style.display='block';$('sbx').style.display='block';$('sbs').textContent='✅ جاهز — جرّبه، واكتب أي تعديل، أو اضغط APK';$('sbp').value=''}
+  SB.busy=1;SB.err='';const eb=$('sbe');if(eb)eb.style.display='none';ac=new AbortController();
+  const patch=!!((refine||fix)&&SB.html);sbProg(3,THK+' يخطط…');
+  const msgs=patch?[{role:'system',content:REFSYS},{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'التعديل المطلوب: '+t}]:[{role:'system',content:SBSYS},{role:'user',content:t}];
+  const M=m==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
+  let ti=0;const tp=setInterval(()=>{ti++},6000);
+  try{
+    const onT=v=>{const n=v.split('\n').length;sbProg(Math.min(92,8+n/4.2),'✍️ '+(patch?'يجهّز التعديل':'يكتب الكود')+'… '+n+' سطر<br><small>'+SBTIPS[ti%SBTIPS.length]+'</small>')};
+    const stop=()=>{if(ac.signal.aborted){const e=new Error('stop');e.name='AbortError';throw e}};
+    let r=await streamTo(M,msgs,SEFF[m],sbMax(msgs,patch?SPCAP:SCAP[m]),onT);stop();
+    let h='';
+    if(patch){h=sbEdits(SB.html,r)||'';
+      if(!h){const f=sbFull(r);if(/<\/html>/i.test(f))h=f}
+      if(!h){sbProg(30,'🔁 يعيد المحاولة بطريقة ثانية…');
+        const m2=[{role:'system',content:SBSYS},{role:'user',content:'الكود الحالي:\n'+SB.html},{role:'user',content:'عدّل حسب هذا الطلب وأعد الملف كاملاً: '+t}];
+        r=await streamTo(M,m2,SEFF[m],sbMax(m2,SCAP[m]),onT);stop();h=sbFull(r)}}
+    else h=sbFull(r);
+    if(!/<\/html>/i.test(h))throw new Error('الكود انقطع قبل ما يكتمل — بسّط الطلب أو جرّب وضع أخف');
+    SB.html=h;sbShow(h);try{ls.set('sb',h)}catch(e){}
+    $('sbx').style.display='block';$('sbs').textContent='✅ جاهز — جرّبه، واكتب أي تعديل، أو اضغط APK';$('sbp').value=''}
   catch(e){refund(c);$('sbs').textContent='⚠️ '+(e.name==='AbortError'?'تم الإيقاف':'ما قدرت أبني: '+e.message)}
-  SB.busy=0}
+  finally{clearInterval(tp);SB.busy=0}}
+addEventListener('message',e=>{const d=e.data;if(!d||!d.qerr||e.source!==$('sbf').contentWindow||SB.err||SB.busy)return;SB.err=String(d.qerr).slice(0,200);
+  let b=$('sbe');if(!b){b=document.createElement('button');b.id='sbe';b.className='btn s';$('sbx').appendChild(b)}
+  b.style.display='';b.textContent='🔧 فيه خطأ في اللعبة — صلّحه تلقائياً (نقطة)';b.onclick=()=>studioGo(1,SB.err)});
 function sbSave(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([SB.html],{type:'text/html'}));a.download='qasim-app.html';document.body.appendChild(a);a.click();a.remove()}
 async function sbApk(){
   const W=String((window.APP&&APP.build)||'').replace(/\/+$/,''),st=t=>$('sbs').textContent=t,G=/script\.google\.com|googleusercontent\.com/.test(W);
   if(!W){st('⚠️ رابط خادم البناء غير مضبوط');return}
   if(!SB.html){st('⚠️ ابنِ لعبة أولاً');return}
   const nm=(prompt('اسم التطبيق:','لعبتي')||'').trim();if(!nm)return;
+  const old=$('sbi');if(old)old.remove();
   try{st('📤 يرسل…');
     const r=await (G?fetch(W,{method:'POST',body:JSON.stringify({path:'build',html:SB.html,name:nm})}):fetch(W+'/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:SB.html,name:nm})}));
     const j=await r.json().catch(()=>({}));if(!r.ok||j.error)throw new Error(j.error||('خطأ '+r.status));
     const slug=j.slug,t0=Date.now();
     for(;;){const e=(Date.now()-t0)/1000;st('🏗️ يبني التطبيق… باقي تقريباً '+Math.max(5,Math.round(360-e))+' ث');await sleep(8000);
       const s=await fetch(G?W+'?path=status&slug='+encodeURIComponent(slug):W+'/status?slug='+encodeURIComponent(slug)).then(x=>x.json()).catch(()=>({}));
-      if(s.url){await saveImg(s.url,nm+'.apk','application/vnd.android.package-archive',(p,t)=>st(t));return}
+      if(s.url){st('✅ التطبيق جاهز! اضغط الزر');sbReady(s.url,nm);return}
       if(e>900)throw new Error('تأخر البناء')}}
   catch(e){st('⚠️ '+e.message)}}
+function sbReady(url,nm){
+  let b=$('sbi');if(!b){b=document.createElement('button');b.id='sbi';b.className='btn';$('sbs').after(b)}
+  let last=null;b.textContent='📲 حمّل وثبّت «'+nm+'»';
+  b.onclick=async()=>{b.disabled=true;
+    try{if(!last){const r=await saveImg(url,nm+'.apk','application/vnd.android.package-archive',(p,t)=>$('sbs').textContent=t);last=r&&r.uri||null}
+      if(last&&window.Capacitor&&Capacitor.Plugins.DownloadPlugin){
+        const x=await Capacitor.Plugins.DownloadPlugin.install({uri:last});
+        if(x&&x.needPermission){toast('فعّل «السماح بالتثبيت» لقاسم، ثم ارجع واضغط الزر مرة ثانية');b.textContent='📲 تثبيت الآن'}
+        else{$('sbs').textContent='📲 يفتح شاشة التثبيت…';b.textContent='📲 تثبيت مرة ثانية'}}
+      else if(!last)$('sbs').textContent='✅ نزل في Download/Qasim'}
+    catch(e){toast('⚠️ '+(e&&e.message||e))}
+    b.disabled=false}}
+try{const h0=ls.get('sb','');if(h0&&/<\/html>/i.test(h0)){SB.html=h0;sbShow(h0);$('sbx').style.display='block';$('sbs').textContent='📂 آخر مشروع محفوظ — عدّل عليه أو ابنِ جديداً'}}catch(e){}
 </script>
 </body>
 </html>
