@@ -1,0 +1,343 @@
+<!--
+الفكرة: لعبة شخصية neon تجري وتتفادى العوائق، يمكن القفز باللمس أو مسافة.
+التحكم: اضغط/انقر للقفز، زر كتم الصوت، زر إعادة تشغيل بعد النهاية.
+الفوز/الخسارة: اللعبة تنتهي عند الاصطدام، تُحفظ أعلى نتيجة في localStorage.
+الشكل: خلفية داكنة جداً، ألوان نيون سماوي، وردي، بنفسجي، خطوط رفيعة مضيئة، RTL.
+-->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لعبة النيون</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root{
+    --bg:#0a0a0a;
+    --neon:#00ff00;
+    --neon2:#ff00ff;
+    --neon3:#ff99ff;
+    --text:#e0e0e0;
+}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text);}
+#gameContainer{position:relative;width:100%;height:100%;touch-action:none;overflow:hidden;}
+canvas{display:block;width:100%;height:100%;}
+.overlay{
+    position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    color:var(--neon);font-size:1.5rem;text-align:center;z-index:2;
+}
+button{
+    margin-top:1rem;padding:0.8rem 1.5rem;font-size:1rem;background:transparent;border:2px solid var(--neon);
+    color:var(--neon);border-radius:8px;cursor:pointer;min-width:120px;min-height:44px;
+    box-shadow:0 0 10px var(--neon);
+}
+button:hover{box-shadow:0 0 20px var(--neon);}
+#ui{
+    position:absolute;top:0;right:0;left:0;display:flex;justify-content:space-between;
+    padding:0.5rem 1rem;pointer-events:none;z-index:2;font-size:1.2rem;
+}
+#ui span{pointer-events:auto;}
+#muteBtn{border:none;background:none;color:var(--neon2);font-size:1.5rem;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="gameContainer">
+    <canvas id="gameCanvas"></canvas>
+    <div id="ui">
+        <span id="score">النقاط: 0</span>
+        <span id="highScore">أعلى نتيجة: 0</span>
+        
+    </div>
+    <div id="startScreen" class="overlay">
+        <div>⚡ لعبة النيون ⚡</div>
+        <button id="startBtn">ابدأ</button>
+    </div>
+    <div id="gameOverScreen" class="overlay" style="display:none;">
+        <div>انتهت اللعبة</div>
+        <div id="finalScore">نقاطك: 0</div>
+        <button id="restartBtn">إعادة تشغيل</button>
+    </div>
+</div>
+
+<script>
+(() => {
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const scoreEl = document.getElementById('score');
+    const highScoreEl = document.getElementById('highScore');
+    const finalScoreEl = document.getElementById('finalScore');
+    
+
+    let width, height, dpr;
+    const resize = () => {
+        dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Audio
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioCtx();
+    let muted = false;
+    const playTone = (freq, duration) => {
+        if (muted) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    };
+    
+
+    // Game objects
+    const rootStyles = getComputedStyle(document.documentElement);
+const neonColor = rootStyles.getPropertyValue('--neon').trim();
+const neon2Color = rootStyles.getPropertyValue('--neon2').trim();
+const neon3Color = rootStyles.getPropertyValue('--neon3').trim();
+    const player = {
+        w: 40, h: 60,
+        x: 80, y: 0,
+        vy: 0,
+        gravity: 0.0015,
+        jumpStrength: -0.6,
+        onGround: false,
+        color: neonColor,
+        trail: [] // new property for trailing runner
+    };
+    const obstacles = [];
+    const particles = [];
+    const trailParticles = []; // new array for trailing effect
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let difficultyTimer = 0;
+    let speed = 0.3; // pixels per ms
+    let score = 0;
+    let highScore = 0;
+    let gameRunning = false;
+    let shakeTime = 0;
+    let scaleFactor = 1;
+    let trailTimer = 0; // timer for trail generation
+
+    // Load highscore
+    try {
+        const stored = localStorage.getItem('neonHighScore');
+        if (stored) highScore = parseInt(stored,10);
+    } catch(e){}
+
+    const updateScoreUI = () => {
+        scoreEl.textContent = `النقاط: ${Math.floor(score)}`;
+        highScoreEl.textContent = `أعلى نتيجة: ${highScore}`;
+    };
+    updateScoreUI();
+
+    const resetGame = () => {
+        obstacles.length = 0;
+        particles.length = 0;
+        trailParticles.length = 0;
+        player.y = height - player.h;
+        player.vy = 0;
+        player.onGround = true;
+        score = 0;
+        speed = 0.3;
+        spawnTimer = 0;
+        difficultyTimer = 0;
+        shakeTime = 0;
+        scaleFactor = 1;
+        trailTimer = 0;
+        updateScoreUI();
+    };
+
+    const startGame = () => {
+        resetGame();
+        startScreen.style.display = 'none';
+        gameOverScreen.style.display = 'none';
+        gameRunning = true;
+        lastTime = performance.now();
+        requestAnimationFrame(gameLoop);
+    };
+    const endGame = () => {
+        gameRunning = false;
+        finalScoreEl.textContent = `نقاطك: ${Math.floor(score)}`;
+        gameOverScreen.style.display = 'flex';
+        if (score > highScore) {
+            highScore = Math.floor(score);
+            try { localStorage.setItem('neonHighScore', highScore); } catch(e){}
+            updateScoreUI();
+        }
+    };
+
+    // Input
+    const jump = () => {
+        if (!gameRunning) return;
+        if (player.onGround) {
+            player.vy = player.jumpStrength;
+            player.onGround = false;
+            playTone(440, 0.1);
+            // particles on jump
+            for(let i=0;i<12;i++){
+    particles.push({
+        x: player.x + player.w/2,
+        y: player.y + player.h,
+        vx: (Math.random()-0.5)*0.4,
+        vy: -Math.random()*0.6,
+        life: 300,
+        size: 4,
+        color: neon3Color
+    });
+            }
+        }
+    };
+    canvas.addEventListener('touchstart', e=>{ e.preventDefault(); jump(); });
+    window.addEventListener('keydown', e=>{ if(e.code==='Space') { e.preventDefault(); jump(); } });
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+
+    // Game loop
+    const gameLoop = (now) => {
+        const dt = now - lastTime;
+        lastTime = now;
+        if (!gameRunning) return;
+
+        // Update
+        player.vy += player.gravity * dt;
+        player.y += player.vy * dt;
+        if (player.y + player.h >= height) {
+            player.y = height - player.h;
+            player.vy = 0;
+            player.onGround = true;
+        }
+        // Generate trail behind player
+        trailTimer += dt;
+        if (trailTimer > 50) { // every 50ms
+            trailTimer = 0;
+            trailParticles.push({
+                x: player.x + player.w/2,
+                y: player.y + player.h,
+                vx: 0,
+                vy: 0.1,
+                life: 800,
+                size: 3,
+                color: neon2Color
+            });
+        }
+
+        // Spawn obstacles
+        spawnTimer += dt;
+        if (spawnTimer > 1500 / speed) {
+            spawnTimer = 0;
+            const size = 30 + Math.random()*30;
+            obstacles.push({
+                x: width,
+                y: height - size,
+                w: size,
+                h: size,
+                color: neon3Color
+            });
+        }
+
+        // Move obstacles
+        for (let i=obstacles.length-1;i>=0;i--) {
+            const o = obstacles[i];
+            o.x -= speed * dt;
+            if (o.x + o.w < 0) obstacles.splice(i,1);
+            // Collision
+            if (player.x < o.x+o.w && player.x+player.w > o.x &&
+    player.y < o.y+o.h && player.y+player.h > o.y) {
+    playTone(200,0.5);
+    shakeTime = 500;
+    for(let i=0;i<20;i++)particles.push({x:o.x+o.w/2,y:o.y+o.h/2,vx:(Math.random()-0.5)*1.0,vy:(Math.random()-0.5)*1.0,life:500,size:6,color:neon3Color});
+    endGame();
+    return;
+}
+        }
+
+        // Particles
+        for (let i=particles.length-1;i>=0;i--) {
+            const p = particles[i];
+            p.vy += 0.001 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.life -= dt;
+            if (p.life <= 0) particles.splice(i,1);
+        }
+        // Trail particles
+        for (let i=trailParticles.length-1;i>=0;i--) {
+            const p = trailParticles[i];
+            p.y += p.vy * dt;
+            p.life -= dt;
+            if (p.life <= 0) trailParticles.splice(i,1);
+        }
+
+        // Difficulty
+        difficultyTimer += dt;
+        if (difficultyTimer > 10000) {
+            difficultyTimer = 0;
+            speed += 0.05;
+        }
+
+        // Score
+        score += dt * 0.01;
+        updateScoreUI();
+
+        // Render
+        ctx.clearRect(0,0,width,height);
+        ctx.save();
+        // Shake
+        if (shakeTime>0) {
+            const shake = Math.random()*6-3;
+            ctx.translate(shake,shake);
+            shakeTime -= dt;
+        }
+        // Scale (jump effect)
+        if (!player.onGround) {
+            scaleFactor = 1.05;
+        } else {
+            scaleFactor = 1;
+        }
+        ctx.translate(width/2,height/2);
+        ctx.scale(scaleFactor,scaleFactor);
+        ctx.translate(-width/2,-height/2);
+
+        // Player
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x,player.y,player.w,player.h);
+
+        // Obstacles
+        obstacles.forEach(o=>{
+            ctx.fillStyle = o.color;
+            ctx.fillRect(o.x,o.y,o.w,o.h);
+        });
+
+        // Particles
+        particles.forEach(p=>{
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+            ctx.fill();
+        });
+
+        ctx.restore();
+
+        requestAnimationFrame(gameLoop);
+    };
+})();
+</script>
+</body>
+</html>
