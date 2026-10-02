@@ -268,9 +268,9 @@ async function coolKey(k,m,r){const id=kid(k),s=KS.get();let msg='';try{msg=((aw
   else if(r.status===401)s.cool[id+'|*']=Date.now()+3600e3;
   else s.cool[id+'|'+m]=Date.now()+3600e3;
   KS.save(s)}
-let cfg={key:'',vm:'qwen/qwen3.6-27b',...ls.get('acfg',{})},mode='think',web=false,imgs=[],hist=[],busy=false;
+let cfg={key:'',vm:'qwen/qwen3.8-27b',...ls.get('acfg',{})},mode='think',web=false,imgs=[],hist=[],busy=false;
 $('ci').value=cfg.ci||'';
-function saveSet(){cfg={key:'',vm:'qwen/qwen3.6-27b',ci:$('ci').value.trim()};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
+function saveSet(){cfg={key:'',vm:'qwen/qwen3.8-27b',ci:$('ci').value.trim()};ls.set('acfg',cfg);prof.on=$('pon').checked;prof.txt=$('ptx').value.trim();ls.set('prof',prof);MODELS=null;$('set').classList.remove('on')}
 function tab(i){if(i===1){openLive();return}const id=i===2?'v1':i===3?'v2':'v0';if(i===2)paInfo();['v0','v1','v2'].forEach(x=>$(x).classList.toggle('on',x===id));document.querySelectorAll('.tb').forEach((b,j)=>b.classList.toggle('on',(j===0&&id==='v0')||(j===1&&id==='v2')))}
 document.querySelectorAll('.md').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.md').forEach(x=>x.classList.toggle('on',x===b))});
 const hdr=()=>usingProxy()?{'Content-Type':'application/json'}:{'Content-Type':'application/json',Authorization:'Bearer '+keyNow()};
@@ -366,7 +366,7 @@ async function streamTo(models,messages,eff,max,onText,xs){let err='',acc='';
 // اكتشاف موديلات الصور تلقائياً من حسابك
 async function visionList(){if(!MODELS&&usingProxy()&&GASP)MODELS=[];if(!MODELS){try{const r=await fetch(B()+'/models',{headers:hdr()});MODELS=r.ok?(await r.json()).data.map(x=>x.id):[]}catch(e){MODELS=[]}}
   const f=MODELS.filter(x=>/qwen3\.[5-9]|llama-4|maverick|scout|vision|pixtral|gemma-?[34]/i.test(x)&&!/guard|whisper|tts/i.test(x));
-  return [...new Set([cfg.vm,'qwen/qwen3.6-27b',...f])].filter(Boolean)}
+  const VM='qwen/qwen3.8-27b';return [...new Set([cfg.vm&&!/qwen3\.[0-7]\b/.test(cfg.vm)?cfg.vm:VM,VM,...f.filter(x=>!/qwen3\.[0-7]\b/.test(x))])].filter(Boolean)}
 async function planM(img){return img?await visionList():mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
 // ---------- البحث بالإنترنت ----------
 const HOT=/(اليوم|الآن|حالي|آخر|أحدث|جديد|سعر|أسعار|أخبار|خبر|نتيجة|مباراة|طقس|رئيس|وزير|من هو|من هي|متى|إصدار|ابحث|دور على|كم |كم$|عدد|مين |وين|أين|latest|price|news|today|current|202[4-9])/i;
