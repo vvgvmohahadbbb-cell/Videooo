@@ -1,0 +1,345 @@
+<!--
+فكرة: لعبة ثعبان بأسلوب ريترو بكسل على canvas.
+التحكم: سحب لتغيير الاتجاه، أسهم لوحة المفاتيح.
+الفوز/الخسارة: تصادم مع الجدار أو الذات يؤدي للخسارة، جمع الطعام يزيد النقاط.
+الشكل: ألوان صلبة مشبعة، حواف حادة، رسومات بكسل، واجهة عربية RTL.
+ميزات: مستويات صعوبة متصاعدة، مؤثرات صوتية، تخزين أعلى نتيجة، زر كتم.
+-->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>لعبة الثعبان 🎮</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+  html,body{margin:0;padding:0;height:100%;background:url('https://example.com/background.png') center/cover no-repeat #111;color:#fff;font-family:monospace;overflow:hidden}
+  #gameContainer{position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center}
+  canvas{background:#000;touch-action:none;image-rendering:pixelated;border:2px solid #fff}
+  .overlay{
+    position:absolute;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.8);display:flex;flex-direction:column;
+    justify-content:center;align-items:center;color:#0f0;font-size:1.5rem;
+    text-align:center;z-index:10
+  }
+  button{
+    margin:10px;padding:12px 24px;font-size:1rem;background:#0a0;color:#000;
+    border:none;border-radius:4px;cursor:pointer;min-width:120px;min-height:44px;
+  }
+  #scoreBoard{position:absolute;top:10px;right:10px;font-size:1rem;z-index:5}
+  #muteBtn{position:absolute;bottom:10px;left:10px;min-width:44px;min-height:44px}
+</style>
+</head>
+<body>
+<div id="gameContainer">
+  <canvas id="gameCanvas"></canvas>
+  <div id="scoreBoard">النقاط: <span id="score">0</span> | أعلى نتيجة: <span id="highScore">0</span></div>
+
+  <div id="startOverlay" class="overlay">
+    <div>⚔️ لعبة الثعبان</div>
+    <button id="startBtn">ابدأ اللعبة</button>
+  </div>
+  <div id="gameOverOverlay" class="overlay" style="display:none">
+    <div>❌ انتهت اللعبة</div>
+    <div>النتيجة: <span id="finalScore">0</span></div>
+    <button id="restartBtn">إعادة</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const overlayStart = document.getElementById('startOverlay');
+  const overlayGameOver = document.getElementById('gameOverOverlay');
+  const btnStart = document.getElementById('startBtn');
+  const btnRestart = document.getElementById('restartBtn');
+  const scoreEl = document.getElementById('score');
+  const highScoreEl = document.getElementById('highScore');
+  const finalScoreEl = document.getElementById('finalScore');
+
+
+  let cellSize = 15;
+  let cols, rows;
+  let snake, direction, nextDirection, food;
+  let particles = [];
+  let lastTime = 0;
+  let speed = 8; // cells per second
+  let speedIncrement = 0.5;
+  let score = 0;
+  let highScore = 0;
+  let gameRunning = false;
+  let shakeTime = 0;
+  let zoom = 1;
+  let mute = false;
+  let audioCtx, eatSound, gameOverSound;
+
+  // ---------- Utility ----------
+  const randInt = (max) => Math.floor(Math.random() * max);
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  // ---------- Audio ----------
+  const initAudio = () => {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) { mute = true; }
+  };
+  const playTone = (freq, duration) => {
+    if (mute || !audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.value = freq;
+    osc.type = 'square';
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  };
+  const playEat = () => playTone(440, 0.08);
+  const playGameOver = () => playTone(150, 0.4);
+
+  // ---------- Storage ----------
+  const loadHighScore = () => {
+    try {
+      const val = localStorage.getItem('snakeHighScore');
+      highScore = val ? parseInt(val,10) : 0;
+    } catch (e) { highScore = 0; }
+    highScoreEl.textContent = highScore;
+  };
+  const saveHighScore = () => {
+    try { localStorage.setItem('snakeHighScore', highScore); } catch (e) {}
+  };
+
+  // ---------- Resize ----------
+  const resize = () => {
+    const size = Math.min(window.innerWidth, window.innerHeight) * 0.99;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    ctx.scale(dpr, dpr);
+    cols = Math.floor(size / cellSize);
+    rows = Math.floor(size / cellSize);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------- Game Init ----------
+  const initGame = () => {
+    snake = [{x: Math.floor(cols/2), y: Math.floor(rows/2)}];
+    direction = {x:1, y:0};
+    nextDirection = direction;
+    placeFood();
+    particles = [];
+    score = 0;
+    speed = 8;
+    shakeTime = 0;
+    zoom = 1;
+    scoreEl.textContent = score;
+    gameRunning = true;
+    overlayGameOver.style.display = 'none';
+    requestAnimationFrame(loop);
+  };
+
+  const placeFood = () => {
+    let valid = false;
+    while (!valid) {
+      food = {x: randInt(cols), y: randInt(rows)};
+      valid = !snake.some(seg => seg.x===food.x && seg.y===food.y);
+    }
+  };
+
+  // ---------- Input ----------
+  const setDirection = (dx, dy) => {
+    // prevent reverse
+    if (dx===-direction.x && dy===-direction.y) return;
+    nextDirection = {x:dx, y:dy};
+  };
+  document.addEventListener('keydown', e => {
+    if (!gameRunning) return;
+    switch(e.key){
+      case 'ArrowUp': setDirection(0,-1); break;
+      case 'ArrowDown': setDirection(0,1); break;
+      case 'ArrowLeft': setDirection(-1,0); break;
+      case 'ArrowRight': setDirection(1,0); break;
+    }
+  });
+  // Touch swipe
+  let touchStart = null;
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length===1) touchStart = e.touches[0];
+  });
+  canvas.addEventListener('touchend', e => {
+    if (!touchStart) return;
+    const touchEnd = e.changedTouches[0];
+    const dx = touchEnd.clientX - touchStart.clientX;
+    const dy = touchEnd.clientY - touchStart.clientY;
+    if (Math.abs(dx) > Math.abs(dy)){
+      if (dx>30) setDirection(1,0);
+      else if (dx<-30) setDirection(-1,0);
+    } else {
+      if (dy>30) setDirection(0,1);
+      else if (dy<-30) setDirection(0,-1);
+    }
+    touchStart = null;
+  });
+
+
+
+  // ---------- Loop ----------
+  const loop = (timestamp) => {
+    if (!gameRunning) return;
+    const delta = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    // move based on speed
+    const moveInterval = 1 / speed;
+    if (!window._moveAccumulator) window._moveAccumulator = 0;
+    window._moveAccumulator += delta;
+    while (window._moveAccumulator >= moveInterval){
+      window._moveAccumulator -= moveInterval;
+      update();
+    }
+    draw(delta);
+    requestAnimationFrame(loop);
+  };
+
+  const update = () => {
+    direction = nextDirection;
+    const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+    // wall collision: end game on boundary
+    if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+      endGame();
+      return;
+    }
+    // self collision
+    if (snake.some(seg=> seg.x===head.x && seg.y===head.y)){
+      endGame();
+      return;
+    }
+    snake.unshift(head);
+    // food
+    if (head.x===food.x && head.y===food.y){
+      score++;
+      speed += speedIncrement;
+      scoreEl.textContent = score;
+      if (score > highScore){ highScore = score; highScoreEl.textContent = highScore; saveHighScore();}
+      placeFood();
+      createParticles(head.x, head.y);
+      playEat();
+      shakeTime = 0.2;
+      zoom = 1.1;
+    } else {
+      snake.pop();
+    }
+  };
+
+  const endGame = () => {
+    gameRunning = false;
+    playGameOver();
+    finalScoreEl.textContent = score;
+    overlayGameOver.style.display = 'flex';
+  };
+
+  // ---------- Particles ----------
+  const createParticles = (cx, cy) => {
+    for (let i=0;i<12;i++){
+      const angle = Math.random()*Math.PI*2;
+      const speed = Math.random()*2+1;
+      particles.push({
+        x: cx + 0.5,
+        y: cy + 0.5,
+        vx: Math.cos(angle)*speed,
+        vy: Math.sin(angle)*speed,
+        life: 0.6
+      });
+    }
+  };
+
+  // ---------- Draw ----------
+  const draw = (delta) => {
+    // shake
+    let offsetX = 0, offsetY = 0;
+    if (shakeTime>0){
+      shakeTime -= delta;
+      offsetX = (Math.random()-0.5)*4;
+      offsetY = (Math.random()-0.5)*4;
+    }
+    // zoom decay removed for permanent 5x zoom
+
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    // ctx.scale(zoom, zoom); // removed to keep normal size
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // draw grid background (optional)
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    // draw food as a professional apple
+    const appleX = food.x * cellSize;
+    const appleY = food.y * cellSize;
+    // apple body gradient
+    const appleGrad = ctx.createRadialGradient(
+      appleX + cellSize / 2, appleY + cellSize / 2, cellSize / 4,
+      appleX + cellSize / 2, appleY + cellSize / 2, cellSize / 2
+    );
+    appleGrad.addColorStop(0, '#ff4d4d');
+    appleGrad.addColorStop(1, '#b30000');
+    ctx.fillStyle = appleGrad;
+    ctx.beginPath();
+    ctx.arc(appleX + cellSize / 2, appleY + cellSize / 2, cellSize / 2, 0, Math.PI * 2);
+    ctx.fill();
+    // leaf
+    ctx.fillStyle = '#2ecc71';
+    ctx.beginPath();
+    ctx.moveTo(appleX + cellSize * 0.7, appleY + cellSize * 0.2);
+    ctx.bezierCurveTo(
+      appleX + cellSize * 0.9, appleY,
+      appleX + cellSize * 0.6, appleY - cellSize * 0.2,
+      appleX + cellSize * 0.5, appleY + cellSize * 0.1
+    );
+    ctx.fill();
+    // draw snake with sleek gradient and head
+    const snakeBodyGrad = ctx.createLinearGradient(0,0,0,cellSize);
+    snakeBodyGrad.addColorStop(0,'#0f0');
+    snakeBodyGrad.addColorStop(1,'#080');
+    ctx.fillStyle = snakeBodyGrad;
+    snake.forEach((seg, index) => {
+      const x = seg.x*cellSize, y = seg.y*cellSize;
+      if(index>0){
+        ctx.fillRect(x, y, cellSize, cellSize);
+      }
+    });
+    // head
+    const head = snake[0];
+    const headX = head.x*cellSize, headY = head.y*cellSize;
+    ctx.fillStyle = '#0a0';
+    ctx.fillRect(headX, headY, cellSize, cellSize);
+    // Remove eyes for realistic snake
+
+    // draw particles
+    particles.forEach(p => {
+      ctx.fillStyle = `rgba(255,255,0,${1-p.life/0.6})`;
+      ctx.fillRect(p.x*cellSize, p.y*cellSize, cellSize*0.5, cellSize*0.5);
+      p.x += p.vx*delta;
+      p.y += p.vy*delta;
+      p.life -= delta;
+    });
+    particles = particles.filter(p=>p.life>0);
+    ctx.restore();
+  };
+
+  // ---------- Buttons ----------
+  btnStart.addEventListener('click', () => {
+    overlayStart.style.display = 'none';
+    initAudio();
+    loadHighScore();
+    initGame();
+  });
+  btnRestart.addEventListener('click', () => {
+    initGame();
+  });
+})();
+</script>
+</body>
+</html>
