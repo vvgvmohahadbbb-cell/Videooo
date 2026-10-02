@@ -1,0 +1,209 @@
+<!--
+فكرة: لعبة تجنب العقبات المتصاعدة على شاشة الجوال.
+تحكم: لمس الشاشة لتقفز اللاعب.
+فوز/خسارة: تجنب العقبات؛ تصادم = خسارة، أعلى نتيجة تُحفظ.
+شكل: واجهة عربية RTL، ألوان هادئة، خطوط واضحة، مؤثرات صوتية.
+--> 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>قفز العقبات</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#1e1e2f;color:#fff;font-family:Arial,Helvetica,sans-serif;}
+#gameCanvas{display:block;width:100%;height:100%;}
+#uiOverlay{
+  position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;
+}
+button{
+  pointer-events:auto;background:#4a90e2;color:#fff;border:none;padding:10px 20px;
+  font-size:1.2rem;border-radius:5px;margin:10px;cursor:pointer;
+}
+#startScreen,#gameOverScreen{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:rgba(30,30,47,0.9);display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+}
+#muteBtn{position:absolute;top:10px;left:10px;background:#555;}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="uiOverlay">
+  <div id="startScreen">
+    <h1>قفز العقبات</h1>
+    <button id="playBtn">ابدأ اللعب</button>
+    <p>النتيجة الأعلى: <span id="highScore">0</span></p>
+  </div>
+  <div id="gameOverScreen" style="display:none;">
+    <h1>انتهت اللعبة</h1>
+    <p>النتيجة: <span id="finalScore">0</span></p>
+    <button id="restartBtn">إعادة</button>
+    <p>النتيجة الأعلى: <span id="highScore2">0</span></p>
+  </div>
+  <button id="muteBtn">🔊</button>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const resize = () => {
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    ctx.scale(dpr, dpr);
+  };
+  resize();
+  window.addEventListener('resize', resize);
+  document.body.style.touchAction = 'none';
+  
+  // Game variables
+  let lastTime = 0, delta = 0;
+  let player = {x:50,y:0,w:30,h:30,vy:0,jumping:false};
+  let obstacles = [];
+  let spawnTimer = 0, spawnInterval = 1500;
+  let speed = 200;
+  let score = 0, highScore = 0;
+  let running = false;
+  let mute = false;
+  
+  // UI elements
+  const startScreen=document.getElementById('startScreen');
+  const gameOverScreen=document.getElementById('gameOverScreen');
+  const playBtn=document.getElementById('playBtn');
+  const restartBtn=document.getElementById('restartBtn');
+  const finalScore=document.getElementById('finalScore');
+  const highScoreSpan=document.getElementById('highScore');
+  const highScoreSpan2=document.getElementById('highScore2');
+  const muteBtn=document.getElementById('muteBtn');
+  
+  // Audio
+  const ctxAudio = new (window.AudioContext||window.webkitAudioContext)();
+  const beep = (freq, dur) => {
+    if(mute) return;
+    const o = ctxAudio.createOscillator();
+    const g = ctxAudio.createGain();
+    o.frequency.value = freq;
+    o.connect(g);g.connect(ctxAudio.destination);
+    o.start();g.gain.setValueAtTime(0.2,ctxAudio.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctxAudio.currentTime+dur);
+    o.stop(ctxAudio.currentTime+dur);
+  };
+  
+  // Load high score
+  try{
+    const hs = localStorage.getItem('highScore');
+    if(hs) highScore = parseInt(hs,10);
+  }catch(e){}
+  highScoreSpan.textContent=highScore;
+  highScoreSpan2.textContent=highScore;
+  
+  const resetGame=()=>{ 
+    player.y=canvas.height/dpr-60;player.vy=0;player.jumping=false;
+    obstacles=[];spawnTimer=0;spawnInterval=1500;speed=200;score=0;
+    running=true;startScreen.style.display='none';gameOverScreen.style.display='none';
+    requestAnimationFrame(loop);
+  };
+  
+  const endGame=()=>{ 
+    running=false;finalScore.textContent=score;
+    if(score>highScore){highScore=score;try{localStorage.setItem('highScore',highScore);}catch(e){}}
+    highScoreSpan.textContent=highScore;highScoreSpan2.textContent=highScore;
+    gameOverScreen.style.display='flex';
+    shakeScreen();
+    beep(100,0.2);
+  };
+  
+  const shakeScreen=()=>{ 
+    const el=document.body;
+    let start=performance.now();
+    const animate=now=>{
+      const progress=now-start;
+      const magnitude=10*(1-progress/300);
+      if(magnitude>0){
+        el.style.transform=`translate(${(Math.random()-0.5)*magnitude}px,${(Math.random()-0.5)*magnitude}px)`;
+        requestAnimationFrame(animate);
+      }else el.style.transform='';
+    };
+    requestAnimationFrame(animate);
+  };
+  
+  const loop=(timestamp)=>{ 
+    if(!running) return;
+    delta=timestamp-lastTime;lastTime=timestamp;
+    update(delta/1000);
+    render();
+    requestAnimationFrame(loop);
+  };
+  
+  const update=(dt)=>{ 
+    // Player gravity
+    if(player.jumping){
+      player.vy+=1500*dt;
+      player.y+=player.vy*dt;
+      if(player.y>=canvas.height/dpr-60){
+        player.y=canvas.height/dpr-60;
+        player.jumping=false;
+        player.vy=0;
+      }
+    }
+    // Obstacles
+    spawnTimer+=dt*1000;
+    if(spawnTimer>spawnInterval){
+      spawnTimer=0;
+      const size=30+Math.random()*20;
+      obstacles.push({x:canvas.width/dpr+size,y:canvas.height/dpr-60,w:size,h:size});
+      // increase difficulty
+      if(spawnInterval>500) spawnInterval-=50;
+      speed+=10;
+    }
+    obstacles.forEach(o=>o.x-=speed*dt);
+    // Remove off-screen
+    obstacles=obstacles.filter(o=>o.x+o.w>0);
+    // Collision
+    obstacles.forEach(o=>{
+      if(o.x<player.x+player.w && o.x+o.w>player.x && o.y<player.y+player.h && o.y+o.h>player.y){
+        endGame();
+      }
+    });
+    // Score
+    score=Math.floor(timestamp/1000);
+  };
+  
+  const render=()=>{ 
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Ground
+    ctx.fillStyle='#2b2b3d';
+    ctx.fillRect(0,canvas.height/dpr-30,canvas.width,30);
+    // Player
+    ctx.fillStyle='#ffcc00';
+    ctx.fillRect(player.x,player.y,player.w,player.h);
+    // Obstacles
+    ctx.fillStyle='#e74c3c';
+    obstacles.forEach(o=>ctx.fillRect(o.x,o.y,o.w,o.h));
+    // Score
+    ctx.fillStyle='#fff';
+    ctx.font='20px Arial';
+    ctx.fillText('النتيجة: '+score,10,30);
+  };
+  
+  // Input
+  const onTouch = (e)=>{ 
+    e.preventDefault();
+    if(!running) return;
+    if(!player.jumping){
+      player.jumping=true;
+      player.vy=-800;
+      beep(600,0.1);
+    }
+  };
+  canvas.addEventListener('touchstart',onTouch);
+  // Buttons
+  playBtn.onclick=resetGame;
+  restartBtn.onclick=resetGame;
+  muteBtn.onclick=()=>{ mute=!mute; muteBtn.textContent=mute?'🔇':'🔊'; };
+})();
+</script>
+</body>
+</html>
