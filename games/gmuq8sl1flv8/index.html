@@ -1,0 +1,226 @@
+<!--
+فكرة: لعبة إكس-أو (تيك تاك تو) للهواتف، تحكم باللمس.
+التحكم: النقر على الخانات لتحديد الرمز، زر إعادة للبدء.
+الفوز/الخسارة: يتم الكشف عن الفائز أو التعادل، تُظهر النتيجة وتخزن أعلى نتيجة (عدد الانتصارات).
+الشكل: واجهة عربية RTL، ألوان هادئة، خطوط واضحة، مؤثرات خفيفة وصوت.
+-->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>إكس‑أو</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#f0f4f8;font-family:Arial,Helvetica,sans-serif;color:#333;}
+#game{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  #board{
+    display:grid;
+    grid-template:repeat(3,1fr)/repeat(3,1fr);
+    gap:4px;
+    width:calc(100vmin - 2rem);
+    max-width:500px;
+    height:calc(100vmin - 2rem);
+    max-height:500px;
+    background:#fff;
+    border:2px solid #555;
+    border-radius:8px;
+    touch-action:none;
+  }
+.cell{background:#e6edf3;display:flex;align-items:center;justify-content:center;font-size:calc(30vmin);user-select:none;cursor:pointer;}
+.cell:hover{background:#d0e1ed;}
+#overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:5vmin;visibility:hidden;}
+#overlay.show{visibility:visible;}
+#overlay button{margin-top:2vh;padding:1vh 2vh;font-size:4vmin;border:none;border-radius:5px;background:#4caf50;color:#fff;cursor:pointer;}
+#top{position:absolute;top:2vh;right:2vh;text-align:left;font-size:4vmin;}
+#mute{position:absolute;bottom:2vh;left:2vh;background:#ff9800;color:#fff;border:none;border-radius:5px;padding:1vh 2vh;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="game">
+  <canvas id="fxCanvas" style="position:absolute;top:0;left:0;pointer-events:none;"></canvas>
+  <div id="top">انتصارات: <span id="wins">0</span></div>
+  <div id="board"></div>
+  <div id="overlay"><div id="msg"></div><button id="restart">إعادة</button></div>
+  <button id="mute">كتم الصوت</button>
+</div>
+<script>
+(() => {
+  const boardEl = document.getElementById('board');
+  const overlay = document.getElementById('overlay');
+  const msg = document.getElementById('msg');
+  const restartBtn = document.getElementById('restart');
+  const winsSpan = document.getElementById('wins');
+  const muteBtn = document.getElementById('mute');
+  const fxCanvas = document.getElementById('fxCanvas');
+  const ctx = fxCanvas.getContext('2d');
+  let dpr = window.devicePixelRatio || 1;
+  let lastTime = 0;
+  let particles = [];
+  let muted = false;
+  let winCount = 0;
+
+  // ---------- Audio ----------
+  const clickSound = (() => {
+    const ctxAudio = new (window.AudioContext||window.webkitAudioContext)();
+    // توليد صوت نقر بسيط
+    const buffer = ctxAudio.createBuffer(1, ctxAudio.sampleRate*0.05, ctxAudio.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<data.length;i++){
+      data[i] = Math.sin(i/5) * 0.2 * (1 - i/data.length);
+    }
+    const play = () => {
+      if(muted) return;
+      const src = ctxAudio.createBufferSource();
+      src.buffer = buffer;
+      src.connect(ctxAudio.destination);
+      src.start();
+    };
+    return {play};
+  })();
+
+  muteBtn.onclick = () => { muted = !muted; muteBtn.textContent = muted?'إلغاء الكتم':'كتم الصوت'; };
+
+  // ---------- Storage ----------
+  try{
+    const stored = localStorage.getItem('xoWins');
+    winCount = stored?parseInt(stored,10):0;
+    winsSpan.textContent = winCount;
+  }catch(e){}
+
+  // ---------- Board ----------
+  const state = Array(9).fill(null);
+  let turn = 'X';
+  let gameOver = false;
+  const lines = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  function createBoard(){
+    boardEl.innerHTML='';
+    for(let i=0;i<9;i++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      cell.dataset.idx=i;
+      cell.addEventListener('pointerdown', onCellTouch);
+      boardEl.appendChild(cell);
+    }
+  }
+
+  function onCellTouch(e){
+    if(gameOver) return;
+    const idx = e.currentTarget.dataset.idx;
+    if(state[idx]) return;
+    state[idx]=turn;
+    e.currentTarget.textContent=turn;
+    clickSound.play();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    spawnParticle(cx, cy);
+    if(checkWin()){
+      endGame(`${turn} فاز!`);
+      if(turn==='X'){
+        winCount++;
+        winsSpan.textContent=winCount;
+        try{localStorage.setItem('xoWins',winCount);}catch(e){}
+      }
+    }else if(state.every(v=>v)){
+      endGame('تعادل');
+    }else{
+      turn = turn==='X'?'O':'X';
+    }
+  }
+
+  function checkWin(){
+    return lines.some(l=> state[l[0]] && state[l[0]]===state[l[1]] && state[l[1]]===state[l[2]]);
+  }
+
+  function endGame(text){
+    gameOver=true;
+    msg.textContent=text;
+    overlay.classList.add('show');
+    shakeScreen();
+  }
+
+  restartBtn.onclick=resetGame;
+  function resetGame(){
+    state.fill(null);
+    turn='X';
+    gameOver=false;
+    boardEl.querySelectorAll('.cell').forEach(c=>c.textContent='');
+    overlay.classList.remove('show');
+  }
+
+  // ---------- Effects ----------
+  function resizeFX(){
+    fxCanvas.width = window.innerWidth*dpr;
+    fxCanvas.height = window.innerHeight*dpr;
+    fxCanvas.style.width = window.innerWidth+'px';
+    fxCanvas.style.height = window.innerHeight+'px';
+    ctx.scale(dpr,dpr);
+  }
+  window.addEventListener('resize', resizeFX);
+  resizeFX();
+
+  function spawnParticle(x,y){
+    for(let i=0;i<12;i++){
+      const angle=Math.random()*Math.PI*2;
+      const speed=2+Math.random()*2;
+      particles.push({
+        x, y,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed,
+        life:0.6,
+        size:2+Math.random()*2,
+        color:`hsl(${Math.random()*360},80%,60%)`
+      });
+    }
+  }
+
+  function shakeScreen(){
+    const el=document.body;
+    el.animate([{transform:'translateX(0)'},{transform:'translateX(-10px)'},{transform:'translateX(10px)'},{transform:'translateX(0)'}],
+      {duration:400, easing:'ease-out'});
+  }
+
+  function updateFX(dt){
+    particles = particles.filter(p=>p.life>0);
+    particles.forEach(p=>{
+      p.x+=p.vx;
+      p.y+=p.vy;
+      p.life-=dt;
+      p.vx*=0.96; p.vy*=0.96;
+    });
+  }
+
+  function drawFX(){
+    ctx.clearRect(0,0,fxCanvas.width/dpr,fxCanvas.height/dpr);
+    particles.forEach(p=>{
+      ctx.fillStyle=p.color;
+      ctx.globalAlpha=Math.max(p.life,0);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+
+  // ---------- Game Loop ----------
+  function loop(timestamp){
+    const dt = (timestamp-lastTime)/1000||0;
+    lastTime=timestamp;
+    updateFX(dt);
+    drawFX();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // ---------- Init ----------
+  // TODO: إضافة دعم اللعب عبر الإنترنت (online multiplayer) باستخدام WebSocket أو WebRTC.
+  createBoard();
+})();
+</script>
+</body>
+</html>
