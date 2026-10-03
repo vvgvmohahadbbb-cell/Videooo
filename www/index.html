@@ -192,6 +192,70 @@ body.busy #snd{animation:sp 1s ease-in-out infinite}
 
 #phb{background:var(--card);color:var(--mut);min-height:36px;padding:0 14px!important;border-radius:999px!important;border:1px solid var(--bd);font-size:13px!important;font-weight:600;display:inline-flex;align-items:center;position:relative;overflow:hidden}
 #phb.on{background:rgba(139,92,246,.22);color:#e4d8ff;border-color:rgba(139,92,246,.6)}
+/* ===== تصميم v2: احترافي ===== */
+:root{--bg:#090d17;--bg2:#0d1322;--card:#121a2d;--card2:#18223a;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--tx:#eaeefb;--mut:#8b96b3;--ac:#5b8cff;--ac2:#8b5cf6;--grad:linear-gradient(135deg,#5b8cff 0%,#8b5cf6 100%);--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+html,body{background:var(--bg)}
+body{background:linear-gradient(180deg,#0f1832 0,var(--bg) 340px) no-repeat,var(--bg)}
+button{transition:transform .35s var(--spring),background-color .2s,opacity .2s,border-color .2s}
+button:active{transform:scale(.94);transition-duration:.08s}
+/* الرأس */
+header{background:transparent;padding:14px 16px 10px;align-items:center}
+header .brand{display:flex;align-items:center;gap:11px;cursor:pointer;max-width:62%;min-width:0}
+header .lg2{flex:none;width:40px;height:40px;border-radius:13px;background:var(--grad);display:grid;place-items:center;font-size:21px;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(91,140,255,.35);animation:lgIn .6s var(--spring) both}
+@keyframes lgIn{from{opacity:0;transform:scale(.6) rotate(-12deg)}}
+header .bt{min-width:0;display:flex;flex-direction:column;gap:1px}
+header .bt b{font-size:18px!important;font-weight:800;color:var(--tx);line-height:1.2}
+header .bt b small{font-size:11px;font-weight:700;color:var(--ac);letter-spacing:1px;margin-inline-start:4px}
+header #ct{display:block;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+header .acts{display:flex;gap:8px}
+header .ic{width:42px;height:42px;margin:0;border-radius:14px;background:var(--card);border:1px solid var(--bd);color:#c9d3f0;display:inline-grid;place-items:center;padding:0}
+header .ic svg{width:20px;height:20px;pointer-events:none}
+header .ic:active{background:var(--card2);border-color:var(--bd2)}
+/* التبويبات */
+#tabs{margin:2px 16px 12px;padding:4px;gap:4px;background:var(--card);border:1px solid var(--bd);border-radius:16px}
+.tb{height:42px;border-radius:12px;font-size:14px;font-weight:700;color:var(--mut)}
+.tb.on{background:var(--grad);color:#fff;box-shadow:0 6px 16px rgba(91,140,255,.32)}
+/* الشاشة الرئيسية: شبكة منظمة */
+.hero{padding:26px 16px 8px}
+.hh{font-size:13px;font-weight:800;letter-spacing:.5px;margin-bottom:6px}
+.hs{font-size:25px;line-height:1.3;font-weight:800;margin-bottom:18px;color:var(--tx)}
+.hero .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero .chip{width:100%;min-height:58px;display:flex;align-items:center;justify-content:flex-start;gap:8px;text-align:right;line-height:1.35;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--bd);font-size:14px;font-weight:600;color:var(--tx);animation:chipIn .55s var(--spring) both}
+.hero .chip:last-child:nth-child(odd){grid-column:1/-1}
+.hero .chip:active{background:var(--card2);border-color:rgba(91,140,255,.5)}
+@keyframes chipIn{from{opacity:0;transform:translateY(18px) scale(.92)}}
+.chips .chip:nth-child(1){animation-delay:.04s}.chips .chip:nth-child(2){animation-delay:.09s}.chips .chip:nth-child(3){animation-delay:.14s}.chips .chip:nth-child(4){animation-delay:.19s}.chips .chip:nth-child(5){animation-delay:.24s}.chips .chip:nth-child(6){animation-delay:.29s}.chips .chip:nth-child(7){animation-delay:.34s}.chips .chip:nth-child(n+8){animation-delay:.39s}
+/* الرسائل */
+#msgs{padding:8px 16px 16px;gap:14px}
+.m{border-radius:18px;padding:12px 15px;line-height:1.75;font-size:15px;content-visibility:auto;contain-intrinsic-size:auto 70px;animation:msgIn .45s var(--spring) both;box-shadow:none}
+@keyframes msgIn{from{opacity:0;transform:translateY(14px) scale(.96)}}
+.u{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(91,140,255,.22)}
+.a{background:var(--card);border:1px solid var(--bd)}
+.cpr{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cp{padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--bd);font-size:12px;color:var(--mut)}
+/* الأوضاع: صف واحد منظم قابل للتمرير */
+#modes{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 16px 8px;margin:0 -14px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%)}
+#modes::-webkit-scrollbar{display:none}
+#modes>button{flex:none!important;white-space:nowrap!important;height:36px;min-height:36px;padding:0 14px!important;border-radius:999px!important;font-size:13px!important;font-weight:700;line-height:1;display:inline-flex;align-items:center;gap:4px}
+#qs{display:flex;align-items:center;gap:6px;padding:0 6px 8px!important;font-size:12px!important;color:var(--mut)}
+/* شريط الكتابة */
+.row{background:var(--card);border:1px solid var(--bd);border-radius:28px;padding:6px;gap:4px;align-items:flex-end;transition:border-color .2s,box-shadow .25s}
+.row:focus-within{border-color:rgba(91,140,255,.55);box-shadow:0 0 0 4px rgba(91,140,255,.14)}
+#inp{font-size:15.5px;line-height:1.5;padding:11px 6px;max-height:120px}
+.rb{width:42px!important;height:42px!important;border-radius:50%}
+#snd{width:46px!important;height:46px!important;background:var(--grad);box-shadow:0 6px 16px rgba(91,140,255,.4)}
+.rb.g{background:transparent;box-shadow:none;color:var(--mut)}
+/* البطاقات والأزرار والإعدادات */
+.card{border-radius:20px;padding:16px;background:var(--card);border:1px solid var(--bd)}
+.btn{height:48px;border-radius:14px;font-size:15px;font-weight:700}
+.btn.s{background:var(--card2);border:1px solid var(--bd2);color:var(--tx)}
+#set{padding:18px 16px 30px}
+#set label{display:block;margin:18px 0 8px;font-size:13px;font-weight:700;color:var(--mut)}
+#set textarea,#set input,#set select{width:100%;border-radius:14px;padding:12px 14px;font-size:14.5px}
+#set .row{background:transparent;border:0;padding:0;gap:8px;box-shadow:none}
+#set .row .btn{flex:1}
+.msb .mo{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:right;width:100%;margin-bottom:8px;border-radius:16px;padding:13px 15px;font-size:15px;font-weight:700}
+.msb .mo small{font-weight:400;font-size:12px;color:var(--mut)}
 </style>
 </head>
 <body>
@@ -208,7 +272,7 @@ b.appendChild(s);setTimeout(function(){s.remove()},600)}catch(_){}},{passive:tru
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){var s=document.getElementById('snd');if(s)s.classList.toggle('rd',!!e.target.value.trim())}});
 })();
 </script>
-<header><div onclick="openList()" style="cursor:pointer;max-width:56%;overflow:hidden"><div style="font-size:18px;font-weight:700">🤖 قاسم <small style="font-weight:400">MOD0</small></div><small id="ct" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></small></div><div><button class="ic" onclick="newChat()">➕</button><button class="ic" onclick="openList()">📂</button><button class="ic" onclick="showSet()">⚙️</button></div></header>
+<header><div class="brand" onclick="openList()"><div class="lg2">ق</div><div class="bt"><b>قاسم <small>MOD0</small></b><small id="ct"></small></div></div><div class="acts"><button class="ic" aria-label="محادثة جديدة" onclick="newChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button class="ic" aria-label="المحادثات" onclick="openList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button><button class="ic" aria-label="الإعدادات" onclick="showSet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></header>
 <div id="tabs"><button class="tb on" onclick="tab(0)">💬 قاسم</button><button class="tb" onclick="tab(3)">🛠️ استوديو</button></div>
 
 <div class="view on" id="v0">
@@ -249,6 +313,17 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
   <label style="display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" id="pon" style="width:auto"> 🧩 قاسم يتكيّف مع أسلوبي تلقائياً</label>
   <label>ملف أسلوبي اللي تعلّمه قاسم (تقدر تعدله)</label><textarea id="ptx" rows="3"></textarea>
   <button class="btn s" onclick="prof.txt='';prof.n=0;$('ptx').value='';ls.set('prof',prof)">🗑 مسح ما تعلّمه</button>
+  <label>🧠 الذكاء بدون نت (مجاني بالكامل)</label>
+  <div id="lmbox" style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px">
+    <div id="lms" style="font-size:13px;margin-bottom:8px">لم يُنزَّل أي نموذج بعد</div>
+    <div id="lmp" style="display:none;height:6px;border-radius:6px;background:#1c2540;overflow:hidden;margin:6px 0"><div style="height:100%;width:0;background:var(--grad)"></div></div>
+    <select id="lmm" onchange="lmPick()"><option value="q05">خفيف: Qwen2.5 0.5B (~400MB، أسرع وأضعف)</option><option value="q15">متوسط: Qwen2.5 1.5B (~1.1GB، أفضل وأبطأ)</option><option value="custom">رابط مخصص (ملف GGUF)</option></select>
+    <input id="lmu" placeholder="https://…/model-q4_k_m.gguf" style="display:none;margin-top:6px">
+    <div class="row" style="margin-top:8px"><button class="btn s" onclick="lmDownload()">⬇️ تنزيل</button><button class="btn s" onclick="lmDel()">🗑 حذف</button></div>
+    <label style="margin-top:10px">متى يُستعمل؟</label>
+    <select id="lmmode" onchange="lmMode()"><option value="auto">تلقائي: عند انقطاع النت فقط</option><option value="always">دائماً (بدون نت وبدون نقاط)</option><option value="off">إيقاف</option></select>
+    <div style="font-size:12px;color:var(--mut);margin-top:8px;line-height:1.7">النموذج الصغير أضعف بكثير من الذكاء السحابي وأبطأ، خصوصاً على الجوالات الضعيفة. بدون نت لا يعمل: البحث بالويب، الصور، تحويل الصوت لنص، وبناء ملفات APK. التنزيل يحتاج نت مرة واحدة ومساحة فاضية.</div>
+  </div>
   <button class="btn" onclick="saveSet()">حفظ</button></div>
 
 <script type="text/plain" id="app-src">
@@ -361,7 +436,7 @@ async function callOnce(models,messages,eff,max,xs){let err='';
     const t=((await r.json()).choices[0].message.content||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim();if(t)return t;err='رد فاضي'}
     catch(e){if(e.name==='AbortError'||is401(e.message))throw e;err=e.message}}
   throw new Error(err||'رد فاضي')}
-async function streamTo(models,messages,eff,max,onText,xs){let err='',acc='';
+async function streamTo(models,messages,eff,max,onText,xs){if(useLocal())return lmGen(messages,max,onText);let err='',acc='';
   for(const m of models)for(const ex of (xs||[{}])){try{
     const r=await post({model:m,messages,stream:true,...PP(m,eff,max,ex)});
     if(!r.ok){err=await errOf(r);if(is401(err))throw new Error(err);continue}
@@ -379,7 +454,7 @@ async function visionList(){if(!MODELS&&usingProxy()&&GASP)MODELS=[];if(!MODELS)
 async function planM(img){return img?await visionList():(mode==='fast'||eco)?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
 // ---------- البحث بالإنترنت ----------
 const HOT=/(اليوم|الآن|حالي|آخر|أحدث|جديد|سعر|أسعار|أخبار|خبر|نتيجة|مباراة|طقس|رئيس|وزير|من هو|من هي|متى|إصدار|ابحث|دور على|كم |كم$|عدد|مين |وين|أين|latest|price|news|today|current|202[4-9])/i;
-async function decideSearch(t){if(wm==='off'||!t)return '';return wm==='on'||HOT.test(t)?t:''}
+async function decideSearch(t){if(useLocal()||wm==='off'||!t)return '';return wm==='on'||HOT.test(t)?t:''}
 async function searchNotes(q){let err='';
   const msgs=[{role:'system',content:'أنت باحث. استخدم أداة البحث في الإنترنت الآن للعثور على أحدث المعلومات المتعلقة بالطلب، وأعطِ ملاحظات مركزة على شكل نقاط مع التواريخ والأرقام وأسماء المصادر وروابطها. اليوم: '+new Date().toLocaleDateString('en-GB')+'.'},{role:'user',content:q}];
   const BS={tools:[{type:'browser_search'}],reasoning_effort:'low',include_reasoning:false};
@@ -419,13 +494,22 @@ async function openPhone(){
   window.PHEX=['افتح يوتيوب وابحث عن ','شغّل الآلة الحاسبة واحسب 25 × 4','اضبط منبهاً الساعة 6:30','ابحث في الخرائط عن أقرب صيدلية'];
   $('msl').innerHTML='<div class="mo" style="opacity:.92">'+st+'<small>يرسل التطبيق نص الشاشة الظاهرة للذكاء الاصطناعي، فلا تستعمله على شاشات خاصة أو مصرفية. لن يضغط إرسال أو دفع أو حذف: يتركها لك.</small></div>'
    +'<button class="mo" onclick="togglePhone()">'+(phoneMode?'⏹ إيقاف وضع المساعد':'▶️ تشغيل وضع المساعد')+'<small>بعد التشغيل اكتب المهمة وأرسلها (3 نقاط)</small></button>'
-   +'<button class="mo" onclick="phoneAcc()">⚙️ تفعيل التحكم الكامل<small>إعدادات الوصول ← قاسم ← تشغيل</small></button>'
+   +'<button class="mo" onclick="phoneGetFull()">⬇️ نسخة التحكم الكامل<small>تثبّت فوق التطبيق. قد تمنعها Play Protect: اضغط «مزيد من التفاصيل» ثم «تثبيت على أي حال»</small></button>'
+   +'<button class="mo" onclick="phoneAcc()">⚙️ تفعيل التحكم الكامل<small>إعدادات الوصول ← قاسم ← تشغيل (بعد تثبيت نسخة التحكم الكامل)</small></button>'
    +'<button class="mo" onclick="phoneInfo()">ℹ️ ظهر لي إعداد مقيّد؟<small>معلومات التطبيق ← ⋮ ← السماح بالإعدادات المقيّدة</small></button>'
    +PHEX.map((e,i)=>'<button class="mo" onclick="phoneEx('+i+')">'+e+'</button>').join('');
   $('ms').classList.add('on')}
 function togglePhone(){phoneMode=!phoneMode;phoneBtn();closeModes()}
 function phoneEx(i){closeModes();phoneMode=true;phoneBtn();$('inp').value=PHEX[i];$('inp').focus()}
 function phoneAcc(){closeModes();const P=PH();if(P)P.accSettings().catch(()=>{});toast('شغّل خدمة قاسم من إعدادات الوصول')}
+async function phoneGetFull(){closeModes();const repo=(window.APP&&APP.repo)||'';if(!repo){toast('مستودع التحديث غير مضبوط');return}
+  const out=bub('a','⬇️ جاري تنزيل نسخة التحكم الكامل…');
+  try{const r=await saveImg('https://github.com/'+repo+'/releases/download/app-latest/qasim-phone.apk','qasim-phone.apk','application/vnd.android.package-archive',upBar);
+    const d=$('upb');if(d)d.remove();
+    if(r&&r.uri&&window.Capacitor&&Capacitor.Plugins.DownloadPlugin){const x=await Capacitor.Plugins.DownloadPlugin.install({uri:r.uri});
+      out.innerHTML=x&&x.needPermission?'⚙️ فعّل «السماح بالتثبيت» لقاسم ثم أعد المحاولة':'📲 فتحت شاشة التثبيت. إذا حظرتها Play Protect: «مزيد من التفاصيل» ثم «تثبيت على أي حال»، أو أوقف الحماية مؤقتاً.'}
+    else out.textContent='✅ نزل بمجلد Download/Qasim'}
+  catch(e){const d=$('upb');if(d)d.remove();out.textContent='⚠️ '+String(e&&e.message||e)+' (ربما لم تُبنَ نسخة التحكم الكامل بعد)'}}
 function phoneInfo(){closeModes();const P=PH();if(P)P.appInfo().catch(()=>{})}
 async function phoneTask(t){
   const P=PH(),hr=document.querySelector('.hero');if(hr)hr.remove();
@@ -444,6 +528,41 @@ function phoneWatch(out){
     if(!s.running){clearInterval(window.PHT);window.PHT=null;window.PHTICK=null;busy=false;$('snd').textContent='➤'}}catch(e){}};
   window.PHT=setInterval(window.PHTICK,1500);window.PHTICK()}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&window.PHTICK)window.PHTICK()});
+
+// ---------- الذكاء بدون نت (wllama / llama.cpp) ----------
+const LMM={q05:{n:'Qwen2.5 0.5B',u:'https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf'},q15:{n:'Qwen2.5 1.5B',u:'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf'}};
+let lm=Object.assign({id:'',mode:'auto',url:''},ls.get('lm',null)||{}),LMW=null,LMREADY=false;
+const useLocal=()=>!!lm.url&&(lm.mode==='always'||(lm.mode==='auto'&&!navigator.onLine));
+async function lmLib(){if(LMW)return LMW;const mod=await import(location.origin+'/wllama/index.js');LMW=new mod.Wllama({default:location.origin+'/wllama/wasm/wllama.wasm'});return LMW}
+function lmSt(t,p){const e=$('lms');if(e)e.textContent=t;const b=$('lmp');if(b){b.style.display=p==null?'none':'block';b.firstElementChild.style.width=Math.round((p||0)*100)+'%'}}
+function lmRender(){if(!$('lmbox'))return;$('lmmode').value=lm.mode||'auto';$('lmm').value=lm.id||'q05';$('lmu').style.display=$('lmm').value==='custom'?'block':'none';if(lm.id==='custom')$('lmu').value=lm.url||'';
+  lmSt(lm.url?((LMREADY?'✅ جاهز: ':'📦 منزّل: ')+((LMM[lm.id]||{n:'نموذج مخصص'}).n)):'لم يُنزَّل أي نموذج بعد')}
+function lmPick(){$('lmu').style.display=$('lmm').value==='custom'?'block':'none'}
+function lmMode(){lm.mode=$('lmmode').value;ls.set('lm',lm)}
+async function lmLoad(u,onP){const W=await lmLib();await W.loadModelFromUrl(u,{n_gpu_layers:0,n_ctx:2048,allowOffline:true,progressCallback:onP});LMREADY=true}
+async function lmDownload(){
+  const id=$('lmm').value,u=id==='custom'?$('lmu').value.trim():LMM[id].u;
+  if(!u){toast('أدخل رابط ملف GGUF');return}
+  if(!navigator.onLine){toast('التنزيل يحتاج إنترنت');return}
+  lmSt('⏳ تجهيز المكتبة…',0);
+  try{await lmLoad(u,({loaded,total})=>lmSt('⬇️ جاري التنزيل '+Math.round(loaded/total*100)+'% ('+Math.round(loaded/1048576)+' MB)',loaded/total));
+    lm.id=id;lm.url=u;ls.set('lm',lm);lmRender()}
+  catch(e){LMREADY=false;lmSt('⚠️ فشل التنزيل أو التحميل: '+((e&&e.message)||e));$('lmp').style.display='none'}}
+async function lmDel(){try{const W=await lmLib();try{await W.exit()}catch(e){}try{await W.cacheManager.clear()}catch(e){}}catch(e){}
+  LMW=null;LMREADY=false;lm.url='';lm.id='';ls.set('lm',lm);lmRender();toast('تم حذف النموذج')}
+async function lmEnsure(){if(LMREADY)return;lmSt('⏳ تحميل النموذج بالذاكرة…');await lmLoad(lm.url,()=>{});lmRender()}
+async function lmGen(messages,max,onText){
+  await lmEnsure();
+  const sys='أنت قاسم، مساعد ذكي ودود. أجب بالعربية المبسطة وباختصار ودقة، ولا تخترع معلومات: إن لم تعرف قل لا أعرف.';
+  const rest=messages.filter(m=>m.role!=='system').slice(-5).map(m=>({role:m.role,content:typeof m.content==='string'?m.content.slice(0,700):'(صورة)'}));
+  const opt={messages:[{role:'system',content:sys},...rest],max_tokens:Math.min(max||400,400),temperature:0.6,top_k:40,top_p:0.9};
+  let acc='';
+  try{const r=await LMW.createChatCompletion({...opt,stream:true});
+    if(r&&r[Symbol.asyncIterator]){for await(const c of r){const d=c.choices&&c.choices[0]&&c.choices[0].delta&&c.choices[0].delta.content;if(d){acc+=d;onText(acc)}}if(acc)return acc}
+    else{const t0=r&&r.choices&&r.choices[0]&&r.choices[0].message&&r.choices[0].message.content;if(t0){onText(t0);return t0}}
+  }catch(e){}
+  const r2=await LMW.createChatCompletion(opt);acc=(r2.choices&&r2.choices[0]&&r2.choices[0].message&&r2.choices[0].message.content)||'';onText(acc);return acc}
+try{new MutationObserver(lmRender).observe($('set'),{attributes:true,attributeFilter:['class']})}catch(e){}
 // ---------- الإرسال ----------
 const BST=[{type:'browser_search'}],IMGCOST=1;
 const SRCH=' لديك أداة بحث في الإنترنت: استخدمها عندما يتعلق السؤال بأحداث أو أخبار أو أسعار أو أشخاص ومناصب حالية أو إصدارات أو أي معلومة قد تكون تغيّرت بعد 2024 أو عندما لا تكون واثقاً، وابحث دائماً إذا طلب المستخدم ذلك. بعد البحث اذكر أسماء المصادر والتاريخ في آخر الجواب، وإذا تعارضت المصادر فاذكر ذلك. لا تبحث للشرح العام أو البرمجة أو الحسابات.';
@@ -588,7 +707,7 @@ function qBar(){const el=$('qs');if(!el)return;const q=quota(),mins=Math.max(0,M
   el.textContent=`⚡ متبقي ${Math.max(0,LIMIT.pts-q.u)}/${LIMIT.pts} نقطة`+(q.u?` • يتجدد بعد ${mins} د`:'')}
 function toast(m){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:110px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:30;font-size:14px;line-height:1.6';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
 function refund(c){const q=quota();q.u=Math.max(0,q.u-c);ls.set('quota',q);qBar()}
-function spend(c){const q=quota();
+function spend(c){if(useLocal())return true;const q=quota();
   if(q.u+c>LIMIT.pts){const mins=Math.max(1,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));toast(`⏳ وصلت الحد المسموح (${LIMIT.pts} نقطة كل ${LIMIT.min} دقايق). ترجع تستخدمه بعد ${mins} دقيقة`+(c>1?'، أو اختر وضع أخف (⚡ سريع = نقطة وحدة).':'.'));return false}
   q.u+=c;ls.set('quota',q);qBar();return true}
 setInterval(qBar,30000);qBar();
@@ -797,7 +916,7 @@ async function checkUpdate(manual){
   if(!repo){if(manual)toast('⚠️ مستودع التحديث غير مضبوط');return null}
   try{const r=await fetch('https://api.github.com/repos/'+repo+'/releases/tags/app-latest',{headers:{Accept:'application/vnd.github+json'}});
     if(!r.ok)throw new Error(r.status===404?'ما في نسخة منشورة بعد':'خطأ '+r.status);
-    const j=await r.json(),v=parseInt(j.name,10)||0,a=(j.assets||[]).find(x=>/\.apk$/i.test(x.name));
+    const j=await r.json(),v=parseInt(j.name,10)||0,a=(j.assets||[]).find(x=>x.name==='qasim.apk')||(j.assets||[]).find(x=>/\.apk$/i.test(x.name)&&!/phone/i.test(x.name));
     if(!a)throw new Error('ملف التحديث غير موجود');
     return{v,url:a.browser_download_url,notes:String(j.body||'').slice(0,200),newer:v>APPVER}}
   catch(e){if(manual)toast('⚠️ '+e.message);return null}}

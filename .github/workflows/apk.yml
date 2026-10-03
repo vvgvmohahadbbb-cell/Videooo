@@ -27,38 +27,51 @@ jobs:
             echo "::warning::DEBUG_KEYSTORE_B64 غير مضبوط: كل نسخة بتوقيع مختلف ولازم تحذف القديمة قبل التثبيت"
           fi
       - run: npm install
+      - name: مكتبة الذكاء بدون نت (اختيارية)
+        run: |
+          npm install @wllama/wllama@3.4.1 --no-save || echo "::warning::تعذر تثبيت مكتبة الذكاء المحلي"
+          if [ -d node_modules/@wllama/wllama/esm ]; then mkdir -p www/wllama && cp -r node_modules/@wllama/wllama/esm/. www/wllama/; else echo "::warning::مكتبة الذكاء المحلي غير موجودة"; fi
       - run: npx cap add android
-      - run: sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
+      - run: sed -i "s/versionCode 1/versionCode $((2 * ${{ github.run_number }}))/" android/app/build.gradle
       - run: cp native/*.java android/app/src/main/java/com/ishhf/aichat/
       - run: python3 tools/patch_manifest.py
-      - name: نسخ احتياطية قبل ميزة التحكم بالهاتف
+      - name: نسخ احتياطية قبل مساعد الهاتف
         run: |
           cp android/app/src/main/AndroidManifest.xml /tmp/manifest.base.xml
           cp android/app/src/main/java/com/ishhf/aichat/MainActivity.java /tmp/MainActivity.base.java
-      - name: ميزة مساعد الهاتف
-        run: python3 tools/patch_phone.py || echo "::warning::تعذر تجهيز ميزة مساعد الهاتف"
+      - name: مساعد الهاتف (خفيف، بدون خدمة وصول)
+        run: python3 tools/patch_phone.py lite || echo "::warning::تعذر تجهيز مساعد الهاتف"
       - run: npx cap sync android
-      - name: بناء التطبيق (لو فشلت ميزة الهاتف يُبنى بدونها)
+      - name: بناء النسخة الأساسية (qasim.apk)
         run: |
           cd android && chmod +x gradlew
           if ./gradlew assembleDebug; then
-            echo "built with phone assistant"
+            touch /tmp/phone_ok
           else
-            echo "::warning::فشل بناء ميزة مساعد الهاتف، تم البناء بدونها"
+            echo "::warning::فشل بناء مساعد الهاتف، تم البناء بدونه"
             cd ..
             J=android/app/src/main/java/com/ishhf/aichat
             rm -f $J/PhonePlugin.java $J/QAgent.java $J/QAccService.java
-            rm -f android/app/src/main/res/xml/qacc_config.xml android/app/src/main/res/values/qacc.xml
             cp /tmp/manifest.base.xml android/app/src/main/AndroidManifest.xml
             cp /tmp/MainActivity.base.java $J/MainActivity.java
             cd android && ./gradlew assembleDebug
           fi
+          cd .. && cp android/app/build/outputs/apk/debug/app-debug.apk qasim.apk
+      - name: نسخة التحكم الكامل (qasim-phone.apk)
+        continue-on-error: true
+        run: |
+          if [ ! -f /tmp/phone_ok ]; then echo "skip full build"; exit 0; fi
+          python3 tools/patch_phone.py full
+          sed -i "s/versionCode $((2 * ${{ github.run_number }}))/versionCode $((2 * ${{ github.run_number }} + 1))/" android/app/build.gradle
+          cd android && ./gradlew assembleDebug
+          cd .. && cp android/app/build/outputs/apk/debug/app-debug.apk qasim-phone.apk
       - uses: actions/upload-artifact@v4
-        with: {name: Qasim-apk, path: android/app/build/outputs/apk/debug/app-debug.apk}
+        with: {name: Qasim-apk, path: "qasim*.apk"}
       - name: نشر التحديث
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk qasim.apk
+          FILES="qasim.apk"
+          [ -f qasim-phone.apk ] && FILES="$FILES qasim-phone.apk"
           gh release delete app-latest --cleanup-tag -y || true
-          gh release create app-latest qasim.apk --title "${{ github.run_number }}" --notes "$(git log -1 --pretty=%s)" --target "${{ github.sha }}"
+          gh release create app-latest $FILES --title "${{ github.run_number }}" --notes "$(git log -1 --pretty=%s)" --target "${{ github.sha }}"
