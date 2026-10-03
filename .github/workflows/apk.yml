@@ -31,8 +31,28 @@ jobs:
       - run: sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
       - run: cp native/*.java android/app/src/main/java/com/ishhf/aichat/
       - run: python3 tools/patch_manifest.py
+      - name: نسخ احتياطية قبل ميزة التحكم بالهاتف
+        run: |
+          cp android/app/src/main/AndroidManifest.xml /tmp/manifest.base.xml
+          cp android/app/src/main/java/com/ishhf/aichat/MainActivity.java /tmp/MainActivity.base.java
+      - name: ميزة مساعد الهاتف
+        run: python3 tools/patch_phone.py || echo "::warning::تعذر تجهيز ميزة مساعد الهاتف"
       - run: npx cap sync android
-      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - name: بناء التطبيق (لو فشلت ميزة الهاتف يُبنى بدونها)
+        run: |
+          cd android && chmod +x gradlew
+          if ./gradlew assembleDebug; then
+            echo "built with phone assistant"
+          else
+            echo "::warning::فشل بناء ميزة مساعد الهاتف، تم البناء بدونها"
+            cd ..
+            J=android/app/src/main/java/com/ishhf/aichat
+            rm -f $J/PhonePlugin.java $J/QAgent.java $J/QAccService.java
+            rm -f android/app/src/main/res/xml/qacc_config.xml android/app/src/main/res/values/qacc.xml
+            cp /tmp/manifest.base.xml android/app/src/main/AndroidManifest.xml
+            cp /tmp/MainActivity.base.java $J/MainActivity.java
+            cd android && ./gradlew assembleDebug
+          fi
       - uses: actions/upload-artifact@v4
         with: {name: Qasim-apk, path: android/app/build/outputs/apk/debug/app-debug.apk}
       - name: نشر التحديث
