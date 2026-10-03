@@ -183,6 +183,12 @@ body.busy #comp::after{content:"";position:absolute;top:0;left:14px;width:35%;he
 @keyframes bar{0%,100%{transform:translateX(0)}50%{transform:translateX(150%)}}
 body.busy #snd{animation:sp 1s ease-in-out infinite}
 @keyframes sp{50%{transform:scale(.9)}}
+
+#eco,#tlb{background:var(--card);color:var(--mut)}
+#eco.on{background:rgba(31,169,122,.22);color:#aef0d6;border-color:rgba(31,169,122,.6)}
+#tlb{color:#cfe0ff}
+#eco,#tlb{min-height:36px;padding:0 14px!important;border-radius:999px!important;border:1px solid var(--bd);font-size:13px!important;font-weight:600;display:inline-flex;align-items:center;position:relative;overflow:hidden}
+.cp.sp{color:#ff9aa8}
 </style>
 </head>
 <body>
@@ -205,7 +211,7 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 <div class="view on" id="v0">
   <div id="msgs"></div>
   <div id="comp">
-    <div id="modes"><button id="mdb" onclick="openModes()">🧠 تفكير ▾</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
+    <div id="modes"><button id="mdb" onclick="openModes()">🧠 تفكير ▾</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="eco" onclick="toggleEco()">🌿 توفير</button><button id="tlb" onclick="openTools()">🧰 أدوات</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
     <div id="qs" style="font-size:12px;color:var(--mut);padding:0 4px 6px"></div><div id="imgm" style="display:none;align-items:center;gap:6px;background:#1d3b6b;border-radius:10px;padding:6px 8px;margin-bottom:6px;font-size:13px;flex-wrap:wrap">🖼️ <select id="isz" style="width:auto;padding:4px"><option value="sq">مربعة</option><option value="pt">عمودية</option><option value="ls">أفقية</option></select><select id="ist" style="width:auto;padding:4px"><option value="auto">ستايل تلقائي</option><option value="real">واقعي</option><option value="cine">سينمائي</option><option value="anime">أنمي</option><option value="d3">ثلاثي الأبعاد</option><option value="oil">رسم زيتي</option><option value="water">ألوان مائية</option><option value="logo">لوجو</option></select><button style="margin-inline-start:auto;font-size:14px" onclick="setImgMode(false)">✕</button></div><div id="th"></div>
     <div class="row"><input type="file" id="pic" accept="image/*,.txt,.md,.csv,.json,.js,.ts,.py,.java,.kt,.html,.css,.xml,.log,.yml,.yaml,.sql,.sh" multiple hidden>
       <button class="rb g" onclick="pic.click()">📎</button><input type="file" id="cam" accept="image/*" capture="environment" hidden><button class="rb g" onclick="cam.click()">📷</button><button class="rb g" id="dmic" onclick="dictate()">🎤</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
@@ -280,7 +286,7 @@ function md(s){s=esc(s.replace(/<think>[\s\S]*?(<\/think>|$)/g,''));
   return s.replace(/!\[img\]\((https:\/\/[^\s)]+)\)/g,'<img class=\"gen\" src=\"$1\" onclick=\"openLb(this.src)\">').replace(/```\w*\n?([\s\S]*?)```/g,(m,c)=>`<pre>${c}</pre>`).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>').replace(/^[-*] /gm,'• ')}
 function bub(c,html){const d=document.createElement('div');d.className='m '+c;d.innerHTML=html;$('msgs').appendChild(d);$('msgs').scrollTop=1e9;return d}
 function renderHist(){$('msgs').innerHTML='';if(!hist.length)hero();hist.forEach((h,i)=>{const b=bub(h.role==='user'?'u':'a',md(h.content));if(h.role!=='user')addCp(b,i===hist.length-1)})}
-function addCp(b,last){b.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" onclick="cpy(this)">📋 نسخ</span>'+(last?'<span class="cp" onclick="regen()">🔄 أعد</span>':'')+'</div>')}
+function addCp(b,last){b.insertAdjacentHTML('beforeend','<div class="cpr"><span class="cp" onclick="cpy(this)">📋 نسخ</span><span class="cp" onclick="speak(this)">🔊 اقرأ</span><span class="cp" onclick="shr(this)">📤 شارك</span>'+(last?'<span class="cp" onclick="regen()">🔄 أعد</span>':'')+'</div>')}
 function msgText(el){const m=el.closest('.m').cloneNode(true);m.querySelectorAll('.cpr,.pmd').forEach(x=>x.remove());return m.innerText}
 function cpy(el){const t=msgText(el);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>el.textContent='✓ تم').catch(()=>prompt('انسخ:',t))}
 function copyChat(){const t=hist.map(h=>(h.role==='user'?'أنا: ':'المساعد: ')+h.content).join('\n\n');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>alert('تم نسخ المحادثة')).catch(()=>prompt('انسخ:',t))}
@@ -367,7 +373,7 @@ async function streamTo(models,messages,eff,max,onText,xs){let err='',acc='';
 async function visionList(){if(!MODELS&&usingProxy()&&GASP)MODELS=[];if(!MODELS){try{const r=await fetch(B()+'/models',{headers:hdr()});MODELS=r.ok?(await r.json()).data.map(x=>x.id):[]}catch(e){MODELS=[]}}
   const f=MODELS.filter(x=>/qwen3\.[5-9]|llama-4|maverick|scout|vision|pixtral|gemma-?[34]/i.test(x)&&!/guard|whisper|tts/i.test(x));
   const VM='qwen/qwen3.8-27b';return [...new Set([cfg.vm&&!/qwen3\.[0-7]\b/.test(cfg.vm)?cfg.vm:VM,VM,...f.filter(x=>!/qwen3\.[0-7]\b/.test(x))])].filter(Boolean)}
-async function planM(img){return img?await visionList():mode==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
+async function planM(img){return img?await visionList():(mode==='fast'||eco)?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b']}
 // ---------- البحث بالإنترنت ----------
 const HOT=/(اليوم|الآن|حالي|آخر|أحدث|جديد|سعر|أسعار|أخبار|خبر|نتيجة|مباراة|طقس|رئيس|وزير|من هو|من هي|متى|إصدار|ابحث|دور على|كم |كم$|عدد|مين |وين|أين|latest|price|news|today|current|202[4-9])/i;
 async function decideSearch(t){if(wm==='off'||!t)return '';return wm==='on'||HOT.test(t)?t:''}
@@ -382,6 +388,21 @@ async function searchNotes(q){let err='';
   return {err}}
 function webBtn(){const b=$('web');b.textContent={auto:'🌐 تلقائي',on:'🌐 دائماً',off:'🚫 بدون بحث'}[wm];b.className=wm==='off'?'':'on'}
 function cycleWeb(){wm={auto:'on',on:'off',off:'auto'}[wm];ls.set('wm',wm);webBtn()}
+
+function speak(el){try{const ss=window.speechSynthesis;if(!ss){toast('⚠️ النطق غير مدعوم بهذا الجهاز');return}
+if(ss.speaking||ss.pending){ss.cancel();document.querySelectorAll('.cp.sp').forEach(x=>{x.classList.remove('sp');x.textContent='🔊 اقرأ'});return}
+const t=msgText(el).replace(/[*#`_>|~]/g,' ').replace(/\s+/g,' ').trim().slice(0,3000);if(!t)return;
+const u=new SpeechSynthesisUtterance(t);u.lang=/[\u0600-\u06FF]/.test(t)?'ar-SA':'en-US';u.rate=1;
+el.classList.add('sp');el.textContent='⏹ إيقاف';
+u.onend=u.onerror=()=>{el.classList.remove('sp');el.textContent='🔊 اقرأ'};ss.speak(u)}catch(e){toast('⚠️ تعذر النطق')}}
+function shr(el){const t=msgText(el);if(navigator.share){navigator.share({text:t}).catch(()=>{})}else cpy(el)}
+const TOOLS=[['✂️ تلخيص','يلخّص نصاً طويلاً في نقاط','لخّص لي النص التالي في نقاط قصيرة وواضحة:\n\n'],['🌍 ترجمة','عربي وإنجليزي بدقة','ترجم النص التالي إلى العربية (وإن كان عربياً فإلى الإنجليزية) مع الحفاظ على المعنى والأسلوب:\n\n'],['✅ تصحيح لغوي','إملاء ونحو بدون تغيير المعنى','صحّح الأخطاء الإملائية والنحوية في النص التالي دون تغيير المعنى، ثم اذكر أهم التعديلات:\n\n'],['💡 تبسيط','شرح سهل مع مثال','اشرح لي التالي ببساطة كأني أسمع عنه لأول مرة، مع مثال واقعي:\n\n'],['📩 رسالة رسمية','بريد أو طلب مهذب','اكتب رسالة رسمية مهذبة ومختصرة بخصوص: '],['🧠 عصف أفكار','10 أفكار مبتكرة','أعطني 10 أفكار مبتكرة وقابلة للتنفيذ عن: '],['💻 شرح كود','سطراً بسطر مع الأخطاء','اشرح لي الكود التالي سطراً بسطر واذكر أي أخطاء أو تحسينات ممكنة:\n\n'],['📅 خطة عملية','خطوات مرتبة بالأيام','ضع لي خطة عملية مرتبة بالأيام لتحقيق: '],['⚖️ مقارنة','جدول مختصر مع توصية','قارن بين الشيئين التاليين في جدول مختصر ثم أعطني توصية واضحة: '],['🍳 وصفة','من مكونات عندك','اقترح لي وصفة سهلة وسريعة من المكونات التالية: ']];
+function openTools(){$('ms').querySelector('b').textContent='🧰 أدوات سريعة';$('msl').innerHTML=TOOLS.map((m,i)=>'<button class="mo" onclick="pickTool('+i+')">'+m[0]+'<small>'+m[1]+'</small></button>').join('');$('ms').classList.add('on')}
+function pickTool(i){closeModes();const v=TOOLS[i][2];$('inp').value=v;$('inp').focus();try{$('inp').setSelectionRange(v.length,v.length)}catch(e){}}
+let eco=!!ls.get('eco',false);
+function ecoBtn(){const b=$('eco');if(!b)return;b.className=eco?'on':'';b.textContent=eco?'🌿 توفير ✓':'🌿 توفير'}
+function toggleEco(){eco=!eco;ls.set('eco',eco);ecoBtn()}
+ecoBtn();
 // ---------- الإرسال ----------
 const BST=[{type:'browser_search'}],IMGCOST=1;
 const SRCH=' لديك أداة بحث في الإنترنت: استخدمها عندما يتعلق السؤال بأحداث أو أخبار أو أسعار أو أشخاص ومناصب حالية أو إصدارات أو أي معلومة قد تكون تغيّرت بعد 2024 أو عندما لا تكون واثقاً، وابحث دائماً إذا طلب المستخدم ذلك. بعد البحث اذكر أسماء المصادر والتاريخ في آخر الجواب، وإذا تعارضت المصادر فاذكر ذلك. لا تبحث للشرح العام أو البرمجة أو الحسابات.';
@@ -394,7 +415,7 @@ async function send(){
   const wantImg=(imgMode||IMGRX.test(t))&&!imgs.length&&!docs.length&&!!t;
   const HARD=/(كود|برمج|احسب|معادل|قارن|حلل|اشرح|خطوات|لماذا|ليش|كيف|خطة|اكتب|[\d٠-٩]\s*[\+\-\*\/×÷^xX]\s*[\d٠-٩]|code|function|bug|error|why|how)/i,
     easy=false,lite=mode==='think'&&!wantImg&&!imgs.length&&!docs.length&&t.length>0&&t.length<=60&&!HARD.test(t),deepT=HARD.test(t)||t.length>200;
-  const cost=wantImg?COST[mode]:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=lite?'low':mode==='think'?(deepT?'high':'medium'):EFF[mode],max0=lite?1500:mode==='think'?(deepT?MAXT.think:3500):MAXT[mode];
+  const cost=wantImg?COST[mode]:(eco&&!imgs.length)?COST.fast:easy?COST.fast:COST[mode]+(imgs.length?1:0),eff0=(eco&&!imgs.length)?'low':lite?'low':mode==='think'?(deepT?'high':'medium'):EFF[mode],max0=(eco&&!imgs.length)?1200:lite?1500:mode==='think'?(deepT?MAXT.think:3500):MAXT[mode];
   if(!spend(cost))return;
   if(wantImg)return imageFlow(t,cost);
   busy=true;$('snd').textContent='⏹';ac=new AbortController();
@@ -406,7 +427,7 @@ async function send(){
     first=im.length?{role:'user',content:[{type:'text',text:tt},...im.map(s=>({type:'image_url',image_url:{url:s}}))]}:{role:'user',content:tt};
   const h=hist.slice(-6).map(m=>({role:m.role,content:m.content.length>1200?m.content.slice(0,1200)+'…':m.content}));
   const wantS=wm!=='off'&&!im.length&&(wm==='on'||mode!=='fast'||HOT.test(t));
-  const mkBase=nt=>IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(wantS?SRCH+(wm==='on'?' ابحث دائماً قبل الجواب.':''):'')+(nt?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر المصادر بنهاية جوابك):\n'+nt:'');
+  const mkBase=nt=>IDENT+' التاريخ الآن: '+new Date().toLocaleString('en-GB')+'. '+SYS[mode]+(eco?' أجب باختصار شديد.':'')+(cfg.ci?' تعليمات المستخدم: '+cfg.ci:'')+profTxt()+(wantS?SRCH+(wm==='on'?' ابحث دائماً قبل الجواب.':''):'')+(nt?'\n\nنتائج بحث حديثة من الإنترنت (اعتمد عليها لأنها أحدث من معلوماتك المدربة، وإذا تعارضت معها فالبحث هو الصحيح، واذكر المصادر بنهاية جوابك):\n'+nt:'');
   try{
     {
       const cb=v=>{out.innerHTML=(/\[\[/.test(v)?'🔄 يتحقق من التحديث…':md(v).trim())||THK2;$('msgs').scrollTop=1e9},M=await planM(im.length>0);
@@ -584,7 +605,7 @@ async function imageFlow(t,cost){
 // ---------- قائمة النماذج ----------
 function MODES(){return [['fast','⚡ سريع','جواب مباشر وسريع — '+COST.fast+' نقطة'],['think','🧠 تفكير','متوازن: يفكر ويبحث عند الحاجة — '+COST.think+' نقطة'],['deep','🔥 أعمق','الأعمق والأقوى: يخطط ويقارن حلولاً ويختبر ويراجع نفسه قبل الجواب — '+COST.deep+' نقاط']]}
 function modeBtn(){const m=MODES().find(x=>x[0]===mode);$('mdb').textContent=m[1]+' ▾'}
-function openModes(){$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
+function openModes(){$('ms').querySelector('b').textContent='اختر النموذج';$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
 function closeModes(){$('ms').classList.remove('on')}
 function pickMode(m){mode=m;modeBtn();closeModes()}
 modeBtn();
