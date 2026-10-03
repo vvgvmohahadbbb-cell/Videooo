@@ -86,26 +86,54 @@ function soft(key, max, ttl) {            // عدّاد تقريبي لمنع ا
 function devOf(b) { return /^[a-z0-9]{8,32}$/.test(String(b.dev || '')) ? b.dev : 'anon'; }
 const hourKey = () => Utilities.formatDate(new Date(), 'UTC', 'yyyyMMddHH');
 
-// يجرّب المفاتيح بالتدوير؛ المفتاح المرفوض أو المحدود يدخل «تبريد» مؤقتاً
+// يحوّل مدة Groq مثل 1h2m3.5s أو 250ms إلى ثوانٍ
+function durSec(s) {
+  s = String(s || ''); let t = 0, m;
+  if ((m = /(\d+(?:\.\d+)?)h/.exec(s))) t += m[1] * 3600;
+  if ((m = /(\d+(?:\.\d+)?)m(?!s)/.exec(s))) t += m[1] * 60;
+  if ((m = /(\d+(?:\.\d+)?)s/.exec(s))) t += +m[1];
+  if ((m = /(\d+(?:\.\d+)?)ms/.exec(s))) t += m[1] / 1000;
+  return t;
+}
+function hdr(r, n) { const h = r.getHeaders() || {}; for (const k in h) if (k.toLowerCase() === n) return h[k]; return ''; }
+function coolUntil(c, id, scope, sec) {
+  sec = Math.max(5, Math.min(21600, Math.ceil(sec) + 1));
+  c.put('cd:' + id + '|' + scope, String(Date.now() + sec * 1000), sec);
+}
+const coolLeft = (c, id, scope) => Math.max(0, (+c.get('cd:' + id + '|' + scope) || 0) - Date.now());
+
+// يجرّب المفاتيح بالتدوير؛ المفتاح المحدود يبرد حسب المدة الحقيقية من Groq (يوم/دقيقة) بدل ثانية ثابتة
 function viaGroq(path, make, model) {
   const keys = keysList();
   if (!keys.length) return { status: 503, data: { error: { message: 'الخادم غير مضبوط' } } };
   const c = CacheService.getScriptCache(), start = +(c.get('ki') || 0);
-  let last = null;
+  let last = null, soonest = 0;
   for (let i = 0; i < keys.length; i++) {
     const k = keys[(start + i) % keys.length], id = k.slice(-6);
-    if (c.get('cd:' + id + '|*') || c.get('cd:' + id + '|' + model)) continue;
+    const w = Math.max(coolLeft(c, id, '*'), coolLeft(c, id, model));
+    if (w > 0) { soonest = soonest ? Math.min(soonest, w) : w; continue; }
     const r = UrlFetchApp.fetch(GROQ_URL + path, make(k));
     const code = r.getResponseCode(), text = r.getContentText();
-    if (code === 429 || code === 401 || code === 403) {
-      c.put('cd:' + id + '|' + (code === 429 ? model : '*'), '1', code === 429 ? 60 : 3600);
-      last = { status: code, text: text };
+    if (code === 429) {
+      let sec = +hdr(r, 'retry-after') || 0;
+      if (!sec) { const m = /try again in ([0-9hms.]+)/i.exec(text); sec = m ? durSec(m[1]) : 60; }
+      coolUntil(c, id, model, sec);
+      soonest = soonest ? Math.min(soonest, sec * 1000) : sec * 1000;
+      last = { status: 429, text: text };
       continue;
+    }
+    if (code === 401 || code === 403) { coolUntil(c, id, '*', 3600); last = { status: code, text: text }; continue; }
+    if (code === 200) {   // مفتاح قارب على النفاد: ارتحه مؤقتاً بدل ما ينفد فجأة
+      const rr = hdr(r, 'x-ratelimit-remaining-requests'), rt = hdr(r, 'x-ratelimit-remaining-tokens');
+      if (rr !== '' && +rr <= 0) coolUntil(c, id, model, durSec(hdr(r, 'x-ratelimit-reset-requests')) || 300);
+      else if (rt !== '' && +rt < 800) coolUntil(c, id, model, durSec(hdr(r, 'x-ratelimit-reset-tokens')) || 15);
     }
     c.put('ki', String((start + i + 1) % keys.length), 600);
     return { status: code, text: text };
   }
-  return last || { status: 429, text: JSON.stringify({ error: { message: 'كل المفاتيح مشغولة مؤقتاً، جرّب بعد قليل' } }) };
+  if (last && last.status !== 429) return last;
+  const mins = Math.max(1, Math.ceil((soonest || 60000) / 60000));
+  return { status: 429, text: JSON.stringify({ error: { message: 'كل المفاتيح مشغولة، أقرب واحد يرجع بعد حوالي ' + mins + ' دقيقة' } }) };
 }
 
 function chatProxy(b) {
@@ -119,7 +147,13 @@ function chatProxy(b) {
     return out({ status: 400, data: { error: { message: 'طلب غير صالح' } } });
   const payload = JSON.stringify(Object.assign({}, body, { stream: false, max_completion_tokens: Math.min(+body.max_completion_tokens || 2000, 7000) }));
   if (payload.length > 400000) return out({ status: 413, data: { error: { message: 'الطلب كبير' } } });
-  const r = viaGroq('chat/completions', k => ({ method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + k }, payload: payload, muteHttpExceptions: true }), body.model);
+  const call = (pl, mdl) => viaGroq('chat/completions', k => ({ method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + k }, payload: pl, muteHttpExceptions: true }), mdl);
+  let r = call(payload, body.model);
+  // لو انتهت حصة 120b نحوّل تلقائياً لـ 20b (حصة منفصلة) بدل ما يتوقف التطبيق
+  if (r.status === 429 && body.model === 'openai/gpt-oss-120b') {
+    const r2 = call(JSON.stringify(Object.assign({}, JSON.parse(payload), { model: 'openai/gpt-oss-20b' })), 'openai/gpt-oss-20b');
+    if (r2.status === 200) r = r2;
+  }
   let d; try { d = JSON.parse(r.text); } catch (e) { d = { error: { message: 'رد غير مفهوم' } }; }
   return out({ status: r.status, data: d });
 }
