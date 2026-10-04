@@ -256,6 +256,70 @@ header .ic:active{background:var(--card2);border-color:var(--bd2)}
 #set .row .btn{flex:1}
 .msb .mo{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:right;width:100%;margin-bottom:8px;border-radius:16px;padding:13px 15px;font-size:15px;font-weight:700}
 .msb .mo small{font-weight:400;font-size:12px;color:var(--mut)}
+
+#ed{position:fixed;inset:0;z-index:40;background:var(--bg);display:none;flex-direction:column}
+#ed.on{display:flex}
+#edpv{position:fixed;inset:0;z-index:60;background:#000}
+.edt{display:flex;gap:8px;align-items:center;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.edt input{flex:1;min-width:0;height:40px}
+.edt .ic{width:40px;height:40px;margin:0;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:#c9d3f0}
+.edv{flex:1;min-height:120px;display:flex;align-items:center;justify-content:center;padding:4px 12px;background:#05070d}
+#edc{border:1px solid var(--bd2);border-radius:8px;touch-action:none}
+.edtabs{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;scrollbar-width:none}
+.edtabs button{flex:none;height:36px;padding:0 15px;border-radius:999px;background:var(--card);border:1px solid var(--bd);color:var(--mut);font-weight:700;font-size:13px}
+.edtabs button.on{background:var(--grad);color:#fff;border-color:transparent}
+.edp{height:40vh;overflow-y:auto;padding:4px 14px calc(18px + env(safe-area-inset-bottom,0px))}
+.edg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.edg>button,.edl>button{min-height:42px;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:var(--tx);font-size:13px;font-weight:600}
+.edl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.edl>button{min-height:34px;padding:0 12px;border-radius:999px}
+.edl>button.on{border-color:var(--ac);background:rgba(91,140,255,.2)}
+.edr{display:flex;align-items:center;gap:8px;margin:9px 0}
+.edr label{flex:0 0 76px;margin:0!important;font-size:13px;color:var(--mut);font-weight:600}
+.edr input[type=range]{flex:1;padding:0;height:28px;border:0;background:transparent}
+.edr input[type=color]{height:38px;padding:2px;width:70px}
+.edr select,.edr input:not([type]){flex:1;min-width:0}
+.edr output{flex:0 0 42px;text-align:center;font-size:12px;color:var(--mut)}
+.edc{display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px}.edc input{width:auto}
+.edh{font-size:12px;color:var(--mut);line-height:1.7;margin-top:10px}
+.edth{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.edth img{width:100%;height:56px;object-fit:contain}.edth small{font-size:11px;color:var(--mut)}
+.edth button{width:100%;height:28px;border-radius:8px;background:var(--card2);border:1px solid var(--bd);color:var(--tx);font-size:11px}
+#edai{width:100%}
+
+#qs{display:block!important;padding:0 2px 8px!important}
+.qm{display:flex;align-items:center;gap:10px;min-height:32px;padding:0 12px;border-radius:12px;background:var(--card);border:1px solid var(--bd)}
+.ql{font-size:11px;color:var(--mut);font-weight:700;white-space:nowrap}
+.qt{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.qt i{display:block;height:100%;border-radius:6px;background:var(--grad);transition:width .6s var(--ease)}
+.qm.mid .qt i{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.qm.lo .qt i{background:linear-gradient(90deg,#ef4444,#ff7a8a)}
+.qn{font-size:14px;font-weight:800;line-height:1;color:var(--tx)}
+.qn small{font-size:11px;font-weight:600;color:var(--mut)}
+.qm.lo .qn{color:#ff8a98}
+.qr{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mut);white-space:nowrap}
+
+/* ===== الإعدادات: تصميم منظم ===== */
+#set{background:#090d17!important;display:none;flex-direction:column;justify-content:flex-start!important;gap:0!important;padding:0!important;overflow-y:auto;overscroll-behavior:contain}
+#set.on{display:flex}
+#set>*{flex:none!important}
+#set>:first-child{margin-top:0!important}#set>:last-child{margin-bottom:0!important}
+.sh{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;background:#090d17;border-bottom:1px solid var(--bd)}
+.sh b{font-size:19px;font-weight:800}
+.sh .ic{width:40px;height:40px;margin:0;border-radius:12px;background:var(--card);border:1px solid var(--bd);color:#c9d3f0;display:inline-grid;place-items:center}
+.sc{margin:14px 16px 0;padding:16px;border-radius:20px;background:var(--card);border:1px solid var(--bd)}
+.sc .st{font-weight:800;font-size:15px;margin-bottom:4px}
+.sc .sd{font-size:12px;color:var(--mut);line-height:1.7;margin-bottom:6px}
+.sc label{margin:14px 0 8px}
+.sc textarea{min-height:84px;resize:vertical}
+.sc .btn{margin-top:10px}
+.sc .row .btn{margin-top:0}
+.sw{display:flex!important;align-items:center;justify-content:space-between;gap:12px;font-size:14px!important;font-weight:600!important}
+.sw input{display:none!important}
+.sw i{flex:none;width:46px;height:26px;border-radius:26px;background:#2a3452;position:relative;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s var(--spring)}
+.sw input:checked+i{background:var(--ac)}
+.sw input:checked+i::after{transform:translateX(-20px)}
+.sf{position:sticky;bottom:0;margin-top:14px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#090d17 35%)}
 </style>
 </head>
 <body>
@@ -298,7 +362,7 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 <label>النموذج</label><select id="sbm"><option value="fast">⚡ سريع</option><option value="think" selected>🧠 تفكير</option><option value="deep">🔥 أعمق</option></select>
 <label>شو تبي؟</label><textarea id="sbp" rows="3" placeholder="مثلاً: لعبة ثعبان، آلة حاسبة علمية، موقع مطعم، مؤقت بومودورو…"></textarea>
 <button class="btn" onclick="studioGo(0)">🆕 ابنِ جديد</button><button class="btn s" onclick="studioGo(1)">✏️ عدّل الحالي</button><div id="sbs" style="margin-top:8px;font-size:13px;color:var(--mut)"></div></div>
-<iframe id="sbf" sandbox="allow-scripts" style="display:none"></iframe><div id="sbx" style="display:none"><button class="btn" onclick="sbApk()">📱 اعمل APK</button><button class="btn s" onclick="sbSave()">💾 حفظ HTML</button></div></div></div>
+<div class="card" style="margin-top:12px"><b>🎮 محرك الألعاب (بدون برمجة)</b><br><small>اسحب العناصر وعدّل خصائصها، ارفع صورك، واطلب من الذكاء التعديل. ثم اعتمدها وحوّلها لـ APK.</small><button class="btn" onclick="edOpen(SB.proj)">افتح المحرر</button></div><iframe id="sbf" sandbox="allow-scripts" style="display:none"></iframe><div id="sbx" style="display:none"><button class="btn" onclick="sbApk()">📱 اعمل APK</button><button class="btn s" onclick="sbSave()">💾 حفظ HTML</button></div></div></div>
 <div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
 
 <div id="lock" style="position:fixed;inset:0;background:#0f1420;display:none;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:24px;z-index:20;color:#eef2ff"><div style="font-size:44px">🔒</div><b style="font-size:20px">قاسم</b><input id="lpin" type="password" inputmode="numeric" placeholder="الرمز" style="max-width:240px;text-align:center;background:#1a2236;border:1px solid #2a3452;border-radius:12px;padding:12px;color:#eef2ff;font:inherit"><button onclick="unlock()" style="max-width:240px;width:100%;background:#4f8cff;border:0;border-radius:12px;padding:12px;color:#fff;font:inherit;font-weight:600">فتح</button><small id="lerr" style="color:#ff5a6a"></small></div>
@@ -307,24 +371,31 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 <div id="lv"><video id="lvv" autoplay playsinline muted></video>
  <div id="lvt"><button class="ic" onclick="closeLive()">✕</button><div><button class="ic" onclick="flipCam()">🔄</button></div></div>
  <div id="lpn"><div id="lst"></div><div id="ltx"></div></div><button id="lmic" onclick="liveTalk()">🎤</button></div>
-<div id="set"><button class="btn s" onclick="$('set').classList.remove('on');tab(2)">🪞 حلل شخصيتي</button><label>تعليمات مخصصة للمساعد (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea><label>🔒 قفل التطبيق برمز (يشفّر بياناتك بالرمز؛ إذا نسيته ما في استرجاع)</label>
-  <input id="pin" type="password" inputmode="numeric" placeholder="رمز جديد (4 خانات أو أكثر)">
-  <div class="row"><button class="btn s" onclick="setPin()">تفعيل القفل</button><button class="btn s" onclick="rmPin()">إلغاء القفل</button></div>
-  <label style="display:flex;gap:8px;align-items:center;color:var(--tx)"><input type="checkbox" id="pon" style="width:auto"> 🧩 قاسم يتكيّف مع أسلوبي تلقائياً</label>
-  <label>ملف أسلوبي اللي تعلّمه قاسم (تقدر تعدله)</label><textarea id="ptx" rows="3"></textarea>
-  <button class="btn s" onclick="prof.txt='';prof.n=0;$('ptx').value='';ls.set('prof',prof)">🗑 مسح ما تعلّمه</button>
-  <label>🧠 الذكاء بدون نت (مجاني بالكامل)</label>
-  <div id="lmbox" style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px">
+<div id="set">
+  <div class="sh"><b>الإعدادات</b><button class="ic" onclick="$('set').classList.remove('on')" aria-label="إغلاق">✕</button></div>
+  <div class="sc"><div class="st">🪞 عن شخصيتك</div><div class="sd">تحليل يعتمد على محادثاتك ليعرّفك على أسلوبك.</div><button class="btn s" onclick="$('set').classList.remove('on');tab(2)">حلل شخصيتي</button></div>
+  <div class="sc"><div class="st">🧩 تخصيص المساعد</div>
+    <label>تعليمات مخصصة (اختياري)</label><textarea id="ci" rows="3" placeholder="مثلاً: جاوبني دايماً بالتفصيل، أنا مبرمج…"></textarea>
+    <label class="sw" style="color:var(--tx)"><span>قاسم يتكيّف مع أسلوبي تلقائياً</span><input type="checkbox" id="pon"><i></i></label>
+    <label>ملف أسلوبي اللي تعلّمه قاسم (تقدر تعدله)</label><textarea id="ptx" rows="3"></textarea>
+    <button class="btn s" onclick="prof.txt='';prof.n=0;$('ptx').value='';ls.set('prof',prof)">🗑 مسح ما تعلّمه</button></div>
+  <div class="sc"><div class="st">🔒 الأمان</div><div class="sd">يشفّر بياناتك بالرمز. إذا نسيته ما في استرجاع.</div>
+    <input id="pin" type="password" inputmode="numeric" placeholder="رمز جديد (4 خانات أو أكثر)">
+    <div class="row" style="margin-top:10px"><button class="btn s" onclick="setPin()">تفعيل القفل</button><button class="btn s" onclick="rmPin()">إلغاء القفل</button></div></div>
+  <div class="sc"><div class="st">🧠 الذكاء بدون نت</div><div class="sd">مجاني بالكامل، لكنه أضعف وأبطأ من الذكاء السحابي.</div>
+    <div id="lmbox">
     <div id="lms" style="font-size:13px;margin-bottom:8px">لم يُنزَّل أي نموذج بعد</div>
     <div id="lmp" style="display:none;height:6px;border-radius:6px;background:#1c2540;overflow:hidden;margin:6px 0"><div style="height:100%;width:0;background:var(--grad)"></div></div>
-    <select id="lmm" onchange="lmPick()"><option value="q05">خفيف: Qwen2.5 0.5B (~400MB، أسرع وأضعف)</option><option value="q15">متوسط: Qwen2.5 1.5B (~1.1GB، أفضل وأبطأ)</option><option value="custom">رابط مخصص (ملف GGUF)</option></select>
+    <select id="lmm" onchange="lmPick()"><option value="q05">خفيف: Qwen2.5 0.5B (398MB)</option><option value="q03">أخف: Qwen2.5 0.5B (355MB، أضعف قليلاً)</option><option value="q15">أقوى: Qwen2.5 1.5B (986MB، أبطأ بكثير)</option><option value="custom">رابط مخصص (ملف GGUF)</option></select>
     <input id="lmu" placeholder="https://…/model-q4_k_m.gguf" style="display:none;margin-top:6px">
     <div class="row" style="margin-top:8px"><button class="btn s" onclick="lmDownload()">⬇️ تنزيل</button><button class="btn s" onclick="lmDel()">🗑 حذف</button></div>
     <label style="margin-top:10px">متى يُستعمل؟</label>
     <select id="lmmode" onchange="lmMode()"><option value="auto">تلقائي: عند انقطاع النت فقط</option><option value="always">دائماً (بدون نت وبدون نقاط)</option><option value="off">إيقاف</option></select>
     <div style="font-size:12px;color:var(--mut);margin-top:8px;line-height:1.7">النموذج الصغير أضعف بكثير من الذكاء السحابي وأبطأ، خصوصاً على الجوالات الضعيفة. بدون نت لا يعمل: البحث بالويب، الصور، تحويل الصوت لنص، وبناء ملفات APK. التنزيل يحتاج نت مرة واحدة ومساحة فاضية.</div>
   </div>
-  <button class="btn" onclick="saveSet()">حفظ</button></div>
+  </div>
+  <div class="sf"><button class="btn" onclick="saveSet()">حفظ</button></div>
+</div>
 
 <script type="text/plain" id="app-src">
 const $=id=>document.getElementById(id);
@@ -530,7 +601,7 @@ function phoneWatch(out){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&window.PHTICK)window.PHTICK()});
 
 // ---------- الذكاء بدون نت (wllama / llama.cpp) ----------
-const LMM={q05:{n:'Qwen2.5 0.5B',u:'https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf'},q15:{n:'Qwen2.5 1.5B',u:'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf'}};
+const LMM={q03:{n:'Qwen2.5 0.5B (أخف)',u:'https://huggingface.co/second-state/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q3_K_M.gguf'},q05:{n:'Qwen2.5 0.5B',u:'https://huggingface.co/second-state/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf'},q15:{n:'Qwen2.5 1.5B',u:'https://huggingface.co/second-state/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-1.5B-Instruct-Q4_K_M.gguf'}};
 let lm=Object.assign({id:'',mode:'auto',url:''},ls.get('lm',null)||{}),LMW=null,LMREADY=false;
 const useLocal=()=>!!lm.url&&(lm.mode==='always'||(lm.mode==='auto'&&!navigator.onLine));
 async function lmLib(){if(LMW)return LMW;const mod=await import(location.origin+'/wllama/index.js');LMW=new mod.Wllama({default:location.origin+'/wllama/wasm/wllama.wasm'});return LMW}
@@ -539,15 +610,22 @@ function lmRender(){if(!$('lmbox'))return;$('lmmode').value=lm.mode||'auto';$('l
   lmSt(lm.url?((LMREADY?'✅ جاهز: ':'📦 منزّل: ')+((LMM[lm.id]||{n:'نموذج مخصص'}).n)):'لم يُنزَّل أي نموذج بعد')}
 function lmPick(){$('lmu').style.display=$('lmm').value==='custom'?'block':'none'}
 function lmMode(){lm.mode=$('lmmode').value;ls.set('lm',lm)}
-async function lmLoad(u,onP){const W=await lmLib();await W.loadModelFromUrl(u,{n_gpu_layers:0,n_ctx:2048,allowOffline:true,progressCallback:onP});LMREADY=true}
+async function lmLoad(u,onP){const W=await lmLib();await W.loadModelFromUrl(u,{n_gpu_layers:0,n_ctx:2048,allowOffline:true,parallelDownloads:6,progressCallback:onP});LMREADY=true}
 async function lmDownload(){
   const id=$('lmm').value,u=id==='custom'?$('lmu').value.trim():LMM[id].u;
   if(!u){toast('أدخل رابط ملف GGUF');return}
   if(!navigator.onLine){toast('التنزيل يحتاج إنترنت');return}
   lmSt('⏳ تجهيز المكتبة…',0);
-  try{await lmLoad(u,({loaded,total})=>lmSt('⬇️ جاري التنزيل '+Math.round(loaded/total*100)+'% ('+Math.round(loaded/1048576)+' MB)',loaded/total));
-    lm.id=id;lm.url=u;ls.set('lm',lm);lmRender()}
-  catch(e){LMREADY=false;lmSt('⚠️ فشل التنزيل أو التحميل: '+((e&&e.message)||e));$('lmp').style.display='none'}}
+  let wl=null;try{if(navigator.wakeLock)wl=await navigator.wakeLock.request('screen')}catch(e){}
+  const t0=Date.now(),prog=({loaded,total})=>{const dt=(Date.now()-t0)/1000||1,sp=loaded/dt,eta=(total&&sp)?Math.round((total-loaded)/sp):0,pc=total?loaded/total:0;
+    lmSt('⬇️ '+Math.round(pc*100)+'% — '+Math.round(loaded/1048576)+'/'+Math.round((total||0)/1048576)+' MB — '+(sp/1048576).toFixed(2)+' MB/s'+(eta?' — باقي '+(eta>90?Math.round(eta/60)+' د':eta+' ث'):''),pc)};
+  let ok=false,err=null;
+  for(let a=1;a<=3&&!ok;a++){
+    try{await lmLoad(u,prog);ok=true}
+    catch(e){err=e;if(a<3){lmSt('⚠️ انقطع التنزيل، إعادة المحاولة ('+a+'/3)…');await new Promise(r=>setTimeout(r,2500))}}}
+  try{wl&&wl.release()}catch(e){}
+  if(ok){lm.id=id;lm.url=u;ls.set('lm',lm);lmRender()}
+  else{LMREADY=false;lmSt('⚠️ فشل التنزيل أو التحميل: '+((err&&err.message)||err));$('lmp').style.display='none'}}
 async function lmDel(){try{const W=await lmLib();try{await W.exit()}catch(e){}try{await W.cacheManager.clear()}catch(e){}}catch(e){}
   LMW=null;LMREADY=false;lm.url='';lm.id='';ls.set('lm',lm);lmRender();toast('تم حذف النموذج')}
 async function lmEnsure(){if(LMREADY)return;lmSt('⏳ تحميل النموذج بالذاكرة…');await lmLoad(lm.url,()=>{});lmRender()}
@@ -563,6 +641,302 @@ async function lmGen(messages,max,onText){
   }catch(e){}
   const r2=await LMW.createChatCompletion(opt);acc=(r2.choices&&r2.choices[0]&&r2.choices[0].message&&r2.choices[0].message.content)||'';onText(acc);return acc}
 try{new MutationObserver(lmRender).observe($('set'),{attributes:true,attributeFilter:['class']})}catch(e){}
+
+// ---------- محرك الألعاب (بدون برمجة) ----------
+const QGRT=`var QG=(function(){
+var TY={player:1,wall:1,coin:1,enemy:1,hazard:1,goal:1,spawn:1,text:1,deco:1},IM={};
+function cl(o){return JSON.parse(JSON.stringify(o))}
+function norm(p){
+p=p||{};p.title=String(p.title||'لعبتي');p.w=+p.w||360;p.h=+p.h||640;p.bg=p.bg||'#0b1020';
+p.gravity=Math.max(0,Math.min(3000,+p.gravity||0));
+p.controls=({joy:1,lr:1,drag:1,tap:1})[p.controls]?p.controls:(p.gravity>0?'lr':'joy');
+p.lives=p.lives==null?3:Math.max(1,Math.min(9,+p.lives||3));
+p.goal=(p.goal&&p.goal.type)?p.goal:{type:'none'};p.goal.value=+p.goal.value||0;
+p.objects=Array.isArray(p.objects)?p.objects.slice(0,120):[];p.images=p.images||{};
+p.objects.forEach(function(o,i){o.id=String(o.id||('o'+i));o.type=TY[o.type]?o.type:'deco';o.x=+o.x||0;o.y=+o.y||0;o.w=Math.max(4,+o.w||32);o.h=Math.max(4,+o.h||32);o.shape=o.shape==='circle'?'circle':'rect';o.color=o.color||'#5b8cff'});
+return p}
+function init(p){
+var g={p:p,score:0,lives:p.lives,time:0,state:'ready',objs:[],walls:[],bul:[],fx:[],inv:0,cool:0,coinsTotal:0,on:null};
+p.objects.forEach(function(o){var c=cl(o);c.vx=0;c.vy=0;c.alive=true;c.ox=o.x;c.oy=o.y;c.dir=1;c.og=false;g.objs.push(c);if(c.type==='wall')g.walls.push(c);if(c.type==='coin')g.coinsTotal++});
+return g}
+function hit(a,b){var s=.12,ax=a.x+a.w*s,ay=a.y+a.h*s,aw=a.w*(1-2*s),ah=a.h*(1-2*s),bx=b.x+b.w*s,by=b.y+b.h*s,bw=b.w*(1-2*s),bh=b.h*(1-2*s);return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by}
+function box(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function mv(g,o,dx,dy){
+var i,w,bx=false,by=false,W=g.walls;
+o.x+=dx;for(i=0;i<W.length;i++){w=W[i];if(w!==o&&box(o,w)){if(dx>0)o.x=w.x-o.w;else if(dx<0)o.x=w.x+w.w;bx=true}}
+o.y+=dy;o.og=false;for(i=0;i<W.length;i++){w=W[i];if(w!==o&&box(o,w)){if(dy>0){o.y=w.y-o.h;o.og=true}else if(dy<0)o.y=w.y+w.h;by=true}}
+return{bx:bx,by:by}}
+function ev(g,n){if(g.on)g.on(n)}
+function fx(g,o,c){for(var k=0;k<10;k++)g.fx.push({x:o.x+o.w/2,y:o.y+o.h/2,vx:(Math.random()-.5)*260,vy:(Math.random()-.5)*260,t:.5,c:c||o.color})}
+function win(g){if(g.state==='play'){g.state='win';ev(g,'win')}}
+function hurt(g,pl,force){if(g.inv>0&&!force)return;g.lives--;g.inv=1.3;ev(g,'hit');fx(g,pl,'#ff5a6a');
+if(g.lives<=0){g.state='lose';return}
+if(g.p.gravity===0||force){pl.x=pl.ox;pl.y=pl.oy;pl.vx=0;pl.vy=0}}
+function ai(g,o,dt,pl){
+var k=o.ai||'none',sp=+o.speed||80,p=g.p,r,rs;
+if(k==='chase'&&pl){var dx=pl.x-o.x,dy=pl.y-o.y,d=Math.sqrt(dx*dx+dy*dy)||1;mv(g,o,dx/d*sp*dt,dy/d*sp*dt)}
+else if(k==='patrol'){r=+o.range||100;rs=mv(g,o,o.dir*sp*dt,0);
+if(o.x>o.ox+r){o.x=o.ox+r;o.dir=-1}else if(o.x<o.ox-r){o.x=o.ox-r;o.dir=1}else if(rs.bx)o.dir=-o.dir}
+else if(k==='bounce'){if(!o.vx&&!o.vy){o.vx=sp;o.vy=sp*.8}
+rs=mv(g,o,o.vx*dt,o.vy*dt);
+if(rs.bx||o.x<0||o.x>p.w-o.w)o.vx=-o.vx;if(rs.by||o.y<0||o.y>p.h-o.h)o.vy=-o.vy;
+o.x=Math.max(0,Math.min(p.w-o.w,o.x));o.y=Math.max(0,Math.min(p.h-o.h,o.y))}
+else if(k==='fall'){o.y+=sp*dt;if(o.y>p.h){if(o.sp)o.alive=false;else{o.y=-o.h;o.x=Math.random()*Math.max(1,p.w-o.w)}}}}
+function spawnObj(g,s){
+if(g.objs.length>260)return;var sz=Math.max(8,+s.size||28);
+g.objs.push({id:'sp'+g.objs.length,type:s.of==='coin'||s.of==='hazard'?s.of:'enemy',x:s.x+Math.random()*Math.max(0,s.w-sz),y:-sz,w:sz,h:sz,shape:s.shape,color:s.color,img:s.img,ai:'fall',speed:+s.speed||140,sp:1,alive:true,vx:0,vy:0,ox:0,oy:0,dir:1,og:false,val:s.val,hp:1})}
+function step(g,dt,inp){
+if(g.state!=='play')return;
+var p=g.p,i,j,o,pl=null,gv=p.gravity,r,b,k;
+g.time+=dt;if(g.inv>0)g.inv-=dt;if(g.cool>0)g.cool-=dt;
+for(i=0;i<g.objs.length;i++){o=g.objs[i];if(o.type==='player'&&o.alive){pl=o;break}}
+if(pl){
+var sp=+pl.speed||200;
+if(gv>0){
+pl.vx=p.controls==='tap'?0:inp.dx*sp;pl.vy+=gv*dt;if(pl.vy>1200)pl.vy=1200;
+if(inp.act){if(p.controls==='tap'){pl.vy=-(+pl.jump||420);ev(g,'jump')}else if(pl.og){pl.vy=-(+pl.jump||520);pl.og=false;ev(g,'jump')}}
+r=mv(g,pl,pl.vx*dt,pl.vy*dt);if(r.by)pl.vy=0;
+pl.x=Math.max(0,Math.min(p.w-pl.w,pl.x));
+if(pl.y<0){pl.y=0;if(pl.vy<0)pl.vy=0}
+if(pl.y>p.h){hurt(g,pl,true)}
+}else{
+pl.vx=inp.dx*sp;pl.vy=inp.dy*sp;mv(g,pl,pl.vx*dt,pl.vy*dt);
+pl.x=Math.max(0,Math.min(p.w-pl.w,pl.x));pl.y=Math.max(0,Math.min(p.h-pl.h,pl.y))}
+if(pl.shoot&&inp.hold&&g.cool<=0){g.bul.push({x:pl.x+pl.w/2-3,y:pl.y-8,w:6,h:14,vy:-520});g.cool=.28;ev(g,'shoot')}
+}
+for(i=0;i<g.objs.length;i++){o=g.objs[i];if(!o.alive)continue;
+if(o.type==='enemy'||o.type==='hazard'||o.type==='coin')ai(g,o,dt,pl);
+else if(o.type==='spawn'){o.acc=(o.acc||0)+dt;if(o.acc>=(+o.every||1.2)){o.acc=0;spawnObj(g,o)}}}
+for(i=g.bul.length-1;i>=0;i--){b=g.bul[i];b.y+=b.vy*dt;
+if(b.y<-20){g.bul.splice(i,1);continue}
+for(j=0;j<g.objs.length;j++){o=g.objs[j];
+if(o.alive&&o.type==='enemy'&&box(b,o)){o.hp=(o.hp==null?1:o.hp)-1;
+if(o.hp<=0){o.alive=false;g.score+=(+o.val||1);fx(g,o);ev(g,'coin')}
+g.bul.splice(i,1);break}}}
+if(pl){for(i=0;i<g.objs.length;i++){o=g.objs[i];if(!o.alive||o===pl)continue;
+if(o.type==='coin'&&hit(pl,o)){o.alive=false;g.score+=(+o.val||1);fx(g,o);ev(g,'coin')}
+else if((o.type==='enemy'||o.type==='hazard')&&hit(pl,o)){hurt(g,pl)}
+else if(o.type==='goal'&&hit(pl,o)){win(g)}
+if(g.state!=='play')break}}
+var G=p.goal;
+if(g.state==='play'){
+if(G.type==='score'&&G.value>0&&g.score>=G.value)win(g);
+else if(G.type==='survive'&&G.value>0&&g.time>=G.value)win(g);
+else if(G.type==='collect'&&g.coinsTotal>0){var left=0;for(i=0;i<g.objs.length;i++){if(g.objs[i].type==='coin'&&g.objs[i].alive&&!g.objs[i].sp)left++}if(!left)win(g)}}
+if(g.objs.length>200){g.objs=g.objs.filter(function(q){return q.alive||!q.sp})}}
+function fxStep(g,dt){for(var i=g.fx.length-1;i>=0;i--){var f=g.fx[i];f.t-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.t<=0)g.fx.splice(i,1)}}
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);c.lineTo(x+w,y+h-r);c.arcTo(x+w,y+h,x+w-r,y+h,r);c.lineTo(x+r,y+h);c.arcTo(x,y+h,x,y+h-r,r);c.lineTo(x,y+r);c.arcTo(x,y,x+r,y,r);c.closePath()}
+function sh(c,o){
+var im=IM[o.img];
+if(im&&im.complete&&im.naturalWidth){c.drawImage(im,o.x,o.y,o.w,o.h);return}
+var cx=o.x+o.w/2,cy=o.y+o.h/2;c.fillStyle=o.color;
+if(o.type==='hazard'){c.beginPath();c.moveTo(cx,o.y);c.lineTo(o.x+o.w,o.y+o.h);c.lineTo(o.x,o.y+o.h);c.closePath();c.fill();return}
+if(o.shape==='circle'||o.type==='coin'||o.type==='goal'){c.beginPath();c.ellipse(cx,cy,o.w/2,o.h/2,0,0,6.2832);c.fill();
+if(o.type==='goal'){c.strokeStyle='#fff';c.lineWidth=3;c.beginPath();c.ellipse(cx,cy,o.w/3,o.h/3,0,0,6.2832);c.stroke()}
+else if(o.type==='coin'){c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.ellipse(cx-o.w*.12,cy-o.h*.12,o.w*.18,o.h*.18,0,0,6.2832);c.fill()}
+}else{rr(c,o.x,o.y,o.w,o.h,o.type==='wall'?4:Math.min(10,o.w/3));c.fill();
+if(o.type==='wall'){c.strokeStyle='rgba(255,255,255,.18)';c.lineWidth=1.5;c.stroke()}}
+if(o.type==='enemy'||o.type==='player'){c.fillStyle='#fff';var ex=o.w*.2,ey=o.h*.32,er=Math.max(2,o.w*.1);
+c.beginPath();c.arc(o.x+o.w/2-ex,o.y+ey,er,0,6.2832);c.arc(o.x+o.w/2+ex,o.y+ey,er,0,6.2832);c.fill();
+c.fillStyle='#10131f';c.beginPath();c.arc(o.x+o.w/2-ex,o.y+ey,er/2,0,6.2832);c.arc(o.x+o.w/2+ex,o.y+ey,er/2,0,6.2832);c.fill()}}
+function vars(g,t){return String(t||'').replace('{score}',g.score).replace('{lives}',g.lives).replace('{time}',Math.floor(g.time))}
+function draw(c,g,o2){
+o2=o2||{};var p=g.p,i,o;
+c.fillStyle=p.bg;c.fillRect(0,0,p.w,p.h);
+if(p.bgImg){var bi=IM[p.bgImg];if(bi&&bi.complete&&bi.naturalWidth)c.drawImage(bi,0,0,p.w,p.h)}
+if(o2.edit){c.strokeStyle='rgba(255,255,255,.06)';c.lineWidth=1;for(i=40;i<p.w;i+=40){c.beginPath();c.moveTo(i,0);c.lineTo(i,p.h);c.stroke()}for(i=40;i<p.h;i+=40){c.beginPath();c.moveTo(0,i);c.lineTo(p.w,i);c.stroke()}}
+for(i=0;i<g.objs.length;i++){o=g.objs[i];if(!o.alive)continue;
+if(o.type==='spawn'){if(o2.edit){c.strokeStyle='rgba(255,255,255,.5)';c.setLineDash([6,5]);c.lineWidth=1.5;c.strokeRect(o.x,o.y,o.w,Math.max(o.h,16));c.setLineDash([]);c.fillStyle='rgba(255,255,255,.7)';c.font='12px system-ui';c.textAlign='center';c.fillText('مولّد',o.x+o.w/2,o.y+12)}continue}
+if(o.type==='text'){c.font='bold '+(+o.size||22)+'px system-ui,Tahoma,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle=o.color;c.fillText(vars(g,o.txt||'نص'),o.x+o.w/2,o.y+o.h/2);c.textBaseline='alphabetic';
+if(o2.edit){c.strokeStyle='rgba(255,255,255,.25)';c.setLineDash([4,4]);c.strokeRect(o.x,o.y,o.w,o.h);c.setLineDash([])}continue}
+if(o.type==='player'&&g.inv>0&&Math.floor(g.inv*10)%2){c.globalAlpha=.4}
+sh(c,o);c.globalAlpha=1}
+c.fillStyle='#ffd166';for(i=0;i<g.bul.length;i++){var b=g.bul[i];rr(c,b.x,b.y,b.w,b.h,3);c.fill()}
+for(i=0;i<g.fx.length;i++){var f=g.fx[i];c.globalAlpha=Math.max(0,f.t*2);c.fillStyle=f.c;c.fillRect(f.x-2,f.y-2,4,4)}c.globalAlpha=1;
+if(o2.sel){for(i=0;i<g.objs.length;i++){o=g.objs[i];if(o.id===o2.sel){c.strokeStyle='#fff';c.lineWidth=2;c.setLineDash([6,4]);c.strokeRect(o.x-3,o.y-3,o.w+6,Math.max(o.h,o.type==='spawn'?16:0)+6);c.setLineDash([]);
+c.fillStyle='#5b8cff';c.fillRect(o.x+o.w-5,o.y+o.h-5,12,12)}}}
+if(!o2.edit){c.font='bold 16px system-ui,Tahoma,sans-serif';c.textAlign='right';c.fillStyle='#fff';
+c.fillText('النقاط: '+g.score,p.w-12,26);c.fillText('الأرواح: '+g.lives,p.w-12,48);
+if(p.goal.type==='survive')c.fillText('الوقت: '+Math.floor(g.time)+' / '+p.goal.value,p.w-12,70)}}
+function loadImgs(p,cb){IM={};var k;for(k in p.images){(function(id){var im=new Image();im.onload=function(){if(cb)cb()};im.src=p.images[id];IM[id]=im})(k)}}
+function start(p,cv){
+p=norm(p);var g,ctx=cv.getContext('2d'),dpr=Math.min(2,window.devicePixelRatio||1),inp={dx:0,dy:0,act:false,hold:false},ptr={},keys={},last=0,best=0,endAt=0,ac=null,drag=null,btn={l:0,r:0,a:0};
+try{best=+localStorage.getItem('qg_'+p.title)||0}catch(e){}
+loadImgs(p);
+function beep(f,d,t){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),gn=ac.createGain();o.type=t||'sine';o.frequency.value=f;gn.gain.setValueAtTime(.08,ac.currentTime);gn.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(gn);gn.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function on(n){if(n==='coin')beep(880,.1,'triangle');else if(n==='jump')beep(520,.08,'square');else if(n==='shoot')beep(700,.05,'square');else if(n==='hit'){beep(140,.25,'sawtooth');try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}}else if(n==='win'){beep(660,.12,'triangle');setTimeout(function(){beep(990,.2,'triangle')},120)}}
+function reset(){g=init(p);g.on=on;g.state='play';inp.dx=inp.dy=0;ptr={};btn={l:0,r:0,a:0}}
+g=init(p);g.on=on;
+function fit(){var s=Math.min(innerWidth/p.w,innerHeight/p.h);cv.style.width=p.w*s+'px';cv.style.height=p.h*s+'px';cv.width=Math.round(p.w*s*dpr);cv.height=Math.round(p.h*s*dpr);cv.sc=s*dpr}
+addEventListener('resize',fit);fit();
+function pos(e){var r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*p.w,y:(e.clientY-r.top)/r.height*p.h}}
+function inR(q,x,y,w,h){return q.x>=x&&q.x<=x+w&&q.y>=y&&q.y<=y+h}
+function lr(q){var y=p.h-86;return{l:inR(q,10,y,76,76),r:inR(q,94,y,76,76),a:inR(q,p.w-86,y,76,76)}}
+cv.addEventListener('pointerdown',function(e){e.preventDefault();
+if(g.state!=='play'){if(performance.now()>endAt)reset();return}
+var q=pos(e);try{cv.setPointerCapture(e.pointerId)}catch(x){}
+if(p.controls==='joy'){if(q.x<p.w*.62){ptr[e.pointerId]={k:'s',cx:q.x,cy:q.y,x:q.x,y:q.y}}else{ptr[e.pointerId]={k:'a'};inp.act=true;inp.hold=true}}
+else if(p.controls==='lr'){var z=lr(q);ptr[e.pointerId]={k:'b',z:z};if(z.l)btn.l=1;if(z.r)btn.r=1;if(z.a){btn.a=1;inp.act=true;inp.hold=true}}
+else if(p.controls==='tap'){ptr[e.pointerId]={k:'t'};inp.act=true;inp.hold=true}
+else{ptr[e.pointerId]={k:'d'};drag=q}});
+cv.addEventListener('pointermove',function(e){var t=ptr[e.pointerId];if(!t)return;var q=pos(e);
+if(t.k==='s'){t.x=q.x;t.y=q.y}else if(t.k==='d')drag=q});
+function up(e){var t=ptr[e.pointerId];if(!t)return;
+if(t.k==='b'){if(t.z.l)btn.l=0;if(t.z.r)btn.r=0;if(t.z.a){btn.a=0;inp.hold=false}}
+if(t.k==='a'||t.k==='t')inp.hold=false;
+if(t.k==='d')drag=null;delete ptr[e.pointerId]}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+addEventListener('keydown',function(e){keys[e.key]=1;if(e.key===' '||e.key==='ArrowUp'||e.key==='w'){inp.act=true;inp.hold=true}if(g.state!=='play'&&e.key===' '&&performance.now()>endAt)reset()});
+addEventListener('keyup',function(e){keys[e.key]=0;if(e.key===' '||e.key==='ArrowUp'||e.key==='w')inp.hold=false});
+function readInput(){
+var dx=0,dy=0,k;
+if(p.controls==='joy'){for(k in ptr){var t=ptr[k];if(t.k==='s'){dx=(t.x-t.cx)/50;dy=(t.y-t.cy)/50}}}
+else if(p.controls==='lr'){dx=(btn.r?1:0)-(btn.l?1:0)}
+else if(p.controls==='drag'&&drag){var pl=null,i;for(i=0;i<g.objs.length;i++)if(g.objs[i].type==='player'){pl=g.objs[i];break}
+if(pl){dx=(drag.x-(pl.x+pl.w/2))/18;dy=(drag.y-(pl.y+pl.h/2))/18}}
+if(keys.ArrowLeft||keys.a)dx-=1;if(keys.ArrowRight||keys.d)dx+=1;if(p.gravity===0){if(keys.ArrowUp||keys.w)dy-=1;if(keys.ArrowDown||keys.s)dy+=1}
+var m=Math.sqrt(dx*dx+dy*dy);if(m>1){dx/=m;dy/=m}if(m<.15){dx=0;dy=0}
+inp.dx=dx;inp.dy=dy}
+function ctl(c){c.globalAlpha=.55;
+if(p.controls==='joy'){for(var k in ptr){var t=ptr[k];if(t.k==='s'){c.strokeStyle='#fff';c.lineWidth=3;c.beginPath();c.arc(t.cx,t.cy,50,0,6.2832);c.stroke();c.fillStyle='#fff';c.beginPath();c.arc(Math.max(t.cx-50,Math.min(t.cx+50,t.x)),Math.max(t.cy-50,Math.min(t.cy+50,t.y)),20,0,6.2832);c.fill()}}
+if(!Object.keys(ptr).length){c.fillStyle='#fff';c.font='13px system-ui';c.textAlign='center';c.fillText('اسحب بالجهة اليسرى للتحرك',p.w*.31,p.h-24)}}
+else if(p.controls==='lr'){var y=p.h-86;c.fillStyle='#fff';[[10,btn.l],[94,btn.r],[p.w-86,btn.a]].forEach(function(b,i){c.globalAlpha=b[1]?.8:.35;rr(c,b[0],y,76,76,22);c.fill()});
+c.globalAlpha=.9;c.fillStyle='#10131f';c.beginPath();c.moveTo(62,y+38);c.lineTo(36,y+22);c.lineTo(36,y+54);c.closePath();c.fill();c.beginPath();c.moveTo(118,y+38);c.lineTo(144,y+22);c.lineTo(144,y+54);c.closePath();c.fill();
+c.beginPath();c.moveTo(p.w-48,y+22);c.lineTo(p.w-68,y+52);c.lineTo(p.w-28,y+52);c.closePath();c.fill()}
+c.globalAlpha=1}
+function ov(c,t,s){c.fillStyle='rgba(8,11,20,.72)';c.fillRect(0,0,p.w,p.h);c.textAlign='center';c.fillStyle='#fff';c.font='bold 30px system-ui,Tahoma,sans-serif';c.fillText(t,p.w/2,p.h/2-20);c.font='16px system-ui,Tahoma,sans-serif';c.fillStyle='#c9d3f0';c.fillText(s,p.w/2,p.h/2+14)}
+var prev='ready';
+function frame(t){var dt=Math.min(.033,(t-last)/1000||0);last=t;
+if(g.state==='play'){readInput();step(g,dt,inp)}inp.act=false;fxStep(g,dt);
+if(g.state!==prev){prev=g.state;if(g.state==='win'||g.state==='lose'){endAt=performance.now()+700;if(g.score>best){best=g.score;try{localStorage.setItem('qg_'+p.title,best)}catch(e){}}}else if(g.state==='play'){prev='play'}}
+ctx.setTransform(cv.sc,0,0,cv.sc,0,0);draw(ctx,g,{});
+if(g.state==='play')ctl(ctx);
+else if(g.state==='ready')ov(ctx,p.title,'المس الشاشة للبدء');
+else if(g.state==='win')ov(ctx,'فزت!','النقاط: '+g.score+'  |  الأفضل: '+best+'  — المس للإعادة');
+else ov(ctx,'انتهت اللعبة','النقاط: '+g.score+'  |  الأفضل: '+best+'  — المس للإعادة');
+requestAnimationFrame(frame)}
+g.state='ready';
+cv.addEventListener('pointerdown',function(){if(g.state==='ready'){reset();prev='play'}},true);
+requestAnimationFrame(frame)}
+return{norm:norm,init:init,step:step,draw:draw,loadImgs:loadImgs,start:start,fxStep:fxStep,TY:TY}
+})();
+`;
+let QGE=null;const QGl=()=>QGE||(QGE=new Function(QGRT+';return QG')());
+const QT={player:{n:'لاعب',c:'#5b8cff',w:36,h:36,speed:200,jump:520,shoot:false},wall:{n:'جدار',c:'#3b4a78',w:120,h:20},coin:{n:'عملة',c:'#ffd166',w:22,h:22,val:1,shape:'circle'},enemy:{n:'عدو',c:'#ff5a6a',w:34,h:34,ai:'patrol',speed:80,range:100,hp:1,val:1},hazard:{n:'فخ',c:'#ff9f43',w:32,h:28},goal:{n:'هدف',c:'#1fa97a',w:44,h:44,shape:'circle'},spawn:{n:'مولّد',c:'#ff5a6a',w:360,h:16,of:'enemy',every:1.2,speed:140,size:28},text:{n:'نص',c:'#ffffff',w:200,h:30,txt:'النقاط {score}',size:22}};
+const QSTART={title:'لعبتي',w:360,h:640,bg:'#0b1020',gravity:0,controls:'joy',lives:3,goal:{type:'score',value:5},images:{},objects:[
+{id:'t1',type:'text',x:80,y:60,w:200,h:30,color:'#c9d3f0',txt:'اجمع 5 عملات وتجنّب الأعداء',size:16},
+{id:'p1',type:'player',x:162,y:520,w:36,h:36,color:'#5b8cff',speed:200},
+{id:'c1',type:'coin',x:60,y:140,w:22,h:22,color:'#ffd166',shape:'circle'},{id:'c2',type:'coin',x:270,y:190,w:22,h:22,color:'#ffd166',shape:'circle'},{id:'c3',type:'coin',x:170,y:320,w:22,h:22,color:'#ffd166',shape:'circle'},{id:'c4',type:'coin',x:60,y:420,w:22,h:22,color:'#ffd166',shape:'circle'},{id:'c5',type:'coin',x:280,y:440,w:22,h:22,color:'#ffd166',shape:'circle'},
+{id:'e1',type:'enemy',x:110,y:250,w:34,h:34,color:'#ff5a6a',ai:'patrol',speed:90,range:110},{id:'e2',type:'enemy',x:250,y:90,w:34,h:34,color:'#ff9f43',ai:'chase',speed:50},
+{id:'w1',type:'wall',x:0,y:360,w:170,h:20,color:'#3b4a78'}]};
+let ED={p:null,sel:null,tab:'items',undo:[],m:null,dirty:false,ai:''};
+const edCl=o=>JSON.parse(JSON.stringify(o));
+const edO=()=>ED.p.objects.find(x=>x.id===ED.sel);
+const edPush=()=>{ED.undo.push(JSON.stringify(ED.p));if(ED.undo.length>40)ED.undo.shift()};
+const edSn=v=>Math.round(v/4)*4;
+function edOpen(p){
+  if(!p){try{p=SB.proj||ls.get('sbq',null)}catch(e){}}
+  ED.p=QGl().norm(edCl(p||QSTART));ED.sel=null;ED.tab='items';ED.undo=[];ED.m=null;
+  if(!$('ed')){const d=document.createElement('div');d.id='ed';
+    d.innerHTML='<div class="edt"><button class="ic" onclick="edClose()">✕</button><input id="edti" oninput="ED.p.title=this.value"><button class="ic" onclick="edUndo()">↶</button><button class="btn" style="width:auto;height:40px;margin:0;padding:0 12px" onclick="edPlay()">▶ تجربة</button><button class="btn" style="width:auto;height:40px;margin:0;padding:0 12px" onclick="edApply()">✔ اعتماد</button></div><div class="edv"><canvas id="edc"></canvas></div><div class="edtabs" id="edtabs"></div><div class="edp" id="edp"></div>';
+    document.body.appendChild(d);edBind()}
+  $('ed').classList.add('on');$('edti').value=ED.p.title;
+  setTimeout(()=>{edFit();QGl().loadImgs(ED.p,edDraw);edDraw();edTabs();edPanel()},60)}
+function edClose(){$('ed').classList.remove('on')}
+function edFit(){const v=document.querySelector('.edv'),c=$('edc'),p=ED.p,s=Math.min((v.clientWidth-8)/p.w,(v.clientHeight-8)/p.h),d=Math.min(2,devicePixelRatio||1);
+  c.style.width=p.w*s+'px';c.style.height=p.h*s+'px';c.width=Math.round(p.w*s*d);c.height=Math.round(p.h*s*d);ED.k=c.width/p.w}
+function edDraw(){const c=$('edc');if(!c||!ED.p)return;const x=c.getContext('2d');x.setTransform(ED.k,0,0,ED.k,0,0);const G=QGl();G.draw(x,G.init(ED.p),{edit:true,sel:ED.sel})}
+function edPt(e){const r=$('edc').getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*ED.p.w,y:(e.clientY-r.top)/r.height*ED.p.h}}
+function edBind(){const c=$('edc');
+  c.addEventListener('pointerdown',e=>{e.preventDefault();const q=edPt(e);let o=edO();
+    if(o&&Math.abs(q.x-(o.x+o.w))<18&&Math.abs(q.y-(o.y+o.h))<18)ED.m={k:'r',o,pushed:0};
+    else{o=null;for(let i=ED.p.objects.length-1;i>=0;i--){const t=ED.p.objects[i],h=t.type==='spawn'?Math.max(t.h,16):t.h;if(q.x>=t.x-4&&q.x<=t.x+t.w+4&&q.y>=t.y-4&&q.y<=t.y+h+4){o=t;break}}
+      if(o){ED.sel=o.id;ED.m={k:'m',o,dx:q.x-o.x,dy:q.y-o.y,pushed:0}}else{ED.sel=null;ED.m=null}}
+    try{c.setPointerCapture(e.pointerId)}catch(x){}edDraw()});
+  c.addEventListener('pointermove',e=>{const m=ED.m;if(!m)return;const q=edPt(e);if(!m.pushed){edPush();m.pushed=1}
+    if(m.k==='m'){m.o.x=edSn(q.x-m.dx);m.o.y=edSn(q.y-m.dy)}else{m.o.w=Math.max(8,edSn(q.x-m.o.x));m.o.h=Math.max(8,edSn(q.y-m.o.y))}edDraw()});
+  const up=()=>{ED.m=null;edPanel()};c.addEventListener('pointerup',up);c.addEventListener('pointercancel',up)}
+function edTabs(){const T=[['items','العناصر'],['props','الخصائص'],['game','اللعبة'],['imgs','الصور'],['ai','الذكاء']];
+  $('edtabs').innerHTML=T.map(t=>'<button class="'+(ED.tab===t[0]?'on':'')+'" onclick="ED.tab=\''+t[0]+'\';edTabs();edPanel()">'+t[1]+'</button>').join('')}
+const edImgOpts=(cur)=>'<option value="">بدون صورة</option>'+Object.keys(ED.p.images).map(id=>'<option value="'+id+'"'+(cur===id?' selected':'')+'>'+esc((ED.p.imgNames||{})[id]||id)+'</option>').join('');
+const edR=(lb,k,mn,mx,st,v,g)=>`<div class="edr"><label>${lb}</label><input type="range" min="${mn}" max="${mx}" step="${st}" value="${v}" oninput="${g?'edG':'edV'}('${k}',this.value,this)" onchange="ED.dirty=false"><output>${v}</output></div>`;
+const edS=(lb,k,opts,v,g)=>`<div class="edr"><label>${lb}</label><select onchange="${g?'edG':'edV'}('${k}',this.value,null,1)">${opts.map(o=>`<option value="${o[0]}"${String(v)===String(o[0])?' selected':''}>${o[1]}</option>`).join('')}</select></div>`;
+function edPanel(){const P=$('edp');if(!P||!ED.p)return;const p=ED.p,o=edO();let h='';
+  if(ED.tab==='items'){
+    h+='<div class="edg">'+Object.keys(QT).map(k=>'<button onclick="edAdd(\''+k+'\')">+ '+QT[k].n+'</button>').join('')+'</div><div class="edl">';
+    h+=p.objects.map(x=>'<button class="'+(x.id===ED.sel?'on':'')+'" onclick="ED.sel=\''+x.id+'\';edDraw();edPanel()">'+QT[x.type].n+(x.type==='text'?': '+esc(String(x.txt||'').slice(0,14)):'')+'</button>').join('')+'</div>'}
+  else if(ED.tab==='props'){
+    if(!o)h='<p class="edh">اضغط عنصراً على الشاشة أو من قائمة العناصر لتعديله. اسحبه لتحريكه، واسحب المربع الأبيض بزاويته لتغيير الحجم.</p>';
+    else{h+='<b>'+QT[o.type].n+'</b>';
+      if(o.type==='text')h+=`<div class="edr"><label>النص</label><input value="${esc(o.txt||'')}" oninput="edV('txt',this.value,null)"></div>`+edR('الحجم','size',12,60,1,o.size||22);
+      h+=`<div class="edr"><label>اللون</label><input type="color" value="${/^#[0-9a-f]{6}$/i.test(o.color)?o.color:'#5b8cff'}" oninput="edV('color',this.value,null)" onchange="ED.dirty=false"></div>`;
+      if(o.type!=='text'&&o.type!=='spawn')h+=edS('الشكل','shape',[['rect','مستطيل'],['circle','دائرة']],o.shape);
+      if(o.type!=='text')h+=`<div class="edr"><label>الصورة</label><select onchange="edV('img',this.value,null,1)">${edImgOpts(o.img)}</select></div>`;
+      h+=edR('X','x',0,p.w,2,Math.round(o.x))+edR('Y','y',0,p.h,2,Math.round(o.y))+edR('العرض','w',8,p.w,2,Math.round(o.w))+edR('الارتفاع','h',8,p.h,2,Math.round(o.h));
+      if(o.type==='player'){h+=edR('السرعة','speed',60,500,10,o.speed||200);if(p.gravity>0)h+=edR('القفز','jump',200,900,10,o.jump||520);else h+=`<label class="edc"><input type="checkbox" ${o.shoot?'checked':''} onchange="edV('shoot',this.checked,null,1)"> يطلق النار عند الضغط على الجهة اليمنى</label>`}
+      if(o.type==='enemy'){h+=edS('الحركة','ai',[['patrol','دورية'],['chase','يطارد'],['bounce','يرتد'],['fall','يسقط'],['none','ثابت']],o.ai||'patrol')+edR('السرعة','speed',20,400,10,o.speed||80);if((o.ai||'patrol')==='patrol')h+=edR('المدى','range',20,300,10,o.range||100);h+=edR('الصحة','hp',1,5,1,o.hp||1)+edR('نقاط القتل','val',1,10,1,o.val||1)}
+      if(o.type==='coin')h+=edR('القيمة','val',1,10,1,o.val||1);
+      if(o.type==='spawn')h+=edS('يُنزل','of',[['enemy','أعداء'],['hazard','فخاخ'],['coin','عملات']],o.of||'enemy')+edR('كل (ثانية)','every',.3,4,.1,o.every||1.2)+edR('سرعة السقوط','speed',60,500,10,o.speed||140)+edR('حجم العنصر','size',12,80,2,o.size||28);
+      h+='<div class="edg" style="margin-top:12px"><button onclick="edDup()">نسخ</button><button onclick="edZ(1)">للأمام</button><button onclick="edZ(0)">للخلف</button><button onclick="edDel()" style="grid-column:1/-1;color:#ff8a98">حذف العنصر</button></div>'}}
+  else if(ED.tab==='game'){
+    h+=`<div class="edr"><label>اللون</label><input type="color" value="${/^#[0-9a-f]{6}$/i.test(p.bg)?p.bg:'#0b1020'}" oninput="edG('bg',this.value)" onchange="ED.dirty=false"></div>`
+     +`<div class="edr"><label>خلفية</label><select onchange="edG('bgImg',this.value,null,1)">${edImgOpts(p.bgImg)}</select></div>`
+     +edR('الجاذبية','gravity',0,2000,50,p.gravity,1)
+     +edS('التحكم','controls',[['joy','عصا تحكم'],['lr','أزرار يمين/يسار/قفز'],['drag','سحب الإصبع'],['tap','لمسة = قفزة/نفخة']],p.controls,1)
+     +edR('الأرواح','lives',1,9,1,p.lives,1)
+     +edS('الفوز','goal',[['none','بدون'],['score','جمع نقاط'],['collect','جمع كل العملات'],['survive','البقاء مدة']],p.goal.type,1)
+     +((p.goal.type==='score'||p.goal.type==='survive')?edR(p.goal.type==='score'?'النقاط':'الثواني','goalv',1,120,1,p.goal.value||10,1):'')
+     +'<p class="edh">الجاذبية 0 = لعبة من الأعلى. أكثر من 0 = منصات (استعمل جدراناً كأرضيات) أو لمسة للطيران.</p>'}
+  else if(ED.tab==='imgs'){
+    h+='<button class="btn" style="margin:0 0 10px" onclick="$(\'edf\').click()">رفع صورة من جوالك</button><input id="edf" type="file" accept="image/*" style="display:none" onchange="edImg(this)"><div class="edg">';
+    h+=Object.keys(p.images).map(id=>'<div class="edth"><img src="'+p.images[id]+'"><small>'+esc((p.imgNames||{})[id]||id)+'</small><button onclick="edUse(\''+id+'\')">للعنصر</button><button onclick="edImgDel(\''+id+'\')">حذف</button></div>').join('')+'</div>'
+     +'<p class="edh">ارفع صور اللاعب والأعداء والخلفية، ثم عيّنها للعنصر المحدد، أو اطلب من الذكاء وضعها بأسمائها.</p>'}
+  else{h+=`<textarea id="edai" rows="4" placeholder="مثلاً: خلّي اللعبة منصات وزد 3 أعداء، أو: حط صورة اللاعب على الشخصية" oninput="ED.ai=this.value">${esc(ED.ai)}</textarea><div class="edg" style="grid-template-columns:1fr 1fr"><button onclick="edAI('edit')">عدّل بالذكاء</button><button onclick="edAI('new')">لعبة جديدة بالوصف</button></div><div id="edst" class="edh"></div>`}
+  P.innerHTML=h}
+function edV(k,v,el,fin){const o=edO();if(!o)return;if(!ED.dirty){edPush();ED.dirty=!fin}
+  if(['x','y','w','h','speed','jump','range','hp','val','every','size'].includes(k))v=+v;
+  if(v===''&&k==='img')v=undefined;o[k]=v;
+  if(el&&el.nextElementSibling&&el.nextElementSibling.tagName==='OUTPUT')el.nextElementSibling.textContent=v;
+  edDraw();if(fin||k==='ai'||k==='of')edPanel()}
+function edG(k,v,el,fin){const p=ED.p;if(!ED.dirty){edPush();ED.dirty=!fin}
+  if(k==='goal'){p.goal.type=v;if(!p.goal.value)p.goal.value=v==='survive'?20:10}
+  else if(k==='goalv')p.goal.value=+v;
+  else if(k==='gravity'){p.gravity=+v;if(p.gravity>0&&(p.controls==='joy'||p.controls==='drag'))p.controls='lr';if(p.gravity===0&&(p.controls==='lr'||p.controls==='tap'))p.controls='joy'}
+  else if(k==='lives')p.lives=+v;else p[k]=v||undefined;
+  if(el&&el.nextElementSibling&&el.nextElementSibling.tagName==='OUTPUT')el.nextElementSibling.textContent=v;
+  edDraw();if(fin||k==='gravity')edPanel()}
+function edAdd(t){const d=QT[t];if(t==='player'&&ED.p.objects.some(o=>o.type==='player')){ED.sel=ED.p.objects.find(o=>o.type==='player').id;edDraw();edPanel();toast('يوجد لاعب واحد فقط، حدّدته لك');return}
+  edPush();const o=Object.assign({id:'o'+Date.now().toString(36),type:t,x:edSn((ED.p.w-d.w)/2),y:t==='spawn'?0:edSn(ED.p.h/2-d.h/2),w:d.w,h:d.h,color:d.c,shape:d.shape||'rect'},d);delete o.n;delete o.c;
+  ED.p.objects.push(o);ED.sel=o.id;ED.tab='props';edTabs();edDraw();edPanel()}
+function edDup(){const o=edO();if(!o)return;edPush();const c=edCl(o);c.id='o'+Date.now().toString(36);c.x+=16;c.y+=16;ED.p.objects.push(c);ED.sel=c.id;edDraw();edPanel()}
+function edDel(){const o=edO();if(!o)return;edPush();ED.p.objects=ED.p.objects.filter(x=>x!==o);ED.sel=null;edDraw();edPanel()}
+function edZ(f){const o=edO();if(!o)return;edPush();const a=ED.p.objects,i=a.indexOf(o);a.splice(i,1);f?a.push(o):a.unshift(o);edDraw()}
+function edUndo(){const s=ED.undo.pop();if(!s){toast('لا يوجد ما يُتراجع عنه');return}ED.p=QGl().norm(JSON.parse(s));if(!edO())ED.sel=null;$('edti').value=ED.p.title;QGl().loadImgs(ED.p,edDraw);edDraw();edPanel()}
+function edImg(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;if(Object.keys(ED.p.images).length>=12){toast('الحد الأقصى 12 صورة');return}
+  const im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{const s=Math.min(1,160/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);
+    const id='img'+Date.now().toString(36);let nm=prompt('اسم الصورة (مثلاً: اللاعب، العدو، الخلفية)','صورة '+(Object.keys(ED.p.images).length+1));if(nm===null)nm='صورة';
+    edPush();ED.p.images[id]=c.toDataURL('image/png');ED.p.imgNames=ED.p.imgNames||{};ED.p.imgNames[id]=String(nm).slice(0,30);QGl().loadImgs(ED.p,edDraw);edPanel()};
+  im.onerror=()=>toast('تعذر قراءة الصورة');im.src=u}
+function edUse(id){const o=edO();if(!o){toast('حدّد عنصراً أولاً من الشاشة');return}edPush();o.img=id;edDraw();toast('تم تعيين الصورة')}
+function edImgDel(id){edPush();delete ED.p.images[id];if(ED.p.imgNames)delete ED.p.imgNames[id];ED.p.objects.forEach(o=>{if(o.img===id)delete o.img});if(ED.p.bgImg===id)delete ED.p.bgImg;QGl().loadImgs(ED.p,edDraw);edDraw();edPanel()}
+function qgBuild(p){const j=JSON.stringify(p).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+  return '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>'+esc(p.title)+'</title><style>html,body{margin:0;height:100%;background:'+(/^#[0-9a-f]{6}$/i.test(p.bg)?p.bg:'#000')+';overflow:hidden;touch-action:none}body{display:flex;align-items:center;justify-content:center}canvas{display:block;touch-action:none}</style></head><body><canvas id="c"></canvas><scr'+'ipt>'+QGRT+';QG.start('+j+',document.getElementById("c"))</scr'+'ipt></body></html>'}
+function edPlay(){const d=document.createElement('div');d.id='edpv';d.innerHTML='<button class="ic" onclick="this.parentNode.remove()" style="position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:2;width:42px;height:42px">✕</button><iframe sandbox="allow-scripts" style="width:100%;height:100%;border:0"></iframe>';document.body.appendChild(d);d.querySelector('iframe').srcdoc=sbPub(qgBuild(ED.p))}
+function edApply(){const h=qgBuild(ED.p);SB.html=h;SB.proj=edCl(ED.p);try{ls.set('sb',h);ls.set('sbq',ED.p)}catch(e){}
+  sbShow(h);$('sbx').style.display='block';$('sbs').textContent='✅ تم اعتماد لعبتك من المحرك. جرّبها أو اعمل APK.';edClose();toast('تم الاعتماد')}
+const QGSYS='أنت مصمم ألعاب 2D. أعد مشروع لعبة بصيغة JSON فقط بدون شرح وبدون كتل كود. الإحداثيات بوحدات شاشة 360×640. الصيغة: {"title":"","w":360,"h":640,"bg":"#hex","gravity":0,"controls":"joy","lives":3,"goal":{"type":"score","value":10},"objects":[{"id":"","type":"","x":0,"y":0,"w":30,"h":30,"color":"#hex","shape":"rect"}]}. الأنواع: player (لاعب واحد فقط، speed وjump وshoot:true للرماية)؛ wall جدار صلب؛ coin عملة (val)؛ enemy عدو (ai: patrol أو chase أو bounce أو fall أو none، وspeed وrange وhp وval)؛ hazard فخ يؤذي عند اللمس؛ goal هدف يفوز عند لمسه؛ spawn مولّد ينزل عناصر من الأعلى (of: enemy أو coin أو hazard، every ثواني، speed، size، ونطاق الظهور x وw وy=0)؛ text نص (txt يدعم {score} {lives} {time}، وsize). controls: joy أو lr أو drag أو tap. goal.type: none أو score أو collect أو survive. القواعد: gravity أكبر من 0 يعني منصات (controls lr والجدران أرضيات) أو controls tap للطيران؛ gravity=0 يعني لعبة من الأعلى (joy أو drag). اجعل اللعبة قابلة للفوز وممتعة بألوان متناسقة وبين 6 و30 عنصراً، ولا تستعمل إيموجي. عند التعديل أعد المشروع كاملاً بعد تطبيق الطلب مع إبقاء ما لم يُطلب تغييره. للصور: ضع img باسم المعرّف المعطى فقط.';
+async function edAI(mode){const t=($('edai').value||'').trim();if(!t){toast('اكتب طلبك أولاً');return}if(!spend(2))return;
+  const st=$('edst');st.textContent='الذكاء يشتغل…';
+  const names=Object.keys(ED.p.images).map(id=>id+' = '+((ED.p.imgNames||{})[id]||id)).join('، ');
+  const cur=mode==='edit'?JSON.stringify(Object.assign({},ED.p,{images:undefined,imgNames:undefined})):'';
+  const msgs=[{role:'system',content:QGSYS},{role:'user',content:'الطلب: '+t+(names?'\nالصور المتوفرة (معرّف = اسم): '+names:'')+(cur?'\nالمشروع الحالي:\n'+cur:'')}];
+  try{const out=await streamTo(await planM(false),msgs,'low',3800,()=>{});
+    const a=out.indexOf('{'),b=out.lastIndexOf('}');if(a<0||b<=a)throw new Error('رد غير مفهوم');
+    const np=JSON.parse(out.slice(a,b+1));if(!Array.isArray(np.objects)||!np.objects.length)throw new Error('مشروع فارغ');
+    edPush();np.images=ED.p.images;np.imgNames=ED.p.imgNames;ED.p=QGl().norm(np);ED.sel=null;$('edti').value=ED.p.title;QGl().loadImgs(ED.p,edDraw);edDraw();
+    ED.ai='';edPanel();$('edst').textContent='تم التطبيق. تقدر تتراجع بزر ↶ أو تعدّل يدوياً.'}
+  catch(e){refund(2);const s=$('edst');if(s)s.textContent='تعذر: '+(e.message||e)}}
 // ---------- الإرسال ----------
 const BST=[{type:'browser_search'}],IMGCOST=1;
 const SRCH=' لديك أداة بحث في الإنترنت: استخدمها عندما يتعلق السؤال بأحداث أو أخبار أو أسعار أو أشخاص ومناصب حالية أو إصدارات أو أي معلومة قد تكون تغيّرت بعد 2024 أو عندما لا تكون واثقاً، وابحث دائماً إذا طلب المستخدم ذلك. بعد البحث اذكر أسماء المصادر والتاريخ في آخر الجواب، وإذا تعارضت المصادر فاذكر ذلك. لا تبحث للشرح العام أو البرمجة أو الحسابات.';
@@ -703,9 +1077,10 @@ function showSet(){$('set').classList.add('on')}
 // ---------- حد الاستخدام (يرجع بعد فترة قصيرة) ----------
 const LIMIT={pts:20,min:10},COST={fast:1,think:2,deep:3};
 function quota(){let q=ls.get('quota',null);const n=Date.now();if(!q||n-q.t>=LIMIT.min*60000)q={t:n,u:0};return q}
-function qBar(){const el=$('qs');if(!el)return;const q=quota(),mins=Math.max(0,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));
-  el.textContent=`⚡ متبقي ${Math.max(0,LIMIT.pts-q.u)}/${LIMIT.pts} نقطة`+(q.u?` • يتجدد بعد ${mins} د`:'')}
-function toast(m){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:110px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:30;font-size:14px;line-height:1.6';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
+function qBar(){const el=$('qs');if(!el)return;let loc=false;try{loc=useLocal()}catch(e){}
+  if(loc){el.innerHTML='<div class="qm"><span class="ql">وضع بدون نت · مجاني بلا نقاط</span></div>';return}
+  const q=quota(),left=Math.max(0,LIMIT.pts-q.u),pc=left/LIMIT.pts,mins=Math.max(0,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000)),lv=pc>.5?'ok':pc>.2?'mid':'lo';
+  el.innerHTML='<div class="qm '+lv+'"><span class="ql">الرصيد</span><div class="qt"><i style="width:'+Math.round(pc*100)+'%"></i></div><b class="qn">'+left+'<small>/'+LIMIT.pts+'</small></b>'+(q.u?'<span class="qr"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'+mins+' د</span>':'')+'</div>'} function toast(m){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:110px;left:12px;right:12px;background:#2a3452;color:#fff;padding:12px;border-radius:12px;z-index:30;font-size:14px;line-height:1.6';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
 function refund(c){const q=quota();q.u=Math.max(0,q.u-c);ls.set('quota',q);qBar()}
 function spend(c){if(useLocal())return true;const q=quota();
   if(q.u+c>LIMIT.pts){const mins=Math.max(1,Math.ceil((q.t+LIMIT.min*60000-Date.now())/60000));toast(`⏳ وصلت الحد المسموح (${LIMIT.pts} نقطة كل ${LIMIT.min} دقايق). ترجع تستخدمه بعد ${mins} دقيقة`+(c>1?'، أو اختر وضع أخف (⚡ سريع = نقطة وحدة).':'.'));return false}
