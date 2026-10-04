@@ -61,10 +61,15 @@ jobs:
         continue-on-error: true
         run: |
           if [ ! -f /tmp/phone_ok ]; then echo "skip full build"; exit 0; fi
-          python3 tools/patch_phone.py full
           sed -i "s/versionCode $((2 * ${{ github.run_number }}))/versionCode $((2 * ${{ github.run_number }} + 1))/" android/app/build.gradle
-          cd android && ./gradlew assembleDebug
-          cd .. && cp android/app/build/outputs/apk/debug/app-debug.apk qasim-phone.apk
+          DONE=0
+          for L in all latin none; do
+            python3 tools/patch_phone.py full $L
+            if (cd android && ./gradlew assembleDebug); then DONE=1; echo "full build OK, OCR level: $L"; break; fi
+            echo "::warning::فشل بناء نسخة التحكم الكامل بمستوى قراءة الصور: $L"
+          done
+          [ "$DONE" = "1" ] || exit 1
+          cp android/app/build/outputs/apk/debug/app-debug.apk qasim-phone.apk
       - uses: actions/upload-artifact@v4
         with: {name: Qasim-apk, path: "qasim*.apk"}
       - name: نشر التحديث

@@ -1,6 +1,8 @@
 package com.ishhf.aichat;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,11 +11,13 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +31,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -47,7 +54,12 @@ public class QTrans {
         String t;
         String tr;
         Rect r;
+        int bgc, fgc;
+        boolean hasC;
     }
+
+    static volatile boolean forceOcr = false;
+    static volatile long lastOcr = 0;
 
     public static void start(QAccService s, String u, String d, boolean a) {
         svc = s;
@@ -149,6 +161,8 @@ public class QTrans {
         final Paint bp = new Paint(Paint.ANTI_ALIAS_FLAG);
         final TextPaint tp = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         final RectF allBtn = new RectF();
+        final RectF ocrBtn = new RectF();
+        final Paint bp2 = new Paint(Paint.ANTI_ALIAS_FLAG);
         final float d;
         float x0, y0, x1, y1;
         boolean drag;
@@ -173,6 +187,7 @@ public class QTrans {
             int w = getWidth(), h = getHeight();
             c.drawRect(0, 0, w, h, dim);
             c.drawText("اسحب لتحديد النص المراد ترجمته", w / 2f, 90 * d, tp);
+            c.drawText("للألعاب والصور: فعّل وضع الصور", w / 2f, 90 * d + 26 * d, tp);
             if (drag) {
                 RectF r = new RectF(Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1), Math.max(y0, y1));
                 c.drawRect(r, fill);
@@ -182,6 +197,10 @@ public class QTrans {
             allBtn.set((w - bw) / 2f, h - 140 * d, (w + bw) / 2f, h - 140 * d + bh);
             c.drawRoundRect(allBtn, 24 * d, 24 * d, bp);
             c.drawText("ترجمة كل الشاشة", w / 2f, allBtn.centerY() + 5 * d, tp);
+            ocrBtn.set((w - bw) / 2f, h - 205 * d, (w + bw) / 2f, h - 205 * d + bh);
+            bp2.setColor(forceOcr ? 0xFF1FA97A : 0xFF3A4566);
+            c.drawRoundRect(ocrBtn, 24 * d, 24 * d, bp2);
+            c.drawText(forceOcr ? "وضع الصور (OCR): مفعّل" : "وضع الصور (OCR): معطّل", w / 2f, ocrBtn.centerY() + 5 * d, tp);
         }
 
         @Override
@@ -192,6 +211,11 @@ public class QTrans {
                 if (allBtn.contains(x, y)) {
                     closeSel();
                     runTranslate(null, false);
+                    return true;
+                }
+                if (ocrBtn.contains(x, y)) {
+                    forceOcr = !forceOcr;
+                    invalidate();
                     return true;
                 }
                 x0 = x; y0 = y; x1 = x; y1 = y; drag = true;
@@ -344,15 +368,112 @@ public class QTrans {
         }
     }
 
+    private static Bitmap shot() throws Exception {
+        if (Build.VERSION.SDK_INT < 30) throw new Exception("التقاط الشاشة يحتاج أندرويد 11 أو أحدث");
+        final Bitmap[] out = new Bitmap[1];
+        final String[] err = new String[1];
+        final CountDownLatch latch = new CountDownLatch(1);
+        svc.takeScreenshot(Display.DEFAULT_DISPLAY, new Executor() {
+            public void execute(Runnable r) { new Thread(r).start(); }
+        }, new AccessibilityService.TakeScreenshotCallback() {
+            public void onSuccess(AccessibilityService.ScreenshotResult res) {
+                try {
+                    Bitmap h = Bitmap.wrapHardwareBuffer(res.getHardwareBuffer(), res.getColorSpace());
+                    out[0] = h.copy(Bitmap.Config.ARGB_8888, false);
+                    res.getHardwareBuffer().close();
+                } catch (Throwable e) {
+                    err[0] = String.valueOf(e);
+                }
+                latch.countDown();
+            }
+            public void onFailure(int code) {
+                err[0] = "تعذر التقاط الشاشة (" + code + ")";
+                latch.countDown();
+            }
+        });
+        latch.await(6, TimeUnit.SECONDS);
+        if (out[0] == null) throw new Exception(err[0] != null ? err[0] : "انتهت مهلة التقاط الشاشة");
+        return out[0];
+    }
+
+    private static int sampleBg(Bitmap b, Rect r) {
+        int[] xs = {r.left - 3, (r.left + r.right) / 2, r.right + 3, r.left - 3, r.right + 3, r.left - 3, (r.left + r.right) / 2, r.right + 3};
+        int[] ys = {r.top - 3, r.top - 3, r.top - 3, (r.top + r.bottom) / 2, (r.top + r.bottom) / 2, r.bottom + 3, r.bottom + 3, r.bottom + 3};
+        long rr = 0, gg = 0, bb = 0;
+        int n = 0;
+        for (int i = 0; i < 8; i++) {
+            int x = xs[i], y = ys[i];
+            if (x < 0 || y < 0 || x >= b.getWidth() || y >= b.getHeight()) continue;
+            int c = b.getPixel(x, y);
+            rr += Color.red(c);
+            gg += Color.green(c);
+            bb += Color.blue(c);
+            n++;
+        }
+        if (n == 0) return 0x141B2E;
+        return Color.rgb((int) (rr / n), (int) (gg / n), (int) (bb / n));
+    }
+
+    // قراءة النص من لقطة الشاشة (ألعاب، صور، تطبيقات لا تكشف نصها)
+    private static List<Item> ocrItems(Rect sel) throws Exception {
+        H.post(new Runnable() {
+            public void run() {
+                clearTrans();
+                if (btn != null) btn.setVisibility(View.INVISIBLE);
+            }
+        });
+        try { Thread.sleep(350); } catch (InterruptedException e) {}
+        Bitmap full;
+        try {
+            full = shot();
+        } finally {
+            H.post(new Runnable() { public void run() { if (btn != null) btn.setVisibility(View.VISIBLE); } });
+        }
+        int ox = 0, oy = 0;
+        Bitmap work = full;
+        if (sel != null) {
+            int l = Math.max(0, sel.left), t = Math.max(0, sel.top);
+            int r = Math.min(full.getWidth(), sel.right), b = Math.min(full.getHeight(), sel.bottom);
+            if (r - l > 8 && b - t > 8) {
+                work = Bitmap.createBitmap(full, l, t, r - l, b - t);
+                ox = l;
+                oy = t;
+            }
+        }
+        List<QOcr.Blk> bl = QOcr.read(work);
+        List<Item> out = new ArrayList<Item>();
+        for (int i = 0; i < bl.size(); i++) {
+            QOcr.Blk k = bl.get(i);
+            if (k.t.length() < 2 || mostlyArabic(k.t) || k.r.width() < 10 || k.r.height() < 8) continue;
+            Item it = new Item();
+            it.t = k.t.length() > 400 ? k.t.substring(0, 400) : k.t;
+            it.r = new Rect(k.r.left + ox, k.r.top + oy, k.r.right + ox, k.r.bottom + oy);
+            int c = sampleBg(work, k.r);
+            it.bgc = (0xF5 << 24) | (c & 0xFFFFFF);
+            double lum = 0.299 * Color.red(c) + 0.587 * Color.green(c) + 0.114 * Color.blue(c);
+            it.fgc = lum > 150 ? 0xFF10131F : 0xFFFFFFFF;
+            it.hasC = true;
+            out.add(it);
+            if (out.size() >= 60) break;
+        }
+        return out;
+    }
+
     static void runTranslate(final Rect sel, final boolean silent) {
         if (busy || svc == null) return;
         busy = true;
-        if (!silent) toast("جاري الترجمة…");
+        if (!silent) toast(forceOcr ? "جاري قراءة الصورة والترجمة…" : "جاري الترجمة…");
         new Thread(new Runnable() {
             public void run() {
                 try {
                     List<Item> items = new ArrayList<Item>();
-                    gather(svc.getRootInActiveWindow(), sel, items, 0);
+                    if (!forceOcr) gather(svc.getRootInActiveWindow(), sel, items, 0);
+                    if (items.isEmpty()) {
+                        long now = System.currentTimeMillis();
+                        if (silent && now - lastOcr < 3000) return;
+                        lastOcr = now;
+                        items = ocrItems(sel);
+                    }
                     if (items.isEmpty()) {
                         if (!silent) toast("لم أجد نصاً للترجمة هنا");
                         return;
@@ -394,6 +515,8 @@ public class QTrans {
                 if (it.tr == null) continue;
                 Rect r = it.r;
                 float pad = 2 * d;
+                bg.setColor(it.hasC ? it.bgc : 0xF2141B2E);
+                tp.setColor(it.hasC ? it.fgc : Color.WHITE);
                 RectF rf = new RectF(r.left - pad, r.top - pad, r.right + pad, r.bottom + pad);
                 c.drawRoundRect(rf, 4 * d, 4 * d, bg);
                 int w = Math.max(10, (int) rf.width() - (int) (8 * d));

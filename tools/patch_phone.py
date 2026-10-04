@@ -1,6 +1,7 @@
-# lite: مساعد الهاتف بالأوامر العادية فقط (بدون خدمة وصول). full: يضيف خدمة الوصول للتحكم الكامل.
-import os, shutil, sys
+# lite: مساعد الهاتف بالأوامر العادية فقط (بدون خدمة وصول). full [all|latin|none]: يضيف خدمة الوصول والمترجم، ومستوى قراءة الصور OCR.
+import os, re, shutil, sys
 mode = sys.argv[1] if len(sys.argv) > 1 else 'lite'
+level = sys.argv[2] if len(sys.argv) > 2 else 'all'
 J = 'android/app/src/main/java/com/ishhf/aichat/'
 M = 'android/app/src/main/AndroidManifest.xml'
 if mode == 'lite':
@@ -15,6 +16,7 @@ if mode == 'lite':
 else:
     shutil.copy('native-phone/QAccService.java', J + 'QAccService.java')
     shutil.copy('native-phone/QTrans.java', J + 'QTrans.java')
+    shutil.copy('native-phone/ocr/QOcr%s.java' % {'all': 'All', 'latin': 'Latin', 'none': 'None'}[level], J + 'QOcr.java')
     os.makedirs('android/app/src/main/res/xml', exist_ok=True)
     os.makedirs('android/app/src/main/res/values', exist_ok=True)
     open('android/app/src/main/res/xml/qacc_config.xml', 'w', encoding='utf-8').write('''<?xml version="1.0" encoding="utf-8"?>
@@ -25,18 +27,33 @@ else:
     android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews"
     android:canRetrieveWindowContent="true"
     android:canPerformGestures="true"
+    android:canTakeScreenshot="true"
     android:notificationTimeout="100" />
 ''')
     open('android/app/src/main/res/values/qacc.xml', 'w', encoding='utf-8').write('''<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="qacc_desc">يسمح لمساعد قاسم بقراءة الشاشة والضغط على الأزرار لتنفيذ المهام التي تطلبها منه فقط.</string>
+    <string name="qacc_desc">يسمح لمساعد قاسم بقراءة الشاشة والضغط على الأزرار وترجمة النص الظاهر لتنفيذ ما تطلبه منه فقط.</string>
 </resources>
 ''')
     s = open(M, encoding='utf-8').read()
-    svc = ('<service android:name=".QAccService" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">'
-           '<intent-filter><action android:name="android.accessibilityservice.AccessibilityService"/></intent-filter>'
-           '<meta-data android:name="android.accessibilityservice" android:resource="@xml/qacc_config"/></service>')
-    assert '</application>' in s
-    s = s.replace('</application>', svc + '</application>', 1)
-    open(M, 'w', encoding='utf-8').write(s)
-print('phone patch:', mode)
+    if '.QAccService' not in s:
+        svc = ('<service android:name=".QAccService" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">'
+               '<intent-filter><action android:name="android.accessibilityservice.AccessibilityService"/></intent-filter>'
+               '<meta-data android:name="android.accessibilityservice" android:resource="@xml/qacc_config"/></service>')
+        assert '</application>' in s
+        s = s.replace('</application>', svc + '</application>', 1)
+        open(M, 'w', encoding='utf-8').write(s)
+    g = 'android/app/build.gradle'
+    t = open(g, encoding='utf-8').read()
+    t = re.sub(r"\n[ \t]*implementation 'com\.google\.mlkit:[^\n]*", '', t)
+    deps = []
+    if level in ('all', 'latin'):
+        deps.append("implementation 'com.google.mlkit:text-recognition:16.0.1'")
+    if level == 'all':
+        deps += ["implementation 'com.google.mlkit:text-recognition-chinese:16.0.1'",
+                 "implementation 'com.google.mlkit:text-recognition-japanese:16.0.1'",
+                 "implementation 'com.google.mlkit:text-recognition-korean:16.0.1'"]
+    if deps:
+        t = t.replace('dependencies {', 'dependencies {\n    ' + '\n    '.join(deps), 1)
+    open(g, 'w', encoding='utf-8').write(t)
+print('phone patch:', mode, level)
