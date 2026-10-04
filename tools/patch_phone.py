@@ -14,12 +14,13 @@ if mode == 'lite':
     open(M, 'w', encoding='utf-8').write(s)
 else:
     shutil.copy('native-phone/QAccService.java', J + 'QAccService.java')
+    shutil.copy('native-phone/QTrans.java', J + 'QTrans.java')
     os.makedirs('android/app/src/main/res/xml', exist_ok=True)
     os.makedirs('android/app/src/main/res/values', exist_ok=True)
     open('android/app/src/main/res/xml/qacc_config.xml', 'w', encoding='utf-8').write('''<?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/qacc_desc"
-    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeViewScrolled"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews"
     android:canRetrieveWindowContent="true"

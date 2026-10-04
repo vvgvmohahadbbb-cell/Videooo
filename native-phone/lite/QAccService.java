@@ -11,4 +11,8 @@ public class QAccService {
     public boolean scroll(boolean forward) { return false; }
     public boolean tap(int x, int y) { return false; }
     public boolean global(String a) { return false; }
+    public static boolean transOn(String url, String dev, boolean auto) { return false; }
+    public static void transOff() {}
+    public static void transAuto(boolean a) {}
+    public static boolean transIsOn() { return false; }
 }

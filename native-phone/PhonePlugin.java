@@ -69,4 +69,31 @@ public class PhonePlugin extends Plugin {
             call.reject(String.valueOf(e));
         }
     }
+
+    @PluginMethod
+    public void transOn(PluginCall call) {
+        boolean ok = QAccService.transOn(call.getString("url", ""), call.getString("dev", ""), call.getBoolean("auto", false));
+        JSObject r = new JSObject();
+        r.put("ok", ok);
+        call.resolve(r);
+    }
+
+    @PluginMethod
+    public void transOff(PluginCall call) {
+        QAccService.transOff();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void transAuto(PluginCall call) {
+        QAccService.transAuto(call.getBoolean("auto", false));
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void transState(PluginCall call) {
+        JSObject r = new JSObject();
+        r.put("on", QAccService.transIsOn());
+        call.resolve(r);
+    }
 }

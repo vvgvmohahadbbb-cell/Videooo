@@ -26,22 +26,39 @@ public class QAccService extends AccessibilityService {
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent e) {}
+    public void onAccessibilityEvent(AccessibilityEvent e) {
+        if (QTrans.on) QTrans.onEvent(e);
+    }
 
     @Override
     public void onInterrupt() {}
 
     @Override
     public boolean onUnbind(Intent i) {
+        QTrans.stop();
         inst = null;
         return super.onUnbind(i);
     }
 
     @Override
     public void onDestroy() {
+        QTrans.stop();
         inst = null;
         super.onDestroy();
     }
+
+    public static boolean transOn(String url, String dev, boolean auto) {
+        QAccService s = inst;
+        if (s == null) return false;
+        QTrans.start(s, url, dev, auto);
+        return true;
+    }
+
+    public static void transOff() { QTrans.stop(); }
+
+    public static void transAuto(boolean a) { QTrans.setAuto(a); }
+
+    public static boolean transIsOn() { return QTrans.on; }
 
     private static String clip(CharSequence s, int n) {
         if (s == null) return "";

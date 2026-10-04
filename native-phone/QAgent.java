@@ -132,10 +132,14 @@ public class QAgent {
     }
 
     private static String llm(String url, String dev, JSONArray msgs) throws Exception {
+        return chat(url, dev, msgs, "openai/gpt-oss-120b", 900);
+    }
+
+    public static String chat(String url, String dev, JSONArray msgs, String model, int max) throws Exception {
         JSONObject body = new JSONObject();
-        body.put("model", "openai/gpt-oss-120b");
+        body.put("model", model);
         body.put("messages", msgs);
-        body.put("max_completion_tokens", 900);
+        body.put("max_completion_tokens", max);
         body.put("reasoning_effort", "low");
         body.put("include_reasoning", false);
         JSONObject req = new JSONObject();
