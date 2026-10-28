@@ -22,7 +22,7 @@ jobs:
           KS: ${{ secrets.DEBUG_KEYSTORE_B64 }}
         run: |
           if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore; fi
-      - run: mkdir g && cp -r "games/$SLUG/." g/
+      - run: mkdir g && cp "games/$SLUG/index.html" g/index.html
       - run: npm init -y >/dev/null && npm i @capacitor/core @capacitor/cli @capacitor/android
       - run: npx cap init "$APPNAME" "com.qasim.$SLUG" --web-dir g
       - run: npx cap add android && npx cap sync android
