@@ -58,19 +58,6 @@ jobs:
             cd android && ./gradlew assembleDebug
           fi
           cd .. && cp android/app/build/outputs/apk/debug/app-debug.apk qasim.apk
-      - name: نسخة التحكم الكامل (qasim-phone.apk)
-        continue-on-error: true
-        run: |
-          if [ ! -f /tmp/phone_ok ]; then echo "skip full build"; exit 0; fi
-          sed -i "s/versionCode $((2 * ${{ github.run_number }}))/versionCode $((2 * ${{ github.run_number }} + 1))/" android/app/build.gradle
-          DONE=0
-          for L in all latin none; do
-            python3 tools/patch_phone.py full $L
-            if (cd android && ./gradlew assembleDebug); then DONE=1; echo "full build OK, OCR level: $L"; break; fi
-            echo "::warning::فشل بناء نسخة التحكم الكامل بمستوى قراءة الصور: $L"
-          done
-          [ "$DONE" = "1" ] || exit 1
-          cp android/app/build/outputs/apk/debug/app-debug.apk qasim-phone.apk
       - uses: actions/upload-artifact@v4
         with: {name: Qasim-apk, path: "qasim*.apk"}
       - name: نشر التحديث
@@ -78,6 +65,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           FILES="qasim.apk"
-          [ -f qasim-phone.apk ] && FILES="$FILES qasim-phone.apk"
           gh release delete app-latest --cleanup-tag -y || true
           gh release create app-latest $FILES --title "${{ github.run_number }}" --notes "$(git log -1 --pretty=%s)" --target "${{ github.sha }}"

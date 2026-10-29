@@ -375,7 +375,7 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 <div class="view on" id="v0">
   <div id="msgs"></div>
   <div id="comp">
-    <div id="modes"><button id="mdb" onclick="toast('قاسم 1.0: يفهم طلبك، يخطط، يبحث عند الحاجة، يكتب الجواب، ثم يراجعه بنفسه')">قاسم 1.0</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="eco" onclick="toggleEco()">🌿 توفير</button><button id="rlb" onclick="openRoles()">🎭 الدور</button><button id="tlb" onclick="openTools()">🧰 أدوات</button><button id="phb" onclick="openPhone()">📱 مساعد الهاتف</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
+    <div id="modes"><button id="mdb" onclick="window.qStory&&qStory()">قاسم 1.0</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="eco" onclick="toggleEco()">🌿 توفير</button><button id="rlb" onclick="openRoles()">🎭 الدور</button><button id="tlb" onclick="openTools()">🧰 أدوات</button><button id="phb" onclick="openPhone()">📱 مساعد الهاتف</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
     <div id="qs" style="font-size:12px;color:var(--mut);padding:0 4px 6px"></div><div id="imgm" style="display:none;align-items:center;gap:6px;background:#1d3b6b;border-radius:10px;padding:6px 8px;margin-bottom:6px;font-size:13px;flex-wrap:wrap">🖼️ <select id="isz" style="width:auto;padding:4px"><option value="sq">مربعة</option><option value="pt">عمودية</option><option value="ls">أفقية</option></select><select id="ist" style="width:auto;padding:4px"><option value="auto">ستايل تلقائي</option><option value="real">واقعي</option><option value="cine">سينمائي</option><option value="anime">أنمي</option><option value="d3">ثلاثي الأبعاد</option><option value="oil">رسم زيتي</option><option value="water">ألوان مائية</option><option value="logo">لوجو</option></select><button style="margin-inline-start:auto;font-size:14px" onclick="setImgMode(false)">✕</button></div><div id="th"></div>
     <div class="row"><input type="file" id="pic" accept="image/*,.txt,.md,.csv,.json,.js,.ts,.py,.java,.kt,.html,.css,.xml,.log,.yml,.yaml,.sql,.sh" multiple hidden>
       <button class="rb g" onclick="pic.click()">📎</button><input type="file" id="cam" accept="image/*" capture="environment" hidden><button class="rb g" onclick="cam.click()">📷</button><button class="rb g" id="dmic" onclick="dictate()">🎤</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
@@ -646,6 +646,86 @@ input,textarea,select{background:#0e1630;border-color:#1f2b57}input:focus,textar
 #splash .lg{width:120px;height:120px;border-radius:0;background:none;font-size:0}
 #splash .lg svg{width:120px;height:120px;filter:drop-shadow(0 12px 30px rgba(79,140,255,.45))}
 </style>
+<style>
+#qs{position:fixed;inset:0;z-index:10050;direction:rtl;display:flex;flex-direction:column;color:#eef2ff;background:radial-gradient(110% 70% at 50% 0%,var(--t,#1b2f7a) 0,#080c1f 72%);transition:background 1s;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:hidden;opacity:0;animation:qsin .6s forwards;user-select:none}
+@keyframes qsin{to{opacity:1}}
+#qs .pt{position:absolute;z-index:0;border-radius:50%;background:#8fb0ff;opacity:.16;animation:qfl linear infinite}
+@keyframes qfl{from{transform:translateY(0)}to{transform:translateY(-115vh)}}
+#qs .bar{position:relative;z-index:1;display:flex;gap:5px;padding:14px 16px 0}
+#qs .bar i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden}
+#qs .bar b{display:block;height:100%;width:0;background:#fff}#qs .bar i.d b{width:100%}
+@keyframes qprog{from{width:0}to{width:100%}}
+#qs .skip{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 26px);inset-inline-end:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:999px;padding:5px 14px;font-size:13px}
+#qs .ill{position:relative;z-index:1;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:18px 20px 4px}
+#qs .bub{position:relative;z-index:1;margin:6px 16px 0;padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);font-size:17px;line-height:1.85;min-height:104px}
+#qs .bub::after{content:"";position:absolute;bottom:-9px;left:50%;margin-left:-9px;width:18px;height:18px;background:rgba(255,255,255,.09);border-right:1px solid rgba(255,255,255,.16);border-bottom:1px solid rgba(255,255,255,.16);transform:rotate(45deg)}
+#qs .qc{position:relative;z-index:1;height:29vh;max-height:230px;flex:none;align-self:center;margin-top:8px}
+#qs .go{position:relative;z-index:2;margin:0 24px 16px;padding:14px;border:0;border-radius:16px;background:linear-gradient(135deg,#22d3ee,#4f8cff 52%,#8b5cf6);color:#fff;font-size:17px;font-weight:700;box-shadow:0 8px 24px rgba(79,140,255,.4)}
+.qc .fl{animation:qbob 3s ease-in-out infinite}@keyframes qbob{50%{transform:translateY(-7px)}}
+.qc .eyes{transform-origin:100px 76px;animation:qblink 4.2s infinite}@keyframes qblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.qc .look{transition:transform .5s}
+.qc .mouth{transform-origin:100px 100px}.qc.talk .mouth{animation:qtalk .22s ease-in-out infinite alternate}@keyframes qtalk{to{transform:scale(1.7,2.8)}}
+.qc .arm.r{transform-origin:152px 148px;animation:qwave 2.2s ease-in-out infinite}@keyframes qwave{50%{transform:rotate(-24deg)}}
+.qc .arm.l{transform-origin:48px 148px;animation:qwave2 2.6s ease-in-out infinite}@keyframes qwave2{50%{transform:rotate(14deg)}}
+.qc .ant{animation:qpulse 1.4s infinite}@keyframes qpulse{50%{opacity:.3}}
+#qs .orb{animation:qspin 14s linear infinite}#qs .orb.rv{animation-direction:reverse;animation-duration:20s}@keyframes qspin{to{transform:rotate(360deg)}}
+#qs .pop{opacity:0;transform-box:fill-box;transform-origin:center;animation:qpop .7s .2s cubic-bezier(.2,1.4,.4,1) forwards}@keyframes qpop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+#qs .mg{transform-box:fill-box;transform-origin:center;animation:qmerge 1.1s 1.1s ease-in forwards}@keyframes qmerge{to{transform:translateX(64px) scale(.35);opacity:0}}
+#qs .st{opacity:0;animation:qslide .5s forwards}@keyframes qslide{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+#qs .ln{transform-box:fill-box;transform-origin:right center;animation:qline .5s both}@keyframes qline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+#qs .gau{animation:qgau 2s .3s ease-out forwards}@keyframes qgau{to{stroke-dashoffset:31}}
+#qs .rip{opacity:0;animation:qrip 2.4s ease-out infinite}@keyframes qrip{from{transform:scale(1);opacity:.7}to{transform:scale(3.2);opacity:0}}
+</style>
+<script>
+/* ===== قصة قاسم 1.0 الافتتاحية: سكربت مستقل، تظهر مرة لكل تحديث، وتنعاد بالضغط على شارة قاسم 1.0 ===== */
+(function(){
+const ID='q1.0-a',$q=id=>document.getElementById(id);
+const T=(x,y,s,t,f,w)=>'<text x="'+x+'" y="'+y+'" font-size="'+s+'" font-weight="'+(w||700)+'" fill="'+(f||'#eef2ff')+'" text-anchor="middle">'+t+'</text>';
+const W=b=>'<svg viewBox="0 0 320 230" width="100%" style="max-width:380px;overflow:visible">'+b+'</svg>';
+const row=(i,l)=>'<g class="st" style="animation-delay:'+(.4+i*.55)+'s"><rect x="36" y="'+(16+i*42)+'" width="196" height="30" rx="15" fill="#13204d" stroke="#2b3f8f"/>'+T(134,36+i*42,14,l)+'<circle cx="262" cy="'+(31+i*42)+'" r="14" fill="url(#qgb)"/><path d="M255 '+(31+i*42)+'l5 5 9-10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>';
+const card=(y,l)=>'<g class="mg"><rect x="14" y="'+y+'" width="92" height="42" rx="13" fill="#16224a" stroke="#2f4bb0"/>'+T(60,y+27,16,l,'#9fb3f0')+'</g>';
+const node=(x,i,g,l)=>'<g class="pop" style="animation-delay:'+(.3+i*.5)+'s"><rect x="'+(x-28)+'" y="50" width="56" height="56" rx="16" fill="#13204d" stroke="#2f4bb0"/>'+g+T(x,128,12,l,'#cdd8ff',600)+'</g>';
+const SC=[
+{c:'#1b2f7a',k:'n',t:'أهلاً يا شباب! أنا قاسم، وصرت قاسم 1.0. تعالوا أخبركم شو الجديد فيّ.',
+ s:W('<g transform="translate(160 104)"><circle r="98" fill="none" stroke="url(#qgb)" stroke-width="2" stroke-dasharray="4 9" class="orb"/><circle r="76" fill="none" stroke="#4f8cff" stroke-width="1.5" stroke-dasharray="2 8" opacity=".55" class="orb rv"/><use href="#qtile" x="-58" y="-58" width="116" height="116" class="pop"/></g>'+T(160,226,26,'قاسم 1.0','#fff'))},
+{c:'#3a2a82',k:'u',t:'قبل كان عندي ثلاثة أوضاع: سريع وتفكير وأعمق. الآن دمجتها كلها بنموذج واحد قوي، وأنا أقرر قديش أفكر حسب صعوبة سؤالك.',
+ s:W(card(26,'سريع')+card(94,'تفكير')+card(162,'أعمق')+'<path d="M112 114H162" stroke="#5b7ae0" stroke-width="3" stroke-dasharray="5 6"/><g class="pop" style="animation-delay:2.1s"><rect x="168" y="48" width="136" height="130" rx="26" fill="url(#qgb)"/><use href="#qmark" x="212" y="62" width="48" height="48"/>'+T(236,138,19,'قاسم 1.0','#fff')+T(236,160,12,'نموذج واحد قوي','#e6efff',500)+'</g>')},
+{c:'#0f5a73',k:'u',t:'وصرت أفكر بخطوات مثل الإنسان: أفهم سؤالك، أبحث بالإنترنت، أفكر، أكتب الجواب، وبعدها أراجع نفسي. وكل خطوة تشوفها قدامك.',
+ s:W('<line x1="262" y1="45" x2="262" y2="171" stroke="#2b3f8f" stroke-width="2"/>'+['يفهم الطلب','يبحث','يفكر','يكتب','يراجع'].map((l,i)=>row(i,l)).join(''))},
+{c:'#1b2f7a',k:'u',t:'وبالحسابات ما أخمّن! أكتب كود وأشغّله فعلاً، وآخذ النتيجة الدقيقة.',
+ s:W('<rect x="30" y="14" width="260" height="150" rx="16" fill="#0b1230" stroke="#2b3f8f"/><circle cx="52" cy="32" r="5" fill="#ff6b6b"/><circle cx="68" cy="32" r="5" fill="#ffd166"/><circle cx="84" cy="32" r="5" fill="#3ddc97"/>'+[[58,150],[78,200],[98,120],[118,180]].map((r,i)=>'<rect class="ln" x="'+(270-r[1])+'" y="'+r[0]+'" width="'+r[1]+'" height="8" rx="4" fill="url(#qgb)" opacity=".9" style="animation-delay:'+(.3+i*.45)+'s"/>').join('')+'<g transform="translate(66 190)"><circle r="15" fill="none" stroke="#22d3ee" stroke-width="7" stroke-dasharray="5 5.9" class="orb"/><circle r="6" fill="#22d3ee"/></g><g class="pop" style="animation-delay:2.4s"><rect x="150" y="160" width="140" height="62" rx="16" fill="url(#qgb)"/>'+T(220,180,12,'النتيجة','#e6efff',500)+T(220,210,28,'394','#fff')+'</g>')},
+{c:'#3a2a82',k:'r',t:'وفي مختبر جديد تختبرني فيه: أسئلة منطق، كود يُشغَّل، ألعاب ألعبها ضد حكم، وألعاب أبنيها وأنت تقيّمني.',
+ s:W('<g transform="translate(160 90) rotate(-90)"><circle r="62" fill="none" stroke="#18265a" stroke-width="14"/><circle r="62" fill="none" stroke="url(#qgb)" stroke-width="14" stroke-linecap="round" stroke-dasharray="390" stroke-dashoffset="390" class="gau"/></g>'+T(160,104,40,'92')+T(160,124,13,'من 100','#9fb3f0',500)+['منطق','كود','ألعاب','بناء'].map((l,i)=>'<g class="pop" style="animation-delay:'+(1.6+i*.2)+'s"><rect x="'+(11+i*78)+'" y="176" width="68" height="30" rx="15" fill="#16224a" stroke="#2f4bb0"/>'+T(45+i*78,196,13,l,'#cdd8ff',600)+'</g>').join(''))},
+{c:'#0f5a73',k:'l',t:'طيب كيف انصنعت؟ واجهتي مكتوبة بـ HTML وJavaScript، تتحول لتطبيق أندرويد، ويبنيها GitHub تلقائياً، ودماغي نموذج لغوي ضخم.',
+ s:W('<path d="M268 78H34" stroke="#2f4bb0" stroke-width="3" stroke-dasharray="6 7"/>'+node(268,0,T(268,84,15,'&lt;/&gt;','#22d3ee'),'واجهة')+node(190,1,T(190,84,14,'APK','#4f8cff'),'تطبيق')+node(112,2,T(112,86,19,'CI','#8b5cf6'),'بناء آلي')+node(34,3,'<rect x="22" y="58" width="24" height="40" rx="6" fill="none" stroke="#cdd8ff" stroke-width="2.5"/>','جوالك')+'<circle r="5" fill="#fff"><animateMotion dur="3.2s" repeatCount="indefinite" path="M268 78L34 78"/></circle><g class="pop" style="animation-delay:2.2s"><rect x="30" y="168" width="260" height="36" rx="18" fill="url(#qgb)"/>'+T(160,192,14,'دماغي: نموذج لغوي ضخم (120 مليار)','#fff')+'</g>')},
+{c:'#1b2f7a',k:'n',t:'جاهز؟ اسألني أي شي أو جرّب المختبر. وإذا حبيت تشوف القصة مرة ثانية، اضغط على اسمي فوق.',
+ s:W('<g transform="translate(160 108)"><circle r="40" fill="none" stroke="#4f8cff" stroke-width="2" class="rip"/><circle r="40" fill="none" stroke="#22d3ee" stroke-width="2" class="rip" style="animation-delay:.8s"/><circle r="40" fill="none" stroke="#8b5cf6" stroke-width="2" class="rip" style="animation-delay:1.6s"/><use href="#qtile" x="-58" y="-58" width="116" height="116" class="pop"/></g>')}
+];
+const ROBOT='<svg class="qc" viewBox="0 0 200 240"><defs><linearGradient id="rb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c3f9a"/><stop offset="1" stop-color="#121a4d"/></linearGradient><filter id="eg"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="100" cy="230" rx="52" ry="8" fill="#000" opacity=".35"/><g class="fl"><g class="arm l"><rect x="38" y="140" width="20" height="56" rx="10" fill="url(#rb)" stroke="#3a56c8"/><circle cx="48" cy="200" r="11" fill="#4f8cff"/></g><g class="arm r"><rect x="142" y="140" width="20" height="56" rx="10" fill="url(#rb)" stroke="#3a56c8"/><circle cx="152" cy="200" r="11" fill="#8b5cf6"/></g><rect x="56" y="126" width="88" height="84" rx="28" fill="url(#rb)" stroke="#3a56c8" stroke-width="2"/><use href="#qmark" x="78" y="144" width="44" height="44"/><line x1="100" y1="28" x2="100" y2="12" stroke="#5b7ae0" stroke-width="4"/><circle class="ant" cx="100" cy="8" r="7" fill="#22d3ee"/><rect x="32" y="28" width="136" height="104" rx="40" fill="url(#rb)" stroke="#3a56c8" stroke-width="2"/><circle cx="30" cy="80" r="9" fill="#8b5cf6"/><circle cx="170" cy="80" r="9" fill="#8b5cf6"/><rect x="48" y="45" width="104" height="68" rx="28" fill="#060a1d"/><g class="look"><g class="eyes"><g filter="url(#eg)" opacity=".8"><ellipse cx="78" cy="76" rx="11" ry="13" fill="#22d3ee"/><ellipse cx="122" cy="76" rx="11" ry="13" fill="#22d3ee"/></g><ellipse cx="78" cy="76" rx="11" ry="13" fill="#22d3ee"/><ellipse cx="122" cy="76" rx="11" ry="13" fill="#22d3ee"/></g><rect class="mouth" x="90" y="98" width="20" height="5" rx="2.5" fill="#22d3ee"/></g></g></svg>';
+const LK={n:'0,0',u:'0,-6px',l:'-7px,0',r:'7px,0'};
+function qStory(){if($q('qs'))return;
+ const o=document.createElement('div');o.id='qs';
+ o.innerHTML='<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="qgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#4f8cff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs></svg><div class="bar">'+SC.map(()=>'<i><b></b></i>').join('')+'</div><button class="skip">تخطّي</button><div class="ill"></div><div class="bub"></div>'+ROBOT+'<button class="go" style="display:none">ابدأ مع قاسم 1.0</button>';
+ for(let k=0;k<14;k++){const p=document.createElement('span'),z=4+Math.random()*10;p.className='pt';p.style.cssText='width:'+z+'px;height:'+z+'px;left:'+Math.random()*100+'%;bottom:-20px;animation-duration:'+(9+Math.random()*12)+'s;animation-delay:-'+Math.random()*12+'s';o.appendChild(p)}
+ document.body.appendChild(o);
+ const bub=o.querySelector('.bub'),ill=o.querySelector('.ill'),ch=o.querySelector('.qc'),segs=o.querySelectorAll('.bar b'),go_=o.querySelector('.go'),look=o.querySelector('.look');
+ let i=-1,typ=0,adv=0,typing=false;
+ const fin=()=>{clearInterval(typ);clearTimeout(adv);try{ls.set('story',ID)}catch(e){}o.style.transition='opacity .5s';o.style.opacity=0;setTimeout(()=>o.remove(),550)};
+ function end(s,last){clearInterval(typ);typing=false;ch.classList.remove('talk');bub.textContent=s.t;if(!last)adv=setTimeout(()=>show(i+1),2600)}
+ function show(n){clearInterval(typ);clearTimeout(adv);if(n>=SC.length){fin();return}
+  i=n;const s=SC[n],last=n===SC.length-1;
+  o.style.setProperty('--t',s.c);ill.innerHTML=s.s;look.style.transform='translate('+LK[s.k]+')';
+  segs.forEach((b,j)=>{b.style.animation='none';b.parentNode.className=j<n?'d':''});
+  void segs[n].offsetWidth;segs[n].style.animation='qprog '+(s.t.length*30+2600)+'ms linear forwards';
+  go_.style.display=last?'':'none';bub.textContent='';ch.classList.add('talk');typing=true;let k=0;
+  typ=setInterval(()=>{k++;bub.textContent=s.t.slice(0,k);if(k>=s.t.length)end(s,last)},30)}
+ o.addEventListener('click',e=>{if(e.target.closest('.skip,.go'))return;if(typing)end(SC[i],i===SC.length-1);else{clearTimeout(adv);if(i<SC.length-1)show(i+1)}});
+ o.querySelector('.skip').onclick=fin;go_.onclick=fin;
+ setTimeout(()=>show(0),500)}
+window.qStory=qStory;
+const iv=setInterval(()=>{try{if(typeof ls==='undefined'||typeof $!=='function')return;clearInterval(iv);if(ls.get('story','')!==ID)setTimeout(qStory,1300)}catch(e){}},300);
+})();
+</script>
 <div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
 
 <div id="lock" style="position:fixed;inset:0;background:#0f1420;display:none;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:24px;z-index:20;color:#eef2ff"><div style="font-size:44px">🔒</div><b style="font-size:20px">قاسم</b><input id="lpin" type="password" inputmode="numeric" placeholder="الرمز" style="max-width:240px;text-align:center;background:#1a2236;border:1px solid #2a3452;border-radius:12px;padding:12px;color:#eef2ff;font:inherit"><button onclick="unlock()" style="max-width:240px;width:100%;background:#4f8cff;border:0;border-radius:12px;padding:12px;color:#fff;font:inherit;font-weight:600">فتح</button><small id="lerr" style="color:#ff5a6a"></small></div>
@@ -849,7 +929,6 @@ async function openPhone(){
    +'<button class="mo" onclick="togglePhone()">'+(phoneMode?'⏹ إيقاف وضع المساعد':'▶️ تشغيل وضع المساعد')+'<small>بعد التشغيل اكتب المهمة وأرسلها (3 نقاط)</small></button>'
    +'<button class="mo" onclick="phoneTrans()">🌐 مترجم الشاشة العائم<small>زر «ع» فوق أي تطبيق: اضغطه وحدّد النص فيترجم للعربية فوق مكانه. يقرأ الألعاب والصور بوضع الصور (أندرويد 11+). يحتاج نسخة التحكم الكامل</small></button>'
    +'<button class="mo" onclick="phoneTransAuto()">'+(ls.get('transauto',false)?'⏹ إيقاف الترجمة التلقائية':'▶️ ترجمة تلقائية عند التمرير')+'<small>يترجم الشاشة وحده بعد ما توقف التمرير (يستهلك من الذكاء)</small></button>'
-   +'<button class="mo" onclick="phoneGetFull()">⬇️ نسخة التحكم الكامل<small>تثبّت فوق التطبيق. قد تمنعها Play Protect: اضغط «مزيد من التفاصيل» ثم «تثبيت على أي حال»</small></button>'
    +'<button class="mo" onclick="phoneAcc()">⚙️ تفعيل التحكم الكامل<small>إعدادات الوصول ← قاسم ← تشغيل (بعد تثبيت نسخة التحكم الكامل)</small></button>'
    +'<button class="mo" onclick="phoneInfo()">ℹ️ ظهر لي إعداد مقيّد؟<small>معلومات التطبيق ← ⋮ ← السماح بالإعدادات المقيّدة</small></button>'
    +PHEX.map((e,i)=>'<button class="mo" onclick="phoneEx('+i+')">'+e+'</button>').join('');
