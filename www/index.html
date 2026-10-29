@@ -355,7 +355,8 @@ header .ic:active{background:var(--card2);border-color:var(--bd2)}
 </style>
 </head>
 <body>
-<div id="splash"><div class="lg">🤖</div><div class="nm">قاسم</div><div class="sb">MOD0</div><div class="ld"><i></i></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="180" y1="180" x2="840" y2="840"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#4f8cff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient><linearGradient id="qbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161f48"/><stop offset="1" stop-color="#060919"/></linearGradient></defs><symbol id="qmark" viewBox="0 0 1024 1024"><path d="M576.7 753.5A250 250 0 1 1 753.5 576.7" fill="none" stroke="url(#qg)" stroke-width="78" stroke-linecap="round"/><path d="M600 600L742 742" stroke="url(#qg)" stroke-width="78" stroke-linecap="round"/><circle cx="512" cy="512" r="52" fill="#eaf1ff"/></symbol><symbol id="qtile" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="230" fill="url(#qbg)"/><use href="#qmark" width="1024" height="1024"/></symbol></svg>
+<div id="splash"><div class="lg"><svg viewBox="0 0 1024 1024"><use href="#qtile" width="1024" height="1024"/></svg></div><div class="nm">قاسم</div><div class="sb">MOD0</div><div class="ld"><i></i></div></div>
 <script>
 (function(){function hide(){var x=document.getElementById('splash');if(x){x.classList.add('out');setTimeout(function(){x&&x.remove()},500)}}
 addEventListener('load',function(){setTimeout(hide,900)});document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('snd');if(!b||!window.MutationObserver)return;new MutationObserver(function(){document.body.classList.toggle('busy',b.textContent.trim()==='⏹')}).observe(b,{childList:true,characterData:true,subtree:true})});setTimeout(hide,3000);
@@ -368,13 +369,13 @@ b.appendChild(s);setTimeout(function(){s.remove()},600)}catch(_){}},{passive:tru
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){var s=document.getElementById('snd');if(s)s.classList.toggle('rd',!!e.target.value.trim())}});
 })();
 </script>
-<header><div class="brand" onclick="openList()"><div class="lg2">ق</div><div class="bt"><b>قاسم <small>1.0 · MOD0</small></b><small id="ct"></small></div></div><div class="acts"><button class="ic" aria-label="محادثة جديدة" onclick="newChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button class="ic" aria-label="المحادثات" onclick="openList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button><button class="ic" aria-label="الإعدادات" onclick="showSet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></header>
+<header><div class="brand" onclick="openList()"><div class="lg2">ق</div><div class="bt"><span class="brand"><svg class="blogo" viewBox="0 0 1024 1024"><use href="#qtile" width="1024" height="1024"/></svg><b>قاسم <small>1.0 · MOD0</small></b></span><small id="ct"></small></div></div><div class="acts"><button class="ic" aria-label="محادثة جديدة" onclick="newChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button><button class="ic" aria-label="المحادثات" onclick="openList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button><button class="ic" aria-label="الإعدادات" onclick="showSet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></header>
 <div id="tabs"><button class="tb on" onclick="tab(0)">💬 قاسم</button><button class="tb" onclick="tab(3)">🛠️ استوديو</button><button class="tb" onclick="tab(4)">🧪 اختبار</button></div>
 
 <div class="view on" id="v0">
   <div id="msgs"></div>
   <div id="comp">
-    <div id="modes"><button id="mdb" onclick="toast('✨ قاسم 1.0: يفهم طلبك، يخطط، يبحث عند الحاجة، يكتب الجواب، ثم يراجعه بنفسه')">✨ قاسم 1.0</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="eco" onclick="toggleEco()">🌿 توفير</button><button id="rlb" onclick="openRoles()">🎭 الدور</button><button id="tlb" onclick="openTools()">🧰 أدوات</button><button id="phb" onclick="openPhone()">📱 مساعد الهاتف</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
+    <div id="modes"><button id="mdb" onclick="toast('قاسم 1.0: يفهم طلبك، يخطط، يبحث عند الحاجة، يكتب الجواب، ثم يراجعه بنفسه')">قاسم 1.0</button><button id="web" onclick="cycleWeb()">🌐 تلقائي</button><button id="imb" onclick="setImgMode(!imgMode)">🖼️ صور</button><button id="eco" onclick="toggleEco()">🌿 توفير</button><button id="rlb" onclick="openRoles()">🎭 الدور</button><button id="tlb" onclick="openTools()">🧰 أدوات</button><button id="phb" onclick="openPhone()">📱 مساعد الهاتف</button><button id="lvb" onclick="tab(1)">🎥 مباشر</button></div>
     <div id="qs" style="font-size:12px;color:var(--mut);padding:0 4px 6px"></div><div id="imgm" style="display:none;align-items:center;gap:6px;background:#1d3b6b;border-radius:10px;padding:6px 8px;margin-bottom:6px;font-size:13px;flex-wrap:wrap">🖼️ <select id="isz" style="width:auto;padding:4px"><option value="sq">مربعة</option><option value="pt">عمودية</option><option value="ls">أفقية</option></select><select id="ist" style="width:auto;padding:4px"><option value="auto">ستايل تلقائي</option><option value="real">واقعي</option><option value="cine">سينمائي</option><option value="anime">أنمي</option><option value="d3">ثلاثي الأبعاد</option><option value="oil">رسم زيتي</option><option value="water">ألوان مائية</option><option value="logo">لوجو</option></select><button style="margin-inline-start:auto;font-size:14px" onclick="setImgMode(false)">✕</button></div><div id="th"></div>
     <div class="row"><input type="file" id="pic" accept="image/*,.txt,.md,.csv,.json,.js,.ts,.py,.java,.kt,.html,.css,.xml,.log,.yml,.yaml,.sql,.sh" multiple hidden>
       <button class="rb g" onclick="pic.click()">📎</button><input type="file" id="cam" accept="image/*" capture="environment" hidden><button class="rb g" onclick="cam.click()">📷</button><button class="rb g" id="dmic" onclick="dictate()">🎤</button><textarea id="inp" rows="1" placeholder="اسألني أي شي…"></textarea><button class="rb" id="snd" onclick="send()">➤</button></div>
@@ -418,7 +419,7 @@ document.addEventListener('input',function(e){if(e.target&&e.target.id==='inp'){
 (function(){
 const g$=id=>document.getElementById(id);
 const TM=m=>m==='fast'?['openai/gpt-oss-20b','openai/gpt-oss-120b']:['openai/gpt-oss-120b','openai/gpt-oss-20b'];
-const EF={q1:'high'},MI={q1:'✨'};
+const EF={q1:'high'},MI={q1:''};
 const S={busy:0,err:'',tr:null,rec:null};
 const R=()=>S.tr||(S.tr=ls.get('tres',{}));
 const A=(a,e)=>[[a],e];
@@ -569,8 +570,13 @@ window.tsClear=()=>{S.tr={};ls.set('tres',S.tr);render()};
 <script>
 /* ===== قاسم 1.0: وكيل التفكير (يفهم، يخطط، يبحث، يكتب، يراجع). سكربت مستقل، وإذا تعطل يرجع التطبيق للطريقة القديمة ===== */
 (function(){
-const PLAN='أنت المخطِّط الداخلي لمساعد اسمه قاسم. حلّل طلب المستخدم وأعد JSON فقط بدون أي نص آخر بالشكل: {"u":"جملة قصيرة تلخّص المطلوب فعلاً","s":true أو false,"q":["استعلام بحث قصير"],"hard":true أو false,"plan":["خطوة قصيرة"]}. القواعد: s=true فقط إذا يحتاج معلومات حديثة أو أسعاراً أو أخباراً أو أشخاصاً ومناصب حالية أو حقائق قد تغيّرت أو أرقاماً لا تعرفها بيقين، ولا تبحث للشرح العام أو البرمجة أو الحساب. q حتى استعلامين مختلفين. hard=true إذا يحتاج حساباً أو منطقاً متعدد الخطوات أو برمجة أو تحليلاً أو قراراً مهماً. plan من 2 إلى 4 خطوات قصيرة جداً لكيفية الجواب. اليوم: ';
+const PLAN='أنت المخطِّط الداخلي لمساعد اسمه قاسم. حلّل طلب المستخدم وأعد JSON فقط بدون أي نص آخر بالشكل: {"u":"جملة قصيرة تلخّص المطلوب فعلاً","s":true أو false,"q":["استعلام بحث قصير"],"hard":true أو false,"plan":["خطوة قصيرة"],"calc":true أو false}. القواعد: s=true فقط إذا يحتاج معلومات حديثة أو أسعاراً أو أخباراً أو أشخاصاً ومناصب حالية أو حقائق قد تغيّرت أو أرقاماً لا تعرفها بيقين، ولا تبحث للشرح العام أو البرمجة أو الحساب. q حتى استعلامين مختلفين. hard=true إذا يحتاج حساباً أو منطقاً متعدد الخطوات أو برمجة أو تحليلاً أو قراراً مهماً. plan من 2 إلى 4 خطوات قصيرة جداً لكيفية الجواب. calc=true إذا الجواب يعتمد على حساب دقيق أو تحويل أو معالجة بيانات أو منطق يمكن التحقق منه بتشغيل كود JavaScript صغير. اليوم: ';
 const REV='أنت مدقق صارم. راجع الجواب: أعد حساب الأرقام، وابحث عن أخطاء منطقية أو معلومات خاطئة أو أجزاء من الطلب لم تُغطَّ. إذا كان الجواب سليماً فأجب بكلمة واحدة فقط: OK. وإذا وجدت خطأً فاكتب سطراً أول يبدأ بـ FIX: يلخص الخطأ، ثم اكتب نسخة الجواب كاملة بعد تصحيحها.';
+const THK='أنت تفكّر بصوت عالٍ لتحضّر جواباً ممتازاً (لا تكتب الجواب النهائي). اكتب ملاحظات مختصرة جداً بنقاط: 1) ما المطلوب فعلاً والمعطيات 2) طرق الحل الممكنة واختر الأقوى 3) فخاخ وحالات حدّية 4) حل مبدئي خطوة بخطوة بالأرقام الفعلية. بلا مقدمات.';
+function runJS(code){return new Promise(res=>{let w,u,dn=0;const fin=o=>{if(dn)return;dn=1;try{w.terminate()}catch(e){}try{URL.revokeObjectURL(u)}catch(e){}res(String(o))};
+ const src='var __o=[];var console={log:function(){__o.push([].slice.call(arguments).map(function(x){return typeof x==="string"?x:JSON.stringify(x)}).join(" "))}};try{'+code+'\n}catch(e){__o.push("خطأ: "+e.message)}postMessage(__o.join("\\n").slice(0,2000))';
+ try{u=URL.createObjectURL(new Blob([src],{type:'text/javascript'}));w=new Worker(u)}catch(e){return fin('الجهاز ما يدعم تشغيل الكود')}
+ w.onmessage=e=>fin(e.data);w.onerror=e=>fin('خطأ بالكود: '+String(e.message||'').slice(0,80));setTimeout(()=>fin('الكود علق (أكثر من 5 ثوانٍ)'),5000)})}
 window.q1Run=async function(c){
  const t=c.t,h=c.h,first=c.first,im=c.im,out=c.out,M=c.M,st=[];let ans='';
  const line=x=>'<div class="q1l">'+(x.k==='run'?'<span class="dots"><i></i><i></i><i></i></span>':x.k==='no'?'⚠️':'✅')+' '+x.t+(x.d?'<small>'+x.d+'</small>':'')+'</div>';
@@ -597,11 +603,20 @@ window.q1Run=async function(c){
   stop();const nn=[];
   rs.forEach((r,i)=>{if(r.notes){nn.push('['+qs[i]+']\n'+r.notes);ok(ss[i],'🔎 بحث: «'+esc(qs[i])+'»','لقى معلومات')}else{ss[i].k='no';ss[i].t='🔎 ما نفع البحث: «'+esc(qs[i])+'»';ss[i].d=esc(String(r.err||'').slice(0,80));draw()}});
   notes=nn.join('\n\n').slice(0,9000)}
+  let extra='';
+ if(hard){const s2=add('💭 يفكر بالمسألة…');let sc='';
+  try{sc=await streamTo(M,[{role:'system',content:THK},...h.slice(-4),{role:'user',content:t.slice(0,3000)+(notes?'\n\n[معلومات البحث]\n'+notes.slice(0,5000):'')}],'medium',1100,v=>{s2.d=esc(v.slice(-240)).replace(/\n/g,'<br>');draw()})}catch(e){if(e.name==='AbortError')throw e}
+  stop();ok(s2,'💭 فكّر بالمسألة',esc(sc.slice(0,600)).replace(/\n/g,'<br>'));
+  if(sc)extra+='\n\nملاحظات تفكيرك الخاصة (استعن بها ولا تعرضها): '+sc.slice(0,1800);
+  if(P.calc){const s5=add('⚙️ يكتب كوداً ويشغّله ليتأكد…');
+   try{const r=await callOnce(M,[{role:'system',content:'اكتب كود JavaScript قصيراً يحسب أو يتحقق من المطلوب بدقة ويطبع النتيجة بـ console.log. بدون مكتبات ولا شبكة. أعد الكود فقط داخل كتلة ```js'},{role:'user',content:t.slice(0,2500)+(sc?'\n\nملاحظات:\n'+sc.slice(0,1500):'')}],'low',1500),mm=r.match(/```(?:js|javascript)?\s*([\s\S]*?)```/i),o=await runJS(mm?mm[1]:r);
+    extra+='\n\nنتيجة تشغيل كود فعلي (أدق من الحساب الذهني، اعتمدها): '+o;ok(s5,'⚙️ شغّل كوداً وأخذ النتيجة',esc(o.slice(0,300)).replace(/\n/g,'<br>'))}
+   catch(e){if(e.name==='AbortError')throw e;ok(s5,'⏭️ تخطّى تشغيل الكود')}}}
  const s3=add('✍️ يكتب الجواب…'),hint=pl.length?'\n\nخطة الجواب (اتبعها ضمنياً ولا تعرضها): '+pl.join(' ← '):'';
- ans=await streamTo(M,[{role:'system',content:base(notes)+hint},...h,first],c.eff0,c.max0,cb);
+ ans=await streamTo(M,[{role:'system',content:base(notes)+hint+extra},...h,first],c.eff0,c.max0,cb);
  ok(s3,'✍️ كتب الجواب');
  if(ac.signal.aborted||!ans.trim()){fin();return ans}
- if(hard){const s4=add('🔍 يراجع الجواب ويتحقق منه…');
+ if(hard||P.calc){const s4=add('🔍 يراجع الجواب ويتحقق منه…');
   try{const r=(await callOnce(M,[{role:'system',content:REV},{role:'user',content:'الطلب:\n'+t.slice(0,2500)+'\n\nالجواب:\n'+ans.slice(0,9000)}],'medium',4500)).trim();
    if(/^FIX:/i.test(r)){const i=r.indexOf('\n'),why=r.slice(4,i>0?i:160).trim(),nw=i>0?r.slice(i+1).trim():'';
     if(nw.length>=Math.min(200,ans.length*.4)){ans=nw;ok(s4,'🔧 صحّح جوابه بعد المراجعة',esc(why.slice(0,160)))}else ok(s4,'🔍 راجع الجواب: ملاحظة بسيطة',esc(why.slice(0,160)))}
@@ -611,6 +626,26 @@ window.q1Run=async function(c){
  fin();return ans};
 })();
 </script>
+<style id="q-theme">
+:root{--bg:#0a0f1e;--card:#111a33;--tx:#eef2ff;--mut:#8b97b8;--ac:#4f8cff;--grad:linear-gradient(135deg,#22d3ee,#4f8cff 52%,#8b5cf6)}
+body{background:radial-gradient(120% 45% at 50% -8%,#15214d 0,var(--bg) 62%) no-repeat,var(--bg)}
+header{padding:12px 16px;border-bottom:1px solid #18224a;background:rgba(10,15,30,.72);backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:10px}.brand b{font-size:18px;letter-spacing:.2px}.brand small{color:var(--mut);font-weight:500;font-size:12px}
+.blogo{width:34px;height:34px;border-radius:10px;box-shadow:0 4px 14px rgba(79,140,255,.35)}
+#tabs{padding:10px 14px;gap:6px}.tb{border-radius:12px;background:#0e1630;border:1px solid #1b2650;font-weight:600;font-size:14px;transition:.2s}
+.tb.on{background:var(--grad);border-color:transparent;box-shadow:0 6px 16px rgba(79,140,255,.28)}
+.m{border-radius:18px;font-size:15.5px;line-height:1.75}
+.u{background:linear-gradient(135deg,#3b6fe0,#6d4fe0);box-shadow:0 4px 14px rgba(60,90,220,.25);border-end-start-radius:6px}
+.a{background:var(--card);border:1px solid #1d2a55;position:relative;padding-top:36px;border-end-end-radius:6px}
+.a::before{content:"";position:absolute;top:9px;inset-inline-start:12px;width:21px;height:21px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='180' y1='180' x2='840' y2='840'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='.5' stop-color='%234f8cff'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='1024' rx='230' fill='%230b1030'/%3E%3Cpath d='M576.7 753.5A250 250 0 1 1 753.5 576.7' fill='none' stroke='url%28%23g%29' stroke-width='78' stroke-linecap='round'/%3E%3Cpath d='M600 600L742 742' stroke='url%28%23g%29' stroke-width='78' stroke-linecap='round'/%3E%3Ccircle cx='512' cy='512' r='52' fill='%23eaf1ff'/%3E%3C/svg%3E") center/cover no-repeat}
+.a::after{content:"قاسم 1.0";position:absolute;top:10px;inset-inline-start:40px;font-size:12px;font-weight:700;color:#8fa6e8}
+.btn{background:var(--grad);border-radius:14px;box-shadow:0 6px 16px rgba(79,140,255,.25)}
+input,textarea,select{background:#0e1630;border-color:#1f2b57}input:focus,textarea:focus,select:focus{outline:none;border-color:#4f8cff;box-shadow:0 0 0 3px rgba(79,140,255,.18)}
+.card{border:1px solid #1a2550;border-radius:16px}
+#mdb{background:#16224a;border:1px solid #2a3a7a;border-radius:999px}
+#splash .lg{width:120px;height:120px;border-radius:0;background:none;font-size:0}
+#splash .lg svg{width:120px;height:120px;filter:drop-shadow(0 12px 30px rgba(79,140,255,.45))}
+</style>
 <div id="cl"><div class="ch"><b>📂 المحادثات</b><button class="ic" onclick="$('cl').classList.remove('on')">✕</button></div><button class="btn" style="margin:0 0 8px" onclick="newChat();$('cl').classList.remove('on')">➕ محادثة جديدة</button><div class="row" style="margin:0 0 8px"><input id="cs" placeholder="🔎 ابحث بالمحادثات" oninput="renderList()"><button class="rb g" style="width:auto;padding:0 12px;border-radius:12px" onclick="copyChat()">📤</button></div><div id="cll"></div></div>
 
 <div id="lock" style="position:fixed;inset:0;background:#0f1420;display:none;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:24px;z-index:20;color:#eef2ff"><div style="font-size:44px">🔒</div><b style="font-size:20px">قاسم</b><input id="lpin" type="password" inputmode="numeric" placeholder="الرمز" style="max-width:240px;text-align:center;background:#1a2236;border:1px solid #2a3452;border-radius:12px;padding:12px;color:#eef2ff;font:inherit"><button onclick="unlock()" style="max-width:240px;width:100%;background:#4f8cff;border:0;border-radius:12px;padding:12px;color:#fff;font:inherit;font-weight:600">فتح</button><small id="lerr" style="color:#ff5a6a"></small></div>
@@ -710,7 +745,7 @@ $('cam').onchange=$('pic').onchange;
 function thumbs(){$('th').innerHTML=imgs.map((s,i)=>`<div><img src="${s}"><b onclick="imgs.splice(${i},1);thumbs()">✕</b></div>`).join('')+docs.map((d,i)=>`<div class="dc">📄 ${esc(d.n)} <span onclick="docs.splice(${i},1);thumbs()">✕</span></div>`).join('')+(imgs.length?'<div class="iac">'+IQ.map((q,i)=>'<button onclick="iq('+i+')">'+q[0]+'</button>').join('')+'</div>':'')}
 
 // ---------- المحادثة ----------
-const SYS={q1:'الإصدار: قاسم 1.0. فكّر بعمق قبل الجواب: استخرج الهدف والمعطيات والقيود، فكّك المسألة، قارن حلولاً عند الحاجة واختر الأقوى، نفّذ بدقة ثم راجع نفسك (إعادة حساب بطريقة ثانية، حالات حدّية، أمثلة مضادة) وصحّح. للأسئلة البسيطة أجب مباشرة وبإيجاز. الترتيب: النتيجة أولاً ثم شرح موجز منظم، وللمسائل الصعبة اختم بدرجة الثقة (عالية/متوسطة/منخفضة) وما قد يغيّرها. صرّح بافتراضاتك. الدقة قبل الطول.'};
+const SYS={q1:'الإصدار: قاسم 1.0. تصرّف كخبير يفكر بعمق: افهم قصد المستخدم الحقيقي لا حرفية كلامه، حدّد المعطيات والقيود، فكّك المسألة، جرّب أكثر من طريقة واختر الأقوى، نفّذ بدقة ثم راجع نفسك (إعادة حساب بطريقة ثانية، حالات حدّية). ابدأ بالنتيجة مباشرة ثم اشرح بإيجاز ومنطق واضح. أجب بنفس لهجة المستخدم ولغته. كن صادقاً: إذا لم تعرف أو لم تتأكد فقل ذلك، ولا تخترع مصادر أو أرقاماً أو روابط. إذا كان الطلب غامضاً فافترض الأرجح وصرّح بافتراضك بدل كثرة الأسئلة. للأسئلة البسيطة أجب بإيجاز وبدون تكلّف. للمسائل الصعبة اختم بدرجة الثقة (عالية/متوسطة/منخفضة) وما قد يغيّرها. لا تستخدم أبداً إيموجي النجوم اللامعة ولا أي رمز يشبه الصليب. الدقة قبل الطول.'};
 let ac=null,MODELS=null,wm=ls.get('wm','auto');
 const isOss=m=>/gpt-oss/.test(m),is401=e=>/^401/.test(e);
 const PP=(m,eff,max,ex)=>({temperature:.5,max_completion_tokens:max,...(isOss(m)?{reasoning_effort:eff,include_reasoning:false}:{}),...(ex||{})});
@@ -1659,8 +1694,8 @@ async function imageFlow(t,cost){
   const ok=await showImg(out,en,t,true,w,h);if(!ok)refund(cost);
   busy=false;$('snd').textContent='➤'}
 // ---------- قائمة النماذج ----------
-function MODES(){return [['q1','✨ قاسم 1.0','نموذج واحد قوي: يفهم ويخطط ويبحث ويراجع — من 1 إلى '+COST.q1+' نقاط حسب صعوبة السؤال']]}
-function modeBtn(){$('mdb').textContent='✨ قاسم 1.0'}
+function MODES(){return [['q1','قاسم 1.0','نموذج واحد قوي: يفهم ويخطط ويبحث ويراجع — من 1 إلى '+COST.q1+' نقاط حسب صعوبة السؤال']]}
+function modeBtn(){$('mdb').textContent='قاسم 1.0'}
 function openModes(){$('ms').querySelector('b').textContent='اختر النموذج';$('msl').innerHTML=MODES().map(m=>'<button class="mo'+(m[0]===mode?' on':'')+'" onclick="pickMode(\''+m[0]+'\')">'+m[1]+'<small>'+m[2]+'</small></button>').join('');$('ms').classList.add('on')}
 function closeModes(){$('ms').classList.remove('on')}
 function pickMode(m){mode=m;modeBtn();closeModes()}
